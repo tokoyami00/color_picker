@@ -24,7 +24,6 @@
 .add-row{display:flex;gap:8px;margin:8px 0;}
 .add-slot-btn{flex:1;padding:9px;border:1.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-lg);background:transparent;cursor:pointer;font-size:13px;color:var(--color-text-secondary);transition:background 0.2s;}
 .add-slot-btn:hover{background:var(--color-background-secondary);}
-.add-slot-btn:disabled{opacity:0.35;cursor:not-allowed;}
 .zoom-strip{position:absolute;bottom:8px;right:8px;width:72px;height:72px;border-radius:8px;border:1.5px solid rgba(255,255,255,0.8);overflow:hidden;pointer-events:none;display:none;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
 .zoom-strip canvas{width:72px;height:72px;image-rendering:pixelated;}
 .bottom-panel{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;}
@@ -58,7 +57,6 @@ canvas.hc{width:100%;display:block;}
 .stat-item{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:6px 10px;}
 .stat-label{font-size:11px;color:var(--color-text-tertiary);}
 .stat-value{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-top:2px;}
-/* Poster panel */
 .poster-panel{margin-top:10px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:0.85rem;}
 .poster-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap;}
 .poster-actions{display:flex;gap:6px;flex-shrink:0;}
@@ -69,10 +67,9 @@ canvas.hc{width:100%;display:block;}
 .reset-btn:hover{background:var(--color-background-secondary);}
 .selected-color-area{display:flex;align-items:center;gap:10px;padding:8px 12px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-secondary);margin-bottom:10px;}
 .sc-preview{width:36px;height:36px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);flex-shrink:0;}
-.sc-info{flex:1;}
 .sc-hex{font-family:var(--font-mono);font-size:14px;font-weight:500;color:var(--color-text-primary);}
 .sc-label{font-size:11px;color:var(--color-text-tertiary);margin-top:2px;}
-.sc-empty{font-size:13px;color:var(--color-text-tertiary);padding:8px 0;}
+.sc-empty{font-size:13px;color:var(--color-text-tertiary);padding:4px 0;}
 .poster-results{display:flex;flex-direction:column;gap:12px;}
 .poster-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;}
 .poster-palette{display:flex;height:52px;}
@@ -90,7 +87,7 @@ canvas.hc{width:100%;display:block;}
 .ai-spinner{width:28px;height:28px;border:2.5px solid var(--color-border-secondary);border-top-color:#378ADD;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 10px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 .ai-loading p{font-size:13px;color:var(--color-text-secondary);}
-.ai-error{font-size:13px;color:#E24B4A;padding:1rem;text-align:center;background:var(--color-background-secondary);border-radius:var(--border-radius-md);}
+.ai-error{font-size:13px;color:#E24B4A;padding:0.85rem;border-radius:var(--border-radius-md);background:var(--color-background-secondary);line-height:1.6;}
 .hint-text{font-size:12px;color:var(--color-text-tertiary);}
 </style>
 
@@ -100,11 +97,11 @@ canvas.hc{width:100%;display:block;}
   <div class="welcome" id="welcome">
     <div style="font-size:15px;font-weight:500;color:var(--color-text-primary)">画像をドロップ、またはスロットを選択</div>
     <div class="welcome-cards">
-      <div class="slot-card" id="wCard0" onclick="triggerFile(0)">
+      <div class="slot-card" onclick="triggerFile(0)">
         <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="14" r="2"/><path d="M4 22l7-7 5 5 4-4 8 8"/></svg>
         <div class="slot-num">画像 1</div><span>クリックして選択</span>
       </div>
-      <div class="slot-card" id="wCard1" onclick="triggerFile(1)">
+      <div class="slot-card" onclick="triggerFile(1)">
         <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="14" r="2"/><path d="M4 22l7-7 5 5 4-4 8 8"/></svg>
         <div class="slot-num">画像 2</div><span>クリックして選択</span>
       </div>
@@ -133,7 +130,6 @@ canvas.hc{width:100%;display:block;}
         </div>
       </div>
     </div>
-
     <div class="add-row">
       <button class="add-slot-btn" id="addBtn0" onclick="triggerFile(0)">＋ 画像 1 を追加</button>
       <button class="add-slot-btn" id="addBtn1" onclick="triggerFile(1)">＋ 画像 2 を追加</button>
@@ -158,7 +154,6 @@ canvas.hc{width:100%;display:block;}
         <div class="hsl-row" id="hslRow">HSL: —</div>
         <div class="pos-info" id="posInfo">座標: —</div>
       </div>
-
       <div class="panel hist-panel">
         <div class="panel-head" style="margin-bottom:6px">
           <span class="panel-title">ヒストグラム</span>
@@ -194,10 +189,8 @@ canvas.hc{width:100%;display:block;}
           <button class="suggest-btn" id="suggestBtn" onclick="runSuggest()" disabled>AIに提案させる</button>
         </div>
       </div>
-      <div id="selectedColorArea">
-        <div class="sc-empty" id="scEmpty">画像をクリックしてロックすると、ここに色がセットされます</div>
-      </div>
-      <div id="posterResults"></div>
+      <div id="selectedColorArea"><div class="sc-empty">画像をクリックしてロックすると、ここに色がセットされます</div></div>
+      <div class="poster-results" id="posterResults"></div>
     </div>
   </div>
 </div>
@@ -207,93 +200,67 @@ canvas.hc{width:100%;display:block;}
 
 <script>
 const slots=[null,null],imgDatas=[null,null],origImgs=[null,null],imgDims=[{w:0,h:0},{w:0,h:0}],histData=[null,null];
-let isLocked=false;
-let posterColor=null;
+let isLocked=false,posterColor=null;
 
 document.getElementById('fi0').onchange=function(){if(this.files[0])loadFile(0,this.files[0]);};
 document.getElementById('fi1').onchange=function(){if(this.files[0])loadFile(1,this.files[0]);};
-
 function triggerFile(i){document.getElementById('fi'+i).click();}
 
 function loadFile(i,file){
-  const url=URL.createObjectURL(file);
-  const img=new Image();
+  const url=URL.createObjectURL(file),img=new Image();
   img.onload=()=>loadSlot(i,img);
   img.src=url;
 }
-
 function loadSlot(i,img){
-  origImgs[i]=img;
-  imgDims[i]={w:img.naturalWidth,h:img.naturalHeight};
-  slots[i]=true;
+  origImgs[i]=img;imgDims[i]={w:img.naturalWidth,h:img.naturalHeight};slots[i]=true;
   document.getElementById('welcome').style.display='none';
   document.getElementById('workspace').style.display='block';
   document.getElementById('slot'+i).style.display='flex';
   updateLayout();
-  const canvas=document.getElementById('c'+i);
-  renderCanvas(i,canvas);
-  setupEvents(i,canvas);
-  buildHist(i,canvas);
+  const c=document.getElementById('c'+i);
+  renderCanvas(i,c);setupEvents(i,c);buildHist(i,c);
   if(parseInt(document.getElementById('histSel').value)===i)redrawHist();
   updateAddBtns();
 }
-
 function removeSlot(i){
   slots[i]=null;origImgs[i]=null;imgDatas[i]=null;imgDims[i]={w:0,h:0};histData[i]=null;
   document.getElementById('slot'+i).style.display='none';
-  document.getElementById('c'+i).width=0;
-  updateLayout();
-  updateAddBtns();
-  if(!slots[0]&&!slots[1]){
-    document.getElementById('workspace').style.display='none';
-    document.getElementById('welcome').style.display='flex';
-  }
+  updateLayout();updateAddBtns();
+  if(!slots[0]&&!slots[1]){document.getElementById('workspace').style.display='none';document.getElementById('welcome').style.display='flex';}
 }
-
 function updateLayout(){
-  const row=document.getElementById('imagesRow');
-  row.className=(slots[0]&&slots[1])?'images-row two':'images-row';
+  document.getElementById('imagesRow').className=(slots[0]&&slots[1])?'images-row two':'images-row';
 }
-
 function updateAddBtns(){
   document.getElementById('addBtn0').style.display=slots[0]?'none':'block';
   document.getElementById('addBtn1').style.display=slots[1]?'none':'block';
-  const both=slots[0]&&slots[1];
-  document.getElementById('addBtn0').disabled=both;
-  document.getElementById('addBtn1').disabled=both;
 }
-
 function renderCanvas(i,canvas){
   const wrap=document.getElementById('slot'+i);
   const maxW=Math.max(wrap.offsetWidth-2,200),maxH=360;
-  const {w,h}=imgDims[i];
-  const scale=Math.min(maxW/w,maxH/h,1);
-  canvas.width=Math.round(w*scale);
-  canvas.height=Math.round(h*scale);
+  const{w,h}=imgDims[i],scale=Math.min(maxW/w,maxH/h,1);
+  canvas.width=Math.round(w*scale);canvas.height=Math.round(h*scale);
   const ctx=canvas.getContext('2d');
   ctx.drawImage(origImgs[i],0,0,canvas.width,canvas.height);
   imgDatas[i]=ctx.getImageData(0,0,canvas.width,canvas.height);
 }
-
 function getPos(e,canvas,i){
   const r=canvas.getBoundingClientRect();
   const sx=canvas.width/r.width,sy=canvas.height/r.height;
-  const cx=Math.floor((e.clientX-r.left)*sx);
-  const cy=Math.floor((e.clientY-r.top)*sy);
+  const cx=Math.floor((e.clientX-r.left)*sx),cy=Math.floor((e.clientY-r.top)*sy);
   return{cx,cy,rx:Math.round(cx*(imgDims[i].w/canvas.width)),ry:Math.round(cy*(imgDims[i].h/canvas.height))};
 }
-
 function setupEvents(i,canvas){
   canvas.onmousemove=function(e){
     if(isLocked)return;
-    const {cx,cy,rx,ry}=getPos(e,canvas,i);
+    const{cx,cy,rx,ry}=getPos(e,canvas,i);
     if(cx<0||cy<0||cx>=canvas.width||cy>=canvas.height)return;
     const idx=(cy*canvas.width+cx)*4,d=imgDatas[i].data;
     updatePanel(d[idx],d[idx+1],d[idx+2],rx,ry,i+1);
     drawZoom(i,canvas,cx,cy);
   };
   canvas.onclick=function(e){
-    const {cx,cy,rx,ry}=getPos(e,canvas,i);
+    const{cx,cy,rx,ry}=getPos(e,canvas,i);
     if(cx<0||cy<0||cx>=canvas.width||cy>=canvas.height)return;
     const idx=(cy*canvas.width+cx)*4,d=imgDatas[i].data;
     const r=d[idx],g=d[idx+1],b=d[idx+2];
@@ -305,39 +272,30 @@ function setupEvents(i,canvas){
     const hex='#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('').toUpperCase();
     setPosterColor(hex);
   };
-  canvas.onmouseleave=function(){document.getElementById('zoom'+i).style.display='none';};
-  canvas.onmouseenter=function(){if(imgDatas[i])document.getElementById('zoom'+i).style.display='block';};
+  canvas.onmouseleave=()=>document.getElementById('zoom'+i).style.display='none';
+  canvas.onmouseenter=()=>{if(imgDatas[i])document.getElementById('zoom'+i).style.display='block';};
 }
-
 function setPosterColor(hex){
   posterColor=hex;
-  const area=document.getElementById('selectedColorArea');
-  document.getElementById('scEmpty') && (document.getElementById('scEmpty').style.display='none');
-  area.innerHTML=`
+  document.getElementById('selectedColorArea').innerHTML=`
     <div class="selected-color-area">
       <div class="sc-preview" style="background:${hex}"></div>
-      <div class="sc-info">
-        <div class="sc-hex">${hex}</div>
-        <div class="sc-label">ポスターのベースカラーとして使用</div>
-      </div>
+      <div class="sc-info"><div class="sc-hex">${hex}</div><div class="sc-label">ポスターのベースカラーとして使用</div></div>
     </div>`;
   document.getElementById('suggestBtn').disabled=false;
 }
-
 function resetPoster(){
   posterColor=null;
-  document.getElementById('selectedColorArea').innerHTML='<div class="sc-empty" id="scEmpty">画像をクリックしてロックすると、ここに色がセットされます</div>';
+  document.getElementById('selectedColorArea').innerHTML='<div class="sc-empty">画像をクリックしてロックすると、ここに色がセットされます</div>';
   document.getElementById('posterResults').innerHTML='';
   document.getElementById('suggestBtn').disabled=true;
 }
-
 function toggleLock(){
   isLocked=!isLocked;
   const btn=document.getElementById('lockBtn'),badge=document.getElementById('lockedBadge');
   if(isLocked){btn.className='lock-btn locked';btn.textContent='クリックで解除';badge.className='locked-badge show';}
   else{btn.className='lock-btn';btn.textContent='クリックでロック';badge.className='locked-badge';}
 }
-
 function updatePanel(r,g,b,x,y,sn){
   document.getElementById('colorSwatch').style.background=`rgb(${r},${g},${b})`;
   document.getElementById('rV').textContent=r;
@@ -352,26 +310,20 @@ function updatePanel(r,g,b,x,y,sn){
   document.getElementById('hslRow').textContent=`HSL: ${hsl[0]}° ${hsl[1]}% ${hsl[2]}%`;
   document.getElementById('posInfo').textContent=`画像${sn}  座標: (${x}, ${y})`;
 }
-
 function copyHex(){
   const h=document.getElementById('hexBox').textContent;
   if(h&&!h.includes('—')){
     navigator.clipboard.writeText(h).catch(()=>{});
-    const b=document.getElementById('copyBtn');
-    b.textContent='✓ コピー済み';
+    const b=document.getElementById('copyBtn');b.textContent='✓ コピー済み';
     setTimeout(()=>b.textContent='コピー',1500);
   }
 }
-
 function drawZoom(i,canvas,cx,cy){
-  const zc=document.getElementById('zc'+i),zc2=zc.getContext('2d');
-  zc2.imageSmoothingEnabled=false;
-  zc2.clearRect(0,0,72,72);
-  zc2.drawImage(canvas,cx-9,cy-9,18,18,0,0,72,72);
-  zc2.strokeStyle='rgba(255,255,255,0.9)';zc2.lineWidth=1.5;
-  zc2.strokeRect(28,28,16,16);
+  const zc=document.getElementById('zc'+i),z=zc.getContext('2d');
+  z.imageSmoothingEnabled=false;z.clearRect(0,0,72,72);
+  z.drawImage(canvas,cx-9,cy-9,18,18,0,0,72,72);
+  z.strokeStyle='rgba(255,255,255,0.9)';z.lineWidth=1.5;z.strokeRect(28,28,16,16);
 }
-
 function buildHist(i,canvas){
   const d=imgDatas[i].data;
   const rH=new Float32Array(256),gH=new Float32Array(256),bH=new Float32Array(256),lH=new Float32Array(256);
@@ -383,12 +335,10 @@ function buildHist(i,canvas){
   }
   histData[i]={rH,gH,bH,lH,bright:Math.round(tot/px)};
 }
-
 function redrawHist(){
   const si=parseInt(document.getElementById('histSel').value);
   const hc=document.getElementById('histCanvas'),hx=hc.getContext('2d');
-  const w=hc.offsetWidth||260;hc.width=w;hc.height=100;
-  hx.clearRect(0,0,w,100);
+  const w=hc.offsetWidth||260;hc.width=w;hc.height=100;hx.clearRect(0,0,w,100);
   if(!histData[si])return;
   const{rH,gH,bH,lH,bright}=histData[si];
   const mx=Math.max(...rH,...gH,...bH,...lH),bw=w/256;
@@ -404,16 +354,12 @@ function redrawHist(){
   document.getElementById('sAR').textContent=(iw/d2)+':'+(ih/d2);
   document.getElementById('sBr').textContent=bright;
 }
-
 function toHsl(r,g,b){
   r/=255;g/=255;b/=255;
   const mx=Math.max(r,g,b),mn=Math.min(r,g,b);
   let h,s,l=(mx+mn)/2;
   if(mx===mn){h=s=0;}
-  else{
-    const d=mx-mn;s=l>0.5?d/(2-mx-mn):d/(mx+mn);
-    switch(mx){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;case b:h=((r-g)/d+4)/6;break;}
-  }
+  else{const d=mx-mn;s=l>0.5?d/(2-mx-mn):d/(mx+mn);switch(mx){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;case b:h=((r-g)/d+4)/6;break;}}
   return[Math.round(h*360),Math.round(s*100),Math.round(l*100)];
 }
 
@@ -425,42 +371,35 @@ async function runSuggest(){
   res.innerHTML='<div class="ai-loading"><div class="ai-spinner"></div><p>AIが配色を分析中...</p></div>';
 
   const prompt=`あなたは映画ポスターのプロのカラーデザイナーです。
-ベースカラー ${posterColor} を使った映画ポスターの配色パターンを3つ提案してください。
-各提案はジャンルを変えてください（例：ホラー、SF、ロマンスなど異なるジャンル）。
+ベースカラー ${posterColor} を必ず含めた映画ポスターの配色パターンを3つ提案してください。
+各提案は異なるジャンル（例：ホラー、SF、ロマンスなど）にしてください。
 
-以下のJSON配列のみ返してください。前置きや説明文は不要です：
-[
-  {
-    "genre": "ジャンル名",
-    "title": "架空の映画タイトル（日本語）",
-    "description": "この配色の雰囲気と効果（50文字以内）",
-    "colors": [
-      {"hex": "#XXXXXX", "role": "背景"},
-      {"hex": "#XXXXXX", "role": "メイン"},
-      {"hex": "#XXXXXX", "role": "アクセント"},
-      {"hex": "#XXXXXX", "role": "テキスト"},
-      {"hex": "#XXXXXX", "role": "補助"}
-    ]
-  },
-  { ... },
-  { ... }
-]
-必ず${posterColor}を各提案のcolorsに含めること。JSONのみ返すこと。`;
+以下のJSON配列のみ返してください。余分なテキストは不要です：
+[{"genre":"ジャンル名","title":"架空の映画タイトル（日本語）","description":"この配色の雰囲気と効果（50文字以内）","colors":[{"hex":"#XXXXXX","role":"背景"},{"hex":"#XXXXXX","role":"メイン"},{"hex":"#XXXXXX","role":"アクセント"},{"hex":"#XXXXXX","role":"テキスト"},{"hex":"#XXXXXX","role":"補助"}]},{"genre":"..."},{"genre":"..."}]
+${posterColor}を各提案のcolorsに必ず含めること。`;
 
   try{
     const resp=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:prompt}]})
+      headers:{
+        'Content-Type':'application/json',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-haiku-4-5-20251001',
+        max_tokens:1200,
+        messages:[{role:'user',content:prompt}]
+      })
     });
-    if(!resp.ok){throw new Error('API error: '+resp.status);}
+    if(!resp.ok){
+      const errText=await resp.text().catch(()=>'');
+      throw new Error(`HTTP ${resp.status}: ${errText.slice(0,120)}`);
+    }
     const data=await resp.json();
-    if(!data.content||!data.content.length){throw new Error('No content');}
-    let text=data.content.filter(c=>c.type==='text').map(c=>c.text).join('');
-    text=text.replace(/```json\s*/gi,'').replace(/```\s*/g,'').trim();
-    const start=text.indexOf('['),end=text.lastIndexOf(']');
-    if(start===-1||end===-1)throw new Error('JSON not found');
-    const proposals=JSON.parse(text.slice(start,end+1));
+    const text=(data.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('');
+    const s=text.indexOf('['),e=text.lastIndexOf(']');
+    if(s===-1||e===-1)throw new Error('JSONが見つかりません: '+text.slice(0,100));
+    const proposals=JSON.parse(text.slice(s,e+1));
     renderCards(proposals);
   }catch(err){
     res.innerHTML=`<div class="ai-error">エラー: ${err.message}<br>もう一度お試しください。</div>`;
@@ -474,37 +413,30 @@ function renderCards(proposals){
   proposals.forEach(p=>{
     const card=document.createElement('div');
     card.className='poster-card';
-    const pal=p.colors.map(c=>`<div class="palette-swatch" style="background:${c.hex}" title="${c.role}: ${c.hex}"></div>`).join('');
-    const chips=p.colors.map(c=>`<div class="phchip" onclick="copyChip('${c.hex}',this)"><div class="phchip-dot" style="background:${c.hex}"></div>${c.hex}<span style="color:var(--color-text-tertiary);font-size:10px;margin-left:2px">${c.role}</span></div>`).join('');
-    card.innerHTML=`<div class="poster-palette">${pal}</div><div class="poster-body"><div class="poster-genre">${p.genre}</div><div class="poster-title">${p.title}</div><div class="poster-desc">${p.description}</div><div class="poster-hexes">${chips}</div></div>`;
+    const pal=(p.colors||[]).map(c=>`<div class="palette-swatch" style="background:${c.hex}" title="${c.role}: ${c.hex}"></div>`).join('');
+    const chips=(p.colors||[]).map(c=>`<div class="phchip" onclick="copyChip('${c.hex}',this)"><div class="phchip-dot" style="background:${c.hex}"></div>${c.hex}<span style="color:var(--color-text-tertiary);font-size:10px;margin-left:2px">${c.role}</span></div>`).join('');
+    card.innerHTML=`<div class="poster-palette">${pal}</div><div class="poster-body"><div class="poster-genre">${p.genre||''}</div><div class="poster-title">${p.title||''}</div><div class="poster-desc">${p.description||''}</div><div class="poster-hexes">${chips}</div></div>`;
     res.appendChild(card);
   });
 }
-
 function copyChip(hex,el){
   navigator.clipboard.writeText(hex).catch(()=>{});
-  const prev=el.style.background;
+  const ob=el.style.background,oc=el.style.color;
   el.style.background='#E6F1FB';el.style.color='#185FA5';
-  setTimeout(()=>{el.style.background='';el.style.color='';},900);
+  setTimeout(()=>{el.style.background=ob;el.style.color=oc;},900);
 }
 
 document.addEventListener('dragover',e=>{e.preventDefault();document.getElementById('dropOverlay').classList.add('active');});
 document.addEventListener('dragleave',e=>{if(!e.relatedTarget)document.getElementById('dropOverlay').classList.remove('active');});
 document.addEventListener('drop',e=>{
-  e.preventDefault();
-  document.getElementById('dropOverlay').classList.remove('active');
+  e.preventDefault();document.getElementById('dropOverlay').classList.remove('active');
   const f=e.dataTransfer.files[0];
   if(!f||!f.type.startsWith('image/'))return;
-  const i=slots[0]?(slots[1]?0:1):0;
-  loadFile(i,f);
+  loadFile(slots[0]?(slots[1]?0:1):0,f);
 });
-
 window.addEventListener('resize',()=>{
-  for(let i=0;i<2;i++){
-    if(origImgs[i]){renderCanvas(i,document.getElementById('c'+i));buildHist(i,document.getElementById('c'+i));}
-  }
+  for(let i=0;i<2;i++){if(origImgs[i]){const c=document.getElementById('c'+i);renderCanvas(i,c);buildHist(i,c);}}
   redrawHist();
 });
-
 updateAddBtns();
 </script>
