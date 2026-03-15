@@ -4,105 +4,114 @@
 .app{font-family:var(--font-sans);position:relative;}
 .drop-overlay{position:fixed;inset:0;z-index:9999;background:rgba(55,138,221,0.12);border:3px dashed #378ADD;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity 0.2s;}
 .drop-overlay.active{opacity:1;}
-.drop-msg{font-size:22px;font-weight:500;color:#185FA5;background:#E6F1FB;padding:1.2rem 2.5rem;border-radius:16px;}
-.welcome{padding:3rem 1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:360px;gap:1.5rem;}
+.drop-msg{font-size:20px;font-weight:500;color:#185FA5;background:#E6F1FB;padding:1rem 2rem;border-radius:14px;}
+.welcome{padding:3rem 1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:320px;gap:1.5rem;}
 .welcome-cards{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;}
-.slot-card{width:220px;height:180px;border:1.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-lg);background:var(--color-background-secondary);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:border-color 0.2s,background 0.2s;gap:8px;}
+.slot-card{width:200px;height:160px;border:1.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-lg);background:var(--color-background-secondary);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:border-color 0.2s,background 0.2s;gap:8px;}
 .slot-card:hover{border-color:#378ADD;background:#E6F1FB;}
 .slot-card svg{opacity:0.35;}
 .slot-card span{font-size:13px;color:var(--color-text-secondary);}
 .slot-num{font-size:11px;font-weight:500;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:0.06em;}
 .workspace{display:none;}
-.images-row{display:grid;gap:12px;grid-template-columns:1fr;}
+.images-row{display:grid;gap:10px;grid-template-columns:1fr;margin-bottom:8px;}
 .images-row.two{grid-template-columns:1fr 1fr;}
-.img-slot{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);overflow:hidden;position:relative;min-height:160px;display:flex;align-items:center;justify-content:center;}
+.img-slot{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);overflow:hidden;position:relative;min-height:140px;display:flex;align-items:center;justify-content:center;}
 .img-slot canvas{display:block;max-width:100%;cursor:crosshair;}
 .slot-label{position:absolute;top:8px;left:8px;font-size:11px;font-weight:500;padding:3px 8px;border-radius:4px;background:rgba(0,0,0,0.5);color:#fff;pointer-events:none;}
 .slot-actions{position:absolute;top:8px;right:8px;display:flex;gap:4px;}
 .slot-action-btn{font-size:11px;padding:3px 8px;border-radius:4px;background:rgba(0,0,0,0.5);color:#fff;border:none;cursor:pointer;}
 .slot-action-btn:hover{background:rgba(0,0,0,0.7);}
-.add-row{display:flex;gap:8px;margin:8px 0;}
-.add-slot-btn{flex:1;padding:9px;border:1.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-lg);background:transparent;cursor:pointer;font-size:13px;color:var(--color-text-secondary);transition:background 0.2s;}
+.zoom-strip{position:absolute;bottom:8px;right:8px;width:64px;height:64px;border-radius:8px;border:1.5px solid rgba(255,255,255,0.8);overflow:hidden;pointer-events:none;display:none;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+.zoom-strip canvas{width:64px;height:64px;image-rendering:pixelated;}
+.add-row{display:flex;gap:8px;margin-bottom:8px;}
+.add-slot-btn{flex:1;padding:8px;border:1.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-lg);background:transparent;cursor:pointer;font-size:13px;color:var(--color-text-secondary);transition:background 0.2s;}
 .add-slot-btn:hover{background:var(--color-background-secondary);}
-.zoom-strip{position:absolute;bottom:8px;right:8px;width:72px;height:72px;border-radius:8px;border:1.5px solid rgba(255,255,255,0.8);overflow:hidden;pointer-events:none;display:none;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
-.zoom-strip canvas{width:72px;height:72px;image-rendering:pixelated;}
-.bottom-panel{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;}
-@media(max-width:600px){.bottom-panel{grid-template-columns:1fr;}.images-row.two{grid-template-columns:1fr;}}
-.panel{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:0.85rem;}
-.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-.panel-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-text-tertiary);}
-.lock-btn{font-size:11px;padding:3px 10px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:transparent;cursor:pointer;color:var(--color-text-secondary);}
-.lock-btn.locked{background:#185FA5;color:#fff;border-color:#185FA5;}
-.locked-badge{display:none;font-size:10px;padding:2px 7px;border-radius:10px;background:#185FA5;color:#fff;margin-left:6px;}
-.locked-badge.show{display:inline-block;}
-.color-swatch{width:100%;height:44px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);margin-bottom:8px;background:#888;}
-.rgb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
-.rgb-item{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:6px;text-align:center;}
-.rgb-label{font-size:11px;color:var(--color-text-tertiary);font-weight:500;}
-.rgb-value{font-size:18px;font-weight:500;color:var(--color-text-primary);line-height:1.3;}
-.rgb-bar-track{height:3px;background:var(--color-border-tertiary);border-radius:2px;margin-top:4px;}
-.rgb-bar{height:3px;border-radius:2px;width:0%;}
-.hex-row{margin-top:8px;display:flex;gap:6px;align-items:center;}
-.hex-box{flex:1;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:6px 10px;font-size:13px;font-family:var(--font-mono);font-weight:500;color:var(--color-text-primary);cursor:pointer;border:0.5px solid var(--color-border-tertiary);}
-.copy-btn{font-size:12px;padding:5px 10px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);cursor:pointer;}
+
+/* color panels row */
+.color-panels-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
+.cpanel{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:0.8rem;}
+.cpanel-title{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.cpanel-title .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.swatch{width:100%;height:38px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);margin-bottom:7px;transition:background 0.05s;}
+.rgb-row{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;}
+.rgb-item{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:5px;text-align:center;}
+.rgb-label{font-size:10px;color:var(--color-text-tertiary);font-weight:500;}
+.rgb-value{font-size:15px;font-weight:500;color:var(--color-text-primary);line-height:1.3;}
+.rgb-bar-track{height:3px;background:var(--color-border-tertiary);border-radius:2px;margin-top:3px;}
+.rgb-bar{height:3px;border-radius:2px;width:0%;transition:width 0.05s;}
+.hex-row{margin-top:7px;display:flex;gap:5px;align-items:center;}
+.hex-box{flex:1;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:5px 8px;font-size:12px;font-family:var(--font-mono);font-weight:500;color:var(--color-text-primary);border:0.5px solid var(--color-border-tertiary);}
+.copy-btn{font-size:11px;padding:4px 9px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);cursor:pointer;}
 .copy-btn:hover{background:var(--color-background-secondary);}
-.hsl-row{margin-top:6px;font-size:12px;color:var(--color-text-secondary);font-family:var(--font-mono);background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:5px 10px;}
-.pos-info{font-size:11px;color:var(--color-text-tertiary);margin-top:5px;font-family:var(--font-mono);}
-.hist-panel{padding:0.85rem;}
+.hsl-row{margin-top:5px;font-size:11px;color:var(--color-text-secondary);font-family:var(--font-mono);background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:4px 8px;}
+.pos-info{font-size:10px;color:var(--color-text-tertiary);margin-top:4px;font-family:var(--font-mono);}
+.lock-btn{font-size:10px;padding:2px 8px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:transparent;cursor:pointer;color:var(--color-text-secondary);white-space:nowrap;}
+.lock-btn.locked{background:#185FA5;color:#fff;border-color:#185FA5;}
+.lock-controls{display:flex;align-items:center;gap:6px;margin-bottom:7px;}
+.lock-hint{font-size:10px;color:var(--color-text-tertiary);}
+
+/* hist panels — one per image */
+.hist-panels-row{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:8px;}
+.hist-panels-row.two{grid-template-columns:1fr 1fr;}
+.hpanel{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:0.8rem;}
+.hpanel-title{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-text-tertiary);margin-bottom:6px;}
 canvas.hc{width:100%;display:block;}
-.hist-legend{display:flex;gap:10px;margin-top:5px;flex-wrap:wrap;}
-.hist-leg-item{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--color-text-secondary);}
-.hist-dot{width:8px;height:8px;border-radius:50%;}
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;}
-.stat-item{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:6px 10px;}
-.stat-label{font-size:11px;color:var(--color-text-tertiary);}
-.stat-value{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-top:2px;}
-.poster-panel{margin-top:10px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:0.85rem;}
-.poster-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap;}
+.hist-legend{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;}
+.hist-leg-item{display:flex;align-items:center;gap:3px;font-size:10px;color:var(--color-text-secondary);}
+.hist-dot{width:7px;height:7px;border-radius:50%;}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:7px;}
+.stat-item{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:5px 8px;}
+.stat-label{font-size:10px;color:var(--color-text-tertiary);}
+.stat-value{font-size:12px;font-weight:500;color:var(--color-text-primary);margin-top:1px;}
+
+/* poster */
+.poster-panel{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:0.8rem;}
+.poster-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
 .poster-actions{display:flex;gap:6px;flex-shrink:0;}
 .suggest-btn{font-size:12px;padding:5px 14px;border-radius:20px;border:0.5px solid #378ADD;background:#E6F1FB;color:#185FA5;cursor:pointer;font-weight:500;}
 .suggest-btn:hover{background:#B5D4F4;}
 .suggest-btn:disabled{opacity:0.45;cursor:not-allowed;}
 .reset-btn{font-size:12px;padding:5px 12px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);cursor:pointer;}
 .reset-btn:hover{background:var(--color-background-secondary);}
-.selected-color-area{display:flex;align-items:center;gap:10px;padding:8px 12px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-secondary);margin-bottom:10px;}
-.sc-preview{width:36px;height:36px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);flex-shrink:0;}
-.sc-hex{font-family:var(--font-mono);font-size:14px;font-weight:500;color:var(--color-text-primary);}
-.sc-label{font-size:11px;color:var(--color-text-tertiary);margin-top:2px;}
-.sc-empty{font-size:13px;color:var(--color-text-tertiary);padding:4px 0;}
-.poster-results{display:flex;flex-direction:column;gap:12px;}
+.selected-color-area{display:flex;align-items:center;gap:10px;padding:7px 10px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-secondary);margin-bottom:8px;}
+.sc-preview{width:32px;height:32px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);flex-shrink:0;}
+.sc-hex{font-family:var(--font-mono);font-size:13px;font-weight:500;color:var(--color-text-primary);}
+.sc-label{font-size:10px;color:var(--color-text-tertiary);margin-top:1px;}
+.sc-empty{font-size:12px;color:var(--color-text-tertiary);padding:3px 0;}
+.poster-results{display:flex;flex-direction:column;gap:10px;}
 .poster-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;}
-.poster-palette{display:flex;height:52px;}
+.poster-palette{display:flex;height:44px;}
 .palette-swatch{flex:1;cursor:pointer;transition:flex 0.2s;}
 .palette-swatch:hover{flex:2;}
-.poster-body{padding:10px 12px;}
-.poster-genre{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.07em;color:var(--color-text-tertiary);margin-bottom:3px;}
-.poster-title{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;}
-.poster-desc{font-size:12px;color:var(--color-text-secondary);line-height:1.6;}
-.poster-hexes{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
-.phchip{display:flex;align-items:center;gap:5px;font-size:11px;font-family:var(--font-mono);color:var(--color-text-secondary);background:var(--color-background-secondary);border-radius:4px;padding:2px 7px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);}
+.poster-body{padding:9px 11px;}
+.poster-genre{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.07em;color:var(--color-text-tertiary);margin-bottom:2px;}
+.poster-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px;}
+.poster-desc{font-size:11px;color:var(--color-text-secondary);line-height:1.6;}
+.poster-hexes{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;}
+.phchip{display:flex;align-items:center;gap:4px;font-size:11px;font-family:var(--font-mono);color:var(--color-text-secondary);background:var(--color-background-secondary);border-radius:4px;padding:2px 6px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);}
 .phchip:hover{background:var(--color-background-tertiary);}
-.phchip-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-.ai-loading{text-align:center;padding:2rem;}
-.ai-spinner{width:28px;height:28px;border:2.5px solid var(--color-border-secondary);border-top-color:#378ADD;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 10px;}
+.phchip-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.ai-loading{text-align:center;padding:1.5rem;}
+.ai-spinner{width:26px;height:26px;border:2.5px solid var(--color-border-secondary);border-top-color:#378ADD;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 8px;}
 @keyframes spin{to{transform:rotate(360deg);}}
-.ai-loading p{font-size:13px;color:var(--color-text-secondary);}
-.ai-error{font-size:13px;color:#E24B4A;padding:0.85rem;border-radius:var(--border-radius-md);background:var(--color-background-secondary);line-height:1.6;}
-.hint-text{font-size:12px;color:var(--color-text-tertiary);}
+.ai-loading p{font-size:12px;color:var(--color-text-secondary);}
+.ai-error{font-size:12px;color:#E24B4A;padding:0.75rem;border-radius:var(--border-radius-md);background:var(--color-background-secondary);line-height:1.6;}
+.hint-text{font-size:11px;color:var(--color-text-tertiary);}
+@media(max-width:560px){.color-panels-row{grid-template-columns:1fr;}.hist-panels-row.two{grid-template-columns:1fr;}.images-row.two{grid-template-columns:1fr;}}
 </style>
 
-<div class="app" id="app">
+<div class="app">
   <div class="drop-overlay" id="dropOverlay"><div class="drop-msg">画像をドロップ</div></div>
 
   <div class="welcome" id="welcome">
     <div style="font-size:15px;font-weight:500;color:var(--color-text-primary)">画像をドロップ、またはスロットを選択</div>
     <div class="welcome-cards">
       <div class="slot-card" onclick="triggerFile(0)">
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="14" r="2"/><path d="M4 22l7-7 5 5 4-4 8 8"/></svg>
+        <svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="14" r="2"/><path d="M4 22l7-7 5 5 4-4 8 8"/></svg>
         <div class="slot-num">画像 1</div><span>クリックして選択</span>
       </div>
       <div class="slot-card" onclick="triggerFile(1)">
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="14" r="2"/><path d="M4 22l7-7 5 5 4-4 8 8"/></svg>
+        <svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="14" r="2"/><path d="M4 22l7-7 5 5 4-4 8 8"/></svg>
         <div class="slot-num">画像 2</div><span>クリックして選択</span>
       </div>
     </div>
@@ -110,11 +119,12 @@ canvas.hc{width:100%;display:block;}
   </div>
 
   <div class="workspace" id="workspace">
+    <!-- images -->
     <div class="images-row" id="imagesRow">
       <div class="img-slot" id="slot0" style="display:none">
         <span class="slot-label">画像 1</span>
         <canvas id="c0"></canvas>
-        <div class="zoom-strip" id="zoom0"><canvas id="zc0" width="72" height="72"></canvas></div>
+        <div class="zoom-strip" id="zoom0"><canvas id="zc0" width="64" height="64"></canvas></div>
         <div class="slot-actions">
           <button class="slot-action-btn" onclick="triggerFile(0)">交換</button>
           <button class="slot-action-btn" onclick="removeSlot(0)">削除</button>
@@ -123,7 +133,7 @@ canvas.hc{width:100%;display:block;}
       <div class="img-slot" id="slot1" style="display:none">
         <span class="slot-label">画像 2</span>
         <canvas id="c1"></canvas>
-        <div class="zoom-strip" id="zoom1"><canvas id="zc1" width="72" height="72"></canvas></div>
+        <div class="zoom-strip" id="zoom1"><canvas id="zc1" width="64" height="64"></canvas></div>
         <div class="slot-actions">
           <button class="slot-action-btn" onclick="triggerFile(1)">交換</button>
           <button class="slot-action-btn" onclick="removeSlot(1)">削除</button>
@@ -135,34 +145,50 @@ canvas.hc{width:100%;display:block;}
       <button class="add-slot-btn" id="addBtn1" onclick="triggerFile(1)">＋ 画像 2 を追加</button>
     </div>
 
-    <div class="bottom-panel">
-      <div class="panel">
-        <div class="panel-head">
-          <div><span class="panel-title">カーソル位置のカラー</span><span class="locked-badge" id="lockedBadge">ロック中</span></div>
-          <button class="lock-btn" id="lockBtn" onclick="toggleLock()">クリックでロック</button>
-        </div>
-        <div class="color-swatch" id="colorSwatch"></div>
-        <div class="rgb-grid">
-          <div class="rgb-item"><div class="rgb-label">R</div><div class="rgb-value" id="rV">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="rB" style="background:#E24B4A"></div></div></div>
-          <div class="rgb-item"><div class="rgb-label">G</div><div class="rgb-value" id="gV">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="gB" style="background:#639922"></div></div></div>
-          <div class="rgb-item"><div class="rgb-label">B</div><div class="rgb-value" id="bV">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="bB" style="background:#378ADD"></div></div></div>
+    <!-- dual color panels -->
+    <div class="color-panels-row">
+      <!-- live -->
+      <div class="cpanel">
+        <div class="cpanel-title"><div class="dot" style="background:#378ADD"></div><span style="color:var(--color-text-secondary)">リアルタイム</span></div>
+        <div class="swatch" id="lSwatch" style="background:#888"></div>
+        <div class="rgb-row">
+          <div class="rgb-item"><div class="rgb-label">R</div><div class="rgb-value" id="lR">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="lRb" style="background:#E24B4A"></div></div></div>
+          <div class="rgb-item"><div class="rgb-label">G</div><div class="rgb-value" id="lG">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="lGb" style="background:#639922"></div></div></div>
+          <div class="rgb-item"><div class="rgb-label">B</div><div class="rgb-value" id="lB">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="lBb" style="background:#378ADD"></div></div></div>
         </div>
         <div class="hex-row">
-          <div class="hex-box" id="hexBox">#——————</div>
-          <button class="copy-btn" id="copyBtn" onclick="copyHex()">コピー</button>
+          <div class="hex-box" id="lHex">#——————</div>
+          <button class="copy-btn" onclick="copyId('lHex',this)">コピー</button>
         </div>
-        <div class="hsl-row" id="hslRow">HSL: —</div>
-        <div class="pos-info" id="posInfo">座標: —</div>
+        <div class="hsl-row" id="lHsl">HSL: —</div>
+        <div class="pos-info" id="lPos">座標: —</div>
       </div>
-      <div class="panel hist-panel">
-        <div class="panel-head" style="margin-bottom:6px">
-          <span class="panel-title">ヒストグラム</span>
-          <select id="histSel" style="font-size:12px;border:0.5px solid var(--color-border-secondary);background:var(--color-background-secondary);border-radius:6px;padding:3px 6px;color:var(--color-text-secondary);" onchange="redrawHist()">
-            <option value="0">画像 1</option>
-            <option value="1">画像 2</option>
-          </select>
+      <!-- locked -->
+      <div class="cpanel">
+        <div class="cpanel-title" style="justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:6px"><div class="dot" style="background:#BA7517"></div><span style="color:var(--color-text-secondary)">ロック中</span></div>
+          <button class="lock-btn" id="lockBtn" onclick="toggleLock()">ロック解除</button>
         </div>
-        <canvas class="hc" id="histCanvas" height="100"></canvas>
+        <div class="swatch" id="kSwatch" style="background:var(--color-background-secondary)"></div>
+        <div class="rgb-row">
+          <div class="rgb-item"><div class="rgb-label">R</div><div class="rgb-value" id="kR">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="kRb" style="background:#E24B4A"></div></div></div>
+          <div class="rgb-item"><div class="rgb-label">G</div><div class="rgb-value" id="kG">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="kGb" style="background:#639922"></div></div></div>
+          <div class="rgb-item"><div class="rgb-label">B</div><div class="rgb-value" id="kB">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="kBb" style="background:#378ADD"></div></div></div>
+        </div>
+        <div class="hex-row">
+          <div class="hex-box" id="kHex">#——————</div>
+          <button class="copy-btn" onclick="copyId('kHex',this)">コピー</button>
+        </div>
+        <div class="hsl-row" id="kHsl">HSL: —</div>
+        <div class="pos-info" id="kPos">クリックでロック</div>
+      </div>
+    </div>
+
+    <!-- hist panels (one per image) -->
+    <div class="hist-panels-row" id="histPanelsRow">
+      <div class="hpanel" id="hp0">
+        <div class="hpanel-title">ヒストグラム — 画像 1</div>
+        <canvas class="hc" id="hc0" height="90"></canvas>
         <div class="hist-legend">
           <div class="hist-leg-item"><div class="hist-dot" style="background:#E24B4A"></div>R</div>
           <div class="hist-leg-item"><div class="hist-dot" style="background:#639922"></div>G</div>
@@ -170,18 +196,35 @@ canvas.hc{width:100%;display:block;}
           <div class="hist-leg-item"><div class="hist-dot" style="background:#888780"></div>輝度</div>
         </div>
         <div class="stats-grid">
-          <div class="stat-item"><div class="stat-label">幅</div><div class="stat-value" id="sW">—</div></div>
-          <div class="stat-item"><div class="stat-label">高さ</div><div class="stat-value" id="sH">—</div></div>
-          <div class="stat-item"><div class="stat-label">アスペクト比</div><div class="stat-value" id="sAR">—</div></div>
-          <div class="stat-item"><div class="stat-label">平均輝度</div><div class="stat-value" id="sBr">—</div></div>
+          <div class="stat-item"><div class="stat-label">幅</div><div class="stat-value" id="sW0">—</div></div>
+          <div class="stat-item"><div class="stat-label">高さ</div><div class="stat-value" id="sH0">—</div></div>
+          <div class="stat-item"><div class="stat-label">アスペクト比</div><div class="stat-value" id="sAR0">—</div></div>
+          <div class="stat-item"><div class="stat-label">平均輝度</div><div class="stat-value" id="sBr0">—</div></div>
+        </div>
+      </div>
+      <div class="hpanel" id="hp1" style="display:none">
+        <div class="hpanel-title">ヒストグラム — 画像 2</div>
+        <canvas class="hc" id="hc1" height="90"></canvas>
+        <div class="hist-legend">
+          <div class="hist-leg-item"><div class="hist-dot" style="background:#E24B4A"></div>R</div>
+          <div class="hist-leg-item"><div class="hist-dot" style="background:#639922"></div>G</div>
+          <div class="hist-leg-item"><div class="hist-dot" style="background:#378ADD"></div>B</div>
+          <div class="hist-leg-item"><div class="hist-dot" style="background:#888780"></div>輝度</div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-item"><div class="stat-label">幅</div><div class="stat-value" id="sW1">—</div></div>
+          <div class="stat-item"><div class="stat-label">高さ</div><div class="stat-value" id="sH1">—</div></div>
+          <div class="stat-item"><div class="stat-label">アスペクト比</div><div class="stat-value" id="sAR1">—</div></div>
+          <div class="stat-item"><div class="stat-label">平均輝度</div><div class="stat-value" id="sBr1">—</div></div>
         </div>
       </div>
     </div>
 
+    <!-- poster -->
     <div class="poster-panel">
       <div class="poster-top">
         <div>
-          <div class="panel-title" style="margin-bottom:3px">映画ポスター配色提案</div>
+          <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-text-tertiary);margin-bottom:3px">映画ポスター配色提案</div>
           <div class="hint-text">画像をクリックして1色選択 → AIが3パターン提案</div>
         </div>
         <div class="poster-actions">
@@ -189,7 +232,7 @@ canvas.hc{width:100%;display:block;}
           <button class="suggest-btn" id="suggestBtn" onclick="runSuggest()" disabled>AIに提案させる</button>
         </div>
       </div>
-      <div id="selectedColorArea"><div class="sc-empty">画像をクリックしてロックすると、ここに色がセットされます</div></div>
+      <div id="selectedColorArea"><div class="sc-empty">ロックした色がここにセットされます</div></div>
       <div class="poster-results" id="posterResults"></div>
     </div>
   </div>
@@ -200,7 +243,7 @@ canvas.hc{width:100%;display:block;}
 
 <script>
 const slots=[null,null],imgDatas=[null,null],origImgs=[null,null],imgDims=[{w:0,h:0},{w:0,h:0}],histData=[null,null];
-let isLocked=false,posterColor=null;
+let isLocked=false, lockedColor=null, posterColor=null;
 
 document.getElementById('fi0').onchange=function(){if(this.files[0])loadFile(0,this.files[0]);};
 document.getElementById('fi1').onchange=function(){if(this.files[0])loadFile(1,this.files[0]);};
@@ -208,28 +251,31 @@ function triggerFile(i){document.getElementById('fi'+i).click();}
 
 function loadFile(i,file){
   const url=URL.createObjectURL(file),img=new Image();
-  img.onload=()=>loadSlot(i,img);
-  img.src=url;
+  img.onload=()=>loadSlot(i,img); img.src=url;
 }
 function loadSlot(i,img){
-  origImgs[i]=img;imgDims[i]={w:img.naturalWidth,h:img.naturalHeight};slots[i]=true;
+  origImgs[i]=img; imgDims[i]={w:img.naturalWidth,h:img.naturalHeight}; slots[i]=true;
   document.getElementById('welcome').style.display='none';
   document.getElementById('workspace').style.display='block';
   document.getElementById('slot'+i).style.display='flex';
-  updateLayout();
+  updateLayouts();
   const c=document.getElementById('c'+i);
-  renderCanvas(i,c);setupEvents(i,c);buildHist(i,c);
-  if(parseInt(document.getElementById('histSel').value)===i)redrawHist();
+  renderCanvas(i,c); setupEvents(i,c); buildHist(i); redrawHist(i);
   updateAddBtns();
 }
 function removeSlot(i){
-  slots[i]=null;origImgs[i]=null;imgDatas[i]=null;imgDims[i]={w:0,h:0};histData[i]=null;
+  slots[i]=null; origImgs[i]=null; imgDatas[i]=null; imgDims[i]={w:0,h:0}; histData[i]=null;
   document.getElementById('slot'+i).style.display='none';
-  updateLayout();updateAddBtns();
+  document.getElementById('hp'+i).style.display='none';
+  updateLayouts(); updateAddBtns();
   if(!slots[0]&&!slots[1]){document.getElementById('workspace').style.display='none';document.getElementById('welcome').style.display='flex';}
 }
-function updateLayout(){
-  document.getElementById('imagesRow').className=(slots[0]&&slots[1])?'images-row two':'images-row';
+function updateLayouts(){
+  const two=slots[0]&&slots[1];
+  document.getElementById('imagesRow').className=two?'images-row two':'images-row';
+  document.getElementById('histPanelsRow').className=two?'hist-panels-row two':'hist-panels-row';
+  if(slots[1])document.getElementById('hp1').style.display='block';
+  else document.getElementById('hp1').style.display='none';
 }
 function updateAddBtns(){
   document.getElementById('addBtn0').style.display=slots[0]?'none':'block';
@@ -237,9 +283,9 @@ function updateAddBtns(){
 }
 function renderCanvas(i,canvas){
   const wrap=document.getElementById('slot'+i);
-  const maxW=Math.max(wrap.offsetWidth-2,200),maxH=360;
+  const maxW=Math.max(wrap.offsetWidth-2,180),maxH=320;
   const{w,h}=imgDims[i],scale=Math.min(maxW/w,maxH/h,1);
-  canvas.width=Math.round(w*scale);canvas.height=Math.round(h*scale);
+  canvas.width=Math.round(w*scale); canvas.height=Math.round(h*scale);
   const ctx=canvas.getContext('2d');
   ctx.drawImage(origImgs[i],0,0,canvas.width,canvas.height);
   imgDatas[i]=ctx.getImageData(0,0,canvas.width,canvas.height);
@@ -252,11 +298,10 @@ function getPos(e,canvas,i){
 }
 function setupEvents(i,canvas){
   canvas.onmousemove=function(e){
-    if(isLocked)return;
     const{cx,cy,rx,ry}=getPos(e,canvas,i);
     if(cx<0||cy<0||cx>=canvas.width||cy>=canvas.height)return;
     const idx=(cy*canvas.width+cx)*4,d=imgDatas[i].data;
-    updatePanel(d[idx],d[idx+1],d[idx+2],rx,ry,i+1);
+    updateLive(d[idx],d[idx+1],d[idx+2],rx,ry,i+1);
     drawZoom(i,canvas,cx,cy);
   };
   canvas.onclick=function(e){
@@ -264,17 +309,108 @@ function setupEvents(i,canvas){
     if(cx<0||cy<0||cx>=canvas.width||cy>=canvas.height)return;
     const idx=(cy*canvas.width+cx)*4,d=imgDatas[i].data;
     const r=d[idx],g=d[idx+1],b=d[idx+2];
-    updatePanel(r,g,b,rx,ry,i+1);
-    isLocked=true;
-    document.getElementById('lockBtn').className='lock-btn locked';
-    document.getElementById('lockBtn').textContent='クリックで解除';
-    document.getElementById('lockedBadge').className='locked-badge show';
-    const hex='#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('').toUpperCase();
-    setPosterColor(hex);
+    lockColor(r,g,b,rx,ry,i+1);
   };
   canvas.onmouseleave=()=>document.getElementById('zoom'+i).style.display='none';
   canvas.onmouseenter=()=>{if(imgDatas[i])document.getElementById('zoom'+i).style.display='block';};
 }
+
+function updateLive(r,g,b,x,y,sn){
+  const hex=toHex(r,g,b);
+  document.getElementById('lSwatch').style.background=`rgb(${r},${g},${b})`;
+  document.getElementById('lR').textContent=r;
+  document.getElementById('lG').textContent=g;
+  document.getElementById('lB').textContent=b;
+  document.getElementById('lRb').style.width=Math.round(r/255*100)+'%';
+  document.getElementById('lGb').style.width=Math.round(g/255*100)+'%';
+  document.getElementById('lBb').style.width=Math.round(b/255*100)+'%';
+  document.getElementById('lHex').textContent=hex;
+  document.getElementById('lHsl').textContent='HSL: '+toHslStr(r,g,b);
+  document.getElementById('lPos').textContent=`画像${sn}  (${x}, ${y})`;
+}
+function lockColor(r,g,b,x,y,sn){
+  const hex=toHex(r,g,b);
+  isLocked=true; lockedColor=hex;
+  document.getElementById('kSwatch').style.background=`rgb(${r},${g},${b})`;
+  document.getElementById('kR').textContent=r;
+  document.getElementById('kG').textContent=g;
+  document.getElementById('kB').textContent=b;
+  document.getElementById('kRb').style.width=Math.round(r/255*100)+'%';
+  document.getElementById('kGb').style.width=Math.round(g/255*100)+'%';
+  document.getElementById('kBb').style.width=Math.round(b/255*100)+'%';
+  document.getElementById('kHex').textContent=hex;
+  document.getElementById('kHsl').textContent='HSL: '+toHslStr(r,g,b);
+  document.getElementById('kPos').textContent=`画像${sn}  (${x}, ${y})`;
+  document.getElementById('lockBtn').className='lock-btn locked';
+  setPosterColor(hex);
+}
+function toggleLock(){
+  isLocked=false; lockedColor=null;
+  document.getElementById('lockBtn').className='lock-btn';
+  document.getElementById('kSwatch').style.background='var(--color-background-secondary)';
+  ['kR','kG','kB'].forEach(id=>document.getElementById(id).textContent='—');
+  ['kRb','kGb','kBb'].forEach(id=>document.getElementById(id).style.width='0%');
+  document.getElementById('kHex').textContent='#——————';
+  document.getElementById('kHsl').textContent='HSL: —';
+  document.getElementById('kPos').textContent='クリックでロック';
+}
+
+function toHex(r,g,b){return '#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('').toUpperCase();}
+function toHslStr(r,g,b){const h=toHsl(r,g,b);return`${h[0]}° ${h[1]}% ${h[2]}%`;}
+function toHsl(r,g,b){
+  r/=255;g/=255;b/=255;
+  const mx=Math.max(r,g,b),mn=Math.min(r,g,b);
+  let h,s,l=(mx+mn)/2;
+  if(mx===mn){h=s=0;}
+  else{const d=mx-mn;s=l>0.5?d/(2-mx-mn):d/(mx+mn);switch(mx){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;case b:h=((r-g)/d+4)/6;break;}}
+  return[Math.round(h*360),Math.round(s*100),Math.round(l*100)];
+}
+function copyId(id,btn){
+  const h=document.getElementById(id).textContent;
+  if(h&&!h.includes('—')){
+    navigator.clipboard.writeText(h).catch(()=>{});
+    btn.textContent='✓ コピー済み';
+    setTimeout(()=>btn.textContent='コピー',1500);
+  }
+}
+function drawZoom(i,canvas,cx,cy){
+  const zc=document.getElementById('zc'+i),z=zc.getContext('2d');
+  z.imageSmoothingEnabled=false;z.clearRect(0,0,64,64);
+  z.drawImage(canvas,cx-8,cy-8,16,16,0,0,64,64);
+  z.strokeStyle='rgba(255,255,255,0.9)';z.lineWidth=1.5;z.strokeRect(24,24,16,16);
+}
+
+function buildHist(i){
+  if(!imgDatas[i])return;
+  const d=imgDatas[i].data;
+  const rH=new Float32Array(256),gH=new Float32Array(256),bH=new Float32Array(256),lH=new Float32Array(256);
+  let tot=0;const px=d.length/4;
+  for(let j=0;j<d.length;j+=4){
+    rH[d[j]]++;gH[d[j+1]]++;bH[d[j+2]]++;
+    const l=Math.round(0.299*d[j]+0.587*d[j+1]+0.114*d[j+2]);
+    lH[l]++;tot+=l;
+  }
+  histData[i]={rH,gH,bH,lH,bright:Math.round(tot/px)};
+}
+function redrawHist(i){
+  if(!histData[i])return;
+  const hc=document.getElementById('hc'+i),hx=hc.getContext('2d');
+  const w=hc.offsetWidth||260;hc.width=w;hc.height=90;hx.clearRect(0,0,w,90);
+  const{rH,gH,bH,lH,bright}=histData[i];
+  const mx=Math.max(...rH,...gH,...bH,...lH),bw=w/256;
+  [[lH,'rgba(136,135,128,0.4)'],[rH,'rgba(226,75,74,0.55)'],[gH,'rgba(99,153,34,0.55)'],[bH,'rgba(55,138,221,0.55)']].forEach(([h,c])=>{
+    hx.beginPath();hx.moveTo(0,90);
+    for(let j=0;j<256;j++)hx.lineTo(j*bw+bw/2,90-(h[j]/mx)*85);
+    hx.lineTo(w,90);hx.closePath();hx.fillStyle=c;hx.fill();
+  });
+  const{w:iw,h:ih}=imgDims[i];
+  document.getElementById('sW'+i).textContent=iw+'px';
+  document.getElementById('sH'+i).textContent=ih+'px';
+  const gcd=(a,b)=>b?gcd(b,a%b):a,d2=gcd(iw,ih);
+  document.getElementById('sAR'+i).textContent=(iw/d2)+':'+(ih/d2);
+  document.getElementById('sBr'+i).textContent=bright;
+}
+
 function setPosterColor(hex){
   posterColor=hex;
   document.getElementById('selectedColorArea').innerHTML=`
@@ -286,81 +422,9 @@ function setPosterColor(hex){
 }
 function resetPoster(){
   posterColor=null;
-  document.getElementById('selectedColorArea').innerHTML='<div class="sc-empty">画像をクリックしてロックすると、ここに色がセットされます</div>';
+  document.getElementById('selectedColorArea').innerHTML='<div class="sc-empty">ロックした色がここにセットされます</div>';
   document.getElementById('posterResults').innerHTML='';
   document.getElementById('suggestBtn').disabled=true;
-}
-function toggleLock(){
-  isLocked=!isLocked;
-  const btn=document.getElementById('lockBtn'),badge=document.getElementById('lockedBadge');
-  if(isLocked){btn.className='lock-btn locked';btn.textContent='クリックで解除';badge.className='locked-badge show';}
-  else{btn.className='lock-btn';btn.textContent='クリックでロック';badge.className='locked-badge';}
-}
-function updatePanel(r,g,b,x,y,sn){
-  document.getElementById('colorSwatch').style.background=`rgb(${r},${g},${b})`;
-  document.getElementById('rV').textContent=r;
-  document.getElementById('gV').textContent=g;
-  document.getElementById('bV').textContent=b;
-  document.getElementById('rB').style.width=Math.round(r/255*100)+'%';
-  document.getElementById('gB').style.width=Math.round(g/255*100)+'%';
-  document.getElementById('bB').style.width=Math.round(b/255*100)+'%';
-  const hex='#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('').toUpperCase();
-  document.getElementById('hexBox').textContent=hex;
-  const hsl=toHsl(r,g,b);
-  document.getElementById('hslRow').textContent=`HSL: ${hsl[0]}° ${hsl[1]}% ${hsl[2]}%`;
-  document.getElementById('posInfo').textContent=`画像${sn}  座標: (${x}, ${y})`;
-}
-function copyHex(){
-  const h=document.getElementById('hexBox').textContent;
-  if(h&&!h.includes('—')){
-    navigator.clipboard.writeText(h).catch(()=>{});
-    const b=document.getElementById('copyBtn');b.textContent='✓ コピー済み';
-    setTimeout(()=>b.textContent='コピー',1500);
-  }
-}
-function drawZoom(i,canvas,cx,cy){
-  const zc=document.getElementById('zc'+i),z=zc.getContext('2d');
-  z.imageSmoothingEnabled=false;z.clearRect(0,0,72,72);
-  z.drawImage(canvas,cx-9,cy-9,18,18,0,0,72,72);
-  z.strokeStyle='rgba(255,255,255,0.9)';z.lineWidth=1.5;z.strokeRect(28,28,16,16);
-}
-function buildHist(i,canvas){
-  const d=imgDatas[i].data;
-  const rH=new Float32Array(256),gH=new Float32Array(256),bH=new Float32Array(256),lH=new Float32Array(256);
-  let tot=0;const px=d.length/4;
-  for(let j=0;j<d.length;j+=4){
-    rH[d[j]]++;gH[d[j+1]]++;bH[d[j+2]]++;
-    const l=Math.round(0.299*d[j]+0.587*d[j+1]+0.114*d[j+2]);
-    lH[l]++;tot+=l;
-  }
-  histData[i]={rH,gH,bH,lH,bright:Math.round(tot/px)};
-}
-function redrawHist(){
-  const si=parseInt(document.getElementById('histSel').value);
-  const hc=document.getElementById('histCanvas'),hx=hc.getContext('2d');
-  const w=hc.offsetWidth||260;hc.width=w;hc.height=100;hx.clearRect(0,0,w,100);
-  if(!histData[si])return;
-  const{rH,gH,bH,lH,bright}=histData[si];
-  const mx=Math.max(...rH,...gH,...bH,...lH),bw=w/256;
-  [[lH,'rgba(136,135,128,0.4)'],[rH,'rgba(226,75,74,0.55)'],[gH,'rgba(99,153,34,0.55)'],[bH,'rgba(55,138,221,0.55)']].forEach(([h,c])=>{
-    hx.beginPath();hx.moveTo(0,100);
-    for(let i=0;i<256;i++)hx.lineTo(i*bw+bw/2,100-(h[i]/mx)*95);
-    hx.lineTo(w,100);hx.closePath();hx.fillStyle=c;hx.fill();
-  });
-  const{w:iw,h:ih}=imgDims[si];
-  document.getElementById('sW').textContent=iw+'px';
-  document.getElementById('sH').textContent=ih+'px';
-  const gcd=(a,b)=>b?gcd(b,a%b):a,d2=gcd(iw,ih);
-  document.getElementById('sAR').textContent=(iw/d2)+':'+(ih/d2);
-  document.getElementById('sBr').textContent=bright;
-}
-function toHsl(r,g,b){
-  r/=255;g/=255;b/=255;
-  const mx=Math.max(r,g,b),mn=Math.min(r,g,b);
-  let h,s,l=(mx+mn)/2;
-  if(mx===mn){h=s=0;}
-  else{const d=mx-mn;s=l>0.5?d/(2-mx-mn):d/(mx+mn);switch(mx){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;case b:h=((r-g)/d+4)/6;break;}}
-  return[Math.round(h*360),Math.round(s*100),Math.round(l*100)];
 }
 
 async function runSuggest(){
@@ -369,36 +433,18 @@ async function runSuggest(){
   btn.disabled=true;btn.textContent='生成中...';
   const res=document.getElementById('posterResults');
   res.innerHTML='<div class="ai-loading"><div class="ai-spinner"></div><p>AIが配色を分析中...</p></div>';
-
-  const prompt=`あなたは映画ポスターのプロのカラーデザイナーです。
-ベースカラー ${posterColor} を必ず含めた映画ポスターの配色パターンを3つ提案してください。
-各提案は異なるジャンル（例：ホラー、SF、ロマンスなど）にしてください。
-
-以下のJSON配列のみ返してください。余分なテキストは不要です：
-[{"genre":"ジャンル名","title":"架空の映画タイトル（日本語）","description":"この配色の雰囲気と効果（50文字以内）","colors":[{"hex":"#XXXXXX","role":"背景"},{"hex":"#XXXXXX","role":"メイン"},{"hex":"#XXXXXX","role":"アクセント"},{"hex":"#XXXXXX","role":"テキスト"},{"hex":"#XXXXXX","role":"補助"}]},{"genre":"..."},{"genre":"..."}]
-${posterColor}を各提案のcolorsに必ず含めること。`;
-
+  const prompt=`あなたは映画ポスターのプロのカラーデザイナーです。ベースカラー ${posterColor} を必ず含めた映画ポスターの配色パターンを3つ提案してください。各提案は異なるジャンルにしてください。以下のJSON配列のみ返してください：[{"genre":"ジャンル名","title":"架空の映画タイトル（日本語）","description":"この配色の雰囲気と効果（50文字以内）","colors":[{"hex":"#XXXXXX","role":"背景"},{"hex":"#XXXXXX","role":"メイン"},{"hex":"#XXXXXX","role":"アクセント"},{"hex":"#XXXXXX","role":"テキスト"},{"hex":"#XXXXXX","role":"補助"}]},{"genre":"..."},{"genre":"..."}] ${posterColor}を各提案のcolorsに必ず含めること。JSONのみ返すこと。`;
   try{
     const resp=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'anthropic-dangerous-direct-browser-access':'true'
-      },
-      body:JSON.stringify({
-        model:'claude-haiku-4-5-20251001',
-        max_tokens:1200,
-        messages:[{role:'user',content:prompt}]
-      })
+      headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1200,messages:[{role:'user',content:prompt}]})
     });
-    if(!resp.ok){
-      const errText=await resp.text().catch(()=>'');
-      throw new Error(`HTTP ${resp.status}: ${errText.slice(0,120)}`);
-    }
+    if(!resp.ok){const t=await resp.text().catch(()=>'');throw new Error(`HTTP ${resp.status}: ${t.slice(0,120)}`);}
     const data=await resp.json();
     const text=(data.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('');
     const s=text.indexOf('['),e=text.lastIndexOf(']');
-    if(s===-1||e===-1)throw new Error('JSONが見つかりません: '+text.slice(0,100));
+    if(s===-1||e===-1)throw new Error('JSONが見つかりません');
     const proposals=JSON.parse(text.slice(s,e+1));
     renderCards(proposals);
   }catch(err){
@@ -406,13 +452,10 @@ ${posterColor}を各提案のcolorsに必ず含めること。`;
   }
   btn.disabled=false;btn.textContent='AIに提案させる';
 }
-
 function renderCards(proposals){
-  const res=document.getElementById('posterResults');
-  res.innerHTML='';
+  const res=document.getElementById('posterResults');res.innerHTML='';
   proposals.forEach(p=>{
-    const card=document.createElement('div');
-    card.className='poster-card';
+    const card=document.createElement('div');card.className='poster-card';
     const pal=(p.colors||[]).map(c=>`<div class="palette-swatch" style="background:${c.hex}" title="${c.role}: ${c.hex}"></div>`).join('');
     const chips=(p.colors||[]).map(c=>`<div class="phchip" onclick="copyChip('${c.hex}',this)"><div class="phchip-dot" style="background:${c.hex}"></div>${c.hex}<span style="color:var(--color-text-tertiary);font-size:10px;margin-left:2px">${c.role}</span></div>`).join('');
     card.innerHTML=`<div class="poster-palette">${pal}</div><div class="poster-body"><div class="poster-genre">${p.genre||''}</div><div class="poster-title">${p.title||''}</div><div class="poster-desc">${p.description||''}</div><div class="poster-hexes">${chips}</div></div>`;
@@ -435,8 +478,7 @@ document.addEventListener('drop',e=>{
   loadFile(slots[0]?(slots[1]?0:1):0,f);
 });
 window.addEventListener('resize',()=>{
-  for(let i=0;i<2;i++){if(origImgs[i]){const c=document.getElementById('c'+i);renderCanvas(i,c);buildHist(i,c);}}
-  redrawHist();
+  for(let i=0;i<2;i++){if(origImgs[i]){const c=document.getElementById('c'+i);renderCanvas(i,c);buildHist(i);redrawHist(i);}}
 });
 updateAddBtns();
 </script>
