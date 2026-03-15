@@ -1,0 +1,469 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); }
+  .app { padding: 1rem 0; }
+  .upload-zone {
+    border: 1.5px dashed var(--color-border-secondary);
+    border-radius: var(--border-radius-lg);
+    padding: 3rem 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    background: var(--color-background-secondary);
+  }
+  .upload-zone:hover, .upload-zone.drag-over {
+    border-color: #378ADD;
+    background: #E6F1FB;
+  }
+  .upload-icon {
+    width: 48px; height: 48px;
+    margin: 0 auto 12px;
+    opacity: 0.4;
+  }
+  .upload-label { font-size: 15px; color: var(--color-text-secondary); }
+  .upload-sub { font-size: 13px; color: var(--color-text-tertiary); margin-top: 4px; }
+  .main-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 16px;
+    margin-top: 16px;
+  }
+  @media (max-width: 700px) {
+    .main-layout { grid-template-columns: 1fr; }
+  }
+  .canvas-wrap {
+    position: relative;
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-lg);
+    border: 0.5px solid var(--color-border-tertiary);
+    overflow: hidden;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #imgCanvas {
+    display: block;
+    max-width: 100%;
+    max-height: 480px;
+    cursor: crosshair;
+  }
+  .crosshair-hint {
+    font-size: 13px;
+    color: var(--color-text-tertiary);
+    padding: 0.5rem;
+  }
+  .sidebar { display: flex; flex-direction: column; gap: 12px; }
+  .panel {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    padding: 1rem;
+  }
+  .panel-title {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-tertiary);
+    margin-bottom: 10px;
+  }
+  .color-swatch {
+    width: 100%;
+    height: 56px;
+    border-radius: var(--border-radius-md);
+    border: 0.5px solid var(--color-border-tertiary);
+    margin-bottom: 10px;
+    background: #ccc;
+    transition: background 0.1s;
+  }
+  .rgb-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .rgb-item {
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-md);
+    padding: 8px 6px;
+    text-align: center;
+  }
+  .rgb-label { font-size: 11px; color: var(--color-text-tertiary); font-weight: 500; }
+  .rgb-value { font-size: 20px; font-weight: 500; color: var(--color-text-primary); line-height: 1.3; }
+  .rgb-bar {
+    height: 4px;
+    border-radius: 2px;
+    margin-top: 4px;
+  }
+  .hex-row {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .hex-box {
+    flex: 1;
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-md);
+    padding: 8px 10px;
+    font-size: 14px;
+    font-family: var(--font-mono);
+    color: var(--color-text-primary);
+    font-weight: 500;
+    cursor: pointer;
+    border: 0.5px solid var(--color-border-tertiary);
+    transition: background 0.15s;
+  }
+  .hex-box:hover { background: var(--color-background-tertiary); }
+  .copy-btn {
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: var(--border-radius-md);
+    border: 0.5px solid var(--color-border-secondary);
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+  }
+  .copy-btn:hover { background: var(--color-background-secondary); }
+  .hsl-row {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-md);
+    padding: 6px 10px;
+  }
+  .pos-info {
+    font-size: 12px;
+    color: var(--color-text-tertiary);
+    margin-top: 6px;
+    font-family: var(--font-mono);
+  }
+  .hist-canvas-wrap {
+    margin-top: 4px;
+  }
+  #histCanvas { width: 100%; display: block; border-radius: 4px; }
+  .hist-legend {
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
+    font-size: 11px;
+  }
+  .hist-leg-item { display: flex; align-items: center; gap: 4px; color: var(--color-text-secondary); }
+  .hist-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .stat-item {
+    background: var(--color-background-secondary);
+    border-radius: var(--border-radius-md);
+    padding: 8px 10px;
+  }
+  .stat-label { font-size: 11px; color: var(--color-text-tertiary); }
+  .stat-value { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-top: 2px; }
+  .zoom-strip {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    border: 1.5px solid rgba(255,255,255,0.8);
+    overflow: hidden;
+    pointer-events: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    display: none;
+  }
+  #zoomCanvas { width: 80px; height: 80px; }
+</style>
+
+<div class="app">
+  <div id="uploadArea" class="upload-zone">
+    <input type="file" id="fileInput" accept="image/*" style="display:none">
+    <svg class="upload-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5">
+      <rect x="6" y="10" width="36" height="28" rx="4"/>
+      <circle cx="16" cy="20" r="3"/>
+      <path d="M6 32 l10-10 8 8 6-6 12 12"/>
+      <path d="M30 6 l4 4-4 4M34 10 H24" stroke-linecap="round"/>
+    </svg>
+    <p class="upload-label">クリックまたはドラッグ＆ドロップで画像を選択</p>
+    <p class="upload-sub">PNG · JPG · WebP · GIF に対応</p>
+  </div>
+
+  <div class="main-layout" id="mainLayout" style="display:none">
+    <div class="canvas-wrap" id="canvasWrap">
+      <canvas id="imgCanvas"></canvas>
+      <div class="zoom-strip" id="zoomStrip">
+        <canvas id="zoomCanvas" width="80" height="80"></canvas>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="panel">
+        <div class="panel-title">カーソル位置のカラー</div>
+        <div class="color-swatch" id="colorSwatch"></div>
+        <div class="rgb-grid">
+          <div class="rgb-item">
+            <div class="rgb-label">R</div>
+            <div class="rgb-value" id="rVal">—</div>
+            <div class="rgb-bar" style="background:#E24B4A" id="rBar"></div>
+          </div>
+          <div class="rgb-item">
+            <div class="rgb-label">G</div>
+            <div class="rgb-value" id="gVal">—</div>
+            <div class="rgb-bar" style="background:#639922" id="gBar"></div>
+          </div>
+          <div class="rgb-item">
+            <div class="rgb-label">B</div>
+            <div class="rgb-value" id="bVal">—</div>
+            <div class="rgb-bar" style="background:#378ADD" id="bBar"></div>
+          </div>
+        </div>
+        <div class="hex-row">
+          <div class="hex-box" id="hexBox">#——————</div>
+          <button class="copy-btn" id="copyBtn">コピー</button>
+        </div>
+        <div class="hsl-row" id="hslRow">HSL: —</div>
+        <div class="pos-info" id="posInfo">座標: —</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">画像情報</div>
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-item"><div class="stat-label">幅</div><div class="stat-value" id="imgW">—</div></div>
+          <div class="stat-item"><div class="stat-label">高さ</div><div class="stat-value" id="imgH">—</div></div>
+          <div class="stat-item"><div class="stat-label">アスペクト比</div><div class="stat-value" id="imgAR">—</div></div>
+          <div class="stat-item"><div class="stat-label">平均輝度</div><div class="stat-value" id="imgBright">—</div></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">ヒストグラム</div>
+        <div class="hist-canvas-wrap">
+          <canvas id="histCanvas" height="120"></canvas>
+        </div>
+        <div class="hist-legend">
+          <div class="hist-leg-item"><div class="hist-dot" style="background:#E24B4A"></div>R</div>
+          <div class="hist-leg-item"><div class="hist-dot" style="background:#639922"></div>G</div>
+          <div class="hist-leg-item"><div class="hist-dot" style="background:#378ADD"></div>B</div>
+          <div class="hist-leg-item"><div class="hist-dot" style="background:#888780"></div>輝度</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const uploadArea = document.getElementById('uploadArea');
+const fileInput = document.getElementById('fileInput');
+const mainLayout = document.getElementById('mainLayout');
+const imgCanvas = document.getElementById('imgCanvas');
+const ctx = imgCanvas.getContext('2d');
+const histCanvas = document.getElementById('histCanvas');
+const hCtx = histCanvas.getContext('2d');
+const zoomStrip = document.getElementById('zoomStrip');
+const zoomCanvas = document.getElementById('zoomCanvas');
+const zCtx = zoomCanvas.getContext('2d');
+
+let imgData = null;
+let origImg = null;
+let imgWidth = 0, imgHeight = 0;
+
+uploadArea.addEventListener('click', () => fileInput.click());
+uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('drag-over'); });
+uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('drag-over'));
+uploadArea.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadArea.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0];
+  if (f && f.type.startsWith('image/')) loadImage(f);
+});
+fileInput.addEventListener('change', () => { if (fileInput.files[0]) loadImage(fileInput.files[0]); });
+
+function loadImage(file) {
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => {
+    origImg = img;
+    imgWidth = img.naturalWidth;
+    imgHeight = img.naturalHeight;
+
+    const wrap = document.getElementById('canvasWrap');
+    const maxW = wrap.offsetWidth || 600;
+    const maxH = 480;
+    const scale = Math.min(maxW / imgWidth, maxH / imgHeight, 1);
+    imgCanvas.width = Math.round(imgWidth * scale);
+    imgCanvas.height = Math.round(imgHeight * scale);
+    ctx.drawImage(img, 0, 0, imgCanvas.width, imgCanvas.height);
+    imgData = ctx.getImageData(0, 0, imgCanvas.width, imgCanvas.height);
+
+    uploadArea.style.display = 'none';
+    mainLayout.style.display = 'grid';
+
+    document.getElementById('imgW').textContent = imgWidth + 'px';
+    document.getElementById('imgH').textContent = imgHeight + 'px';
+    const gcd = (a, b) => b ? gcd(b, a % b) : a;
+    const d = gcd(imgWidth, imgHeight);
+    document.getElementById('imgAR').textContent = (imgWidth/d) + ':' + (imgHeight/d);
+
+    computeHistogramAndBrightness();
+  };
+  img.src = url;
+}
+
+function computeHistogramAndBrightness() {
+  const d = imgData.data;
+  const rH = new Float32Array(256);
+  const gH = new Float32Array(256);
+  const bH = new Float32Array(256);
+  const lumH = new Float32Array(256);
+  let totalLum = 0;
+  const pixels = d.length / 4;
+  for (let i = 0; i < d.length; i += 4) {
+    rH[d[i]]++;
+    gH[d[i+1]]++;
+    bH[d[i+2]]++;
+    const lum = Math.round(0.299*d[i] + 0.587*d[i+1] + 0.114*d[i+2]);
+    lumH[lum]++;
+    totalLum += lum;
+  }
+  document.getElementById('imgBright').textContent = Math.round(totalLum / pixels);
+  drawHistogram(rH, gH, bH, lumH, pixels);
+}
+
+function drawHistogram(rH, gH, bH, lumH, pixels) {
+  const w = histCanvas.offsetWidth || 280;
+  histCanvas.width = w;
+  histCanvas.height = 120;
+  hCtx.clearRect(0, 0, w, 120);
+
+  const maxVal = Math.max(...rH, ...gH, ...bH, ...lumH);
+  const binW = w / 256;
+
+  const channels = [
+    { h: lumH, color: 'rgba(136,135,128,0.4)' },
+    { h: rH, color: 'rgba(226,75,74,0.55)' },
+    { h: gH, color: 'rgba(99,153,34,0.55)' },
+    { h: bH, color: 'rgba(55,138,221,0.55)' },
+  ];
+
+  for (const ch of channels) {
+    hCtx.beginPath();
+    hCtx.moveTo(0, 120);
+    for (let i = 0; i < 256; i++) {
+      const x = i * binW;
+      const barH = (ch.h[i] / maxVal) * 115;
+      hCtx.lineTo(x + binW/2, 120 - barH);
+    }
+    hCtx.lineTo(w, 120);
+    hCtx.closePath();
+    hCtx.fillStyle = ch.color;
+    hCtx.fill();
+  }
+}
+
+imgCanvas.addEventListener('mousemove', e => {
+  const rect = imgCanvas.getBoundingClientRect();
+  const scaleX = imgCanvas.width / rect.width;
+  const scaleY = imgCanvas.height / rect.height;
+  const cx = Math.floor((e.clientX - rect.left) * scaleX);
+  const cy = Math.floor((e.clientY - rect.top) * scaleY);
+  if (!imgData) return;
+  if (cx < 0 || cy < 0 || cx >= imgCanvas.width || cy >= imgCanvas.height) return;
+
+  const idx = (cy * imgCanvas.width + cx) * 4;
+  const r = imgData.data[idx];
+  const g = imgData.data[idx+1];
+  const b = imgData.data[idx+2];
+
+  updateColorPanel(r, g, b, cx, cy);
+  drawZoom(cx, cy);
+});
+
+imgCanvas.addEventListener('mouseleave', () => {
+  zoomStrip.style.display = 'none';
+});
+
+imgCanvas.addEventListener('mouseenter', () => {
+  if (imgData) zoomStrip.style.display = 'block';
+});
+
+function updateColorPanel(r, g, b, cx, cy) {
+  document.getElementById('colorSwatch').style.background = `rgb(${r},${g},${b})`;
+  document.getElementById('rVal').textContent = r;
+  document.getElementById('gVal').textContent = g;
+  document.getElementById('bVal').textContent = b;
+
+  document.getElementById('rBar').style.width = Math.round(r/255*100) + '%';
+  document.getElementById('gBar').style.width = Math.round(g/255*100) + '%';
+  document.getElementById('bBar').style.width = Math.round(b/255*100) + '%';
+
+  const hex = '#' + [r,g,b].map(v => v.toString(16).padStart(2,'0')).join('').toUpperCase();
+  document.getElementById('hexBox').textContent = hex;
+
+  const hsl = rgbToHsl(r, g, b);
+  document.getElementById('hslRow').textContent = `HSL: ${hsl[0]}° ${hsl[1]}% ${hsl[2]}%`;
+
+  const realX = Math.round(cx * (imgWidth / imgCanvas.width));
+  const realY = Math.round(cy * (imgHeight / imgCanvas.height));
+  document.getElementById('posInfo').textContent = `座標: (${realX}, ${realY})`;
+}
+
+function drawZoom(cx, cy) {
+  const size = 10;
+  zCtx.imageSmoothingEnabled = false;
+  zCtx.clearRect(0,0,80,80);
+  zCtx.drawImage(imgCanvas,
+    cx - size, cy - size, size*2, size*2,
+    0, 0, 80, 80
+  );
+  zCtx.strokeStyle = 'rgba(255,255,255,0.9)';
+  zCtx.lineWidth = 1.5;
+  zCtx.strokeRect(36, 36, 8, 8);
+}
+
+function rgbToHsl(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  let h, s, l = (max + min) / 2;
+  if (max === min) { h = s = 0; }
+  else {
+    const d = max - min;
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) {
+      case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+      case g: h = ((b - r) / d + 2) / 6; break;
+      case b: h = ((r - g) / d + 4) / 6; break;
+    }
+  }
+  return [Math.round(h*360), Math.round(s*100), Math.round(l*100)];
+}
+
+document.getElementById('copyBtn').addEventListener('click', () => {
+  const hex = document.getElementById('hexBox').textContent;
+  if (hex && hex !== '#——————') {
+    navigator.clipboard.writeText(hex).catch(() => {});
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '✓ コピー済み';
+    setTimeout(() => btn.textContent = 'コピー', 1500);
+  }
+});
+
+window.addEventListener('resize', () => {
+  if (origImg) {
+    const wrap = document.getElementById('canvasWrap');
+    const maxW = wrap.offsetWidth || 600;
+    const maxH = 480;
+    const scale = Math.min(maxW / imgWidth, maxH / imgHeight, 1);
+    imgCanvas.width = Math.round(imgWidth * scale);
+    imgCanvas.height = Math.round(imgHeight * scale);
+    ctx.drawImage(origImg, 0, 0, imgCanvas.width, imgCanvas.height);
+    imgData = ctx.getImageData(0, 0, imgCanvas.width, imgCanvas.height);
+    computeHistogramAndBrightness();
+  }
+});
+</script>
