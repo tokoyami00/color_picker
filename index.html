@@ -26,12 +26,11 @@
 .add-row{display:flex;gap:8px;margin-bottom:8px;}
 .add-slot-btn{flex:1;padding:8px;border:1.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-lg);background:transparent;cursor:pointer;font-size:13px;color:var(--color-text-secondary);transition:background 0.2s;}
 .add-slot-btn:hover{background:var(--color-background-secondary);}
-
-/* color panels row */
 .color-panels-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
 .cpanel{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:0.8rem;}
-.cpanel-title{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
-.cpanel-title .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.cpanel-title{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:6px;}
+.cpanel-title-left{display:flex;align-items:center;gap:6px;}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 .swatch{width:100%;height:38px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);margin-bottom:7px;transition:background 0.05s;}
 .rgb-row{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;}
 .rgb-item{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:5px;text-align:center;}
@@ -47,10 +46,6 @@
 .pos-info{font-size:10px;color:var(--color-text-tertiary);margin-top:4px;font-family:var(--font-mono);}
 .lock-btn{font-size:10px;padding:2px 8px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:transparent;cursor:pointer;color:var(--color-text-secondary);white-space:nowrap;}
 .lock-btn.locked{background:#185FA5;color:#fff;border-color:#185FA5;}
-.lock-controls{display:flex;align-items:center;gap:6px;margin-bottom:7px;}
-.lock-hint{font-size:10px;color:var(--color-text-tertiary);}
-
-/* hist panels — one per image */
 .hist-panels-row{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:8px;}
 .hist-panels-row.two{grid-template-columns:1fr 1fr;}
 .hpanel{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:0.8rem;}
@@ -63,8 +58,6 @@ canvas.hc{width:100%;display:block;}
 .stat-item{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:5px 8px;}
 .stat-label{font-size:10px;color:var(--color-text-tertiary);}
 .stat-value{font-size:12px;font-weight:500;color:var(--color-text-primary);margin-top:1px;}
-
-/* poster */
 .poster-panel{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:0.8rem;}
 .poster-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
 .poster-actions{display:flex;gap:6px;flex-shrink:0;}
@@ -102,7 +95,6 @@ canvas.hc{width:100%;display:block;}
 
 <div class="app">
   <div class="drop-overlay" id="dropOverlay"><div class="drop-msg">画像をドロップ</div></div>
-
   <div class="welcome" id="welcome">
     <div style="font-size:15px;font-weight:500;color:var(--color-text-primary)">画像をドロップ、またはスロットを選択</div>
     <div class="welcome-cards">
@@ -119,7 +111,6 @@ canvas.hc{width:100%;display:block;}
   </div>
 
   <div class="workspace" id="workspace">
-    <!-- images -->
     <div class="images-row" id="imagesRow">
       <div class="img-slot" id="slot0" style="display:none">
         <span class="slot-label">画像 1</span>
@@ -145,29 +136,23 @@ canvas.hc{width:100%;display:block;}
       <button class="add-slot-btn" id="addBtn1" onclick="triggerFile(1)">＋ 画像 2 を追加</button>
     </div>
 
-    <!-- dual color panels -->
     <div class="color-panels-row">
-      <!-- live -->
       <div class="cpanel">
-        <div class="cpanel-title"><div class="dot" style="background:#378ADD"></div><span style="color:var(--color-text-secondary)">リアルタイム</span></div>
-        <div class="swatch" id="lSwatch" style="background:#888"></div>
+        <div class="cpanel-title"><div class="cpanel-title-left"><div class="dot" style="background:#378ADD"></div><span style="color:var(--color-text-secondary)">リアルタイム</span></div></div>
+        <div class="swatch" id="lSwatch" style="background:var(--color-background-secondary)"></div>
         <div class="rgb-row">
           <div class="rgb-item"><div class="rgb-label">R</div><div class="rgb-value" id="lR">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="lRb" style="background:#E24B4A"></div></div></div>
           <div class="rgb-item"><div class="rgb-label">G</div><div class="rgb-value" id="lG">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="lGb" style="background:#639922"></div></div></div>
           <div class="rgb-item"><div class="rgb-label">B</div><div class="rgb-value" id="lB">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="lBb" style="background:#378ADD"></div></div></div>
         </div>
-        <div class="hex-row">
-          <div class="hex-box" id="lHex">#——————</div>
-          <button class="copy-btn" onclick="copyId('lHex',this)">コピー</button>
-        </div>
+        <div class="hex-row"><div class="hex-box" id="lHex">#——————</div><button class="copy-btn" onclick="copyId('lHex',this)">コピー</button></div>
         <div class="hsl-row" id="lHsl">HSL: —</div>
-        <div class="pos-info" id="lPos">座標: —</div>
+        <div class="pos-info" id="lPos">画像にカーソルを合わせてください</div>
       </div>
-      <!-- locked -->
       <div class="cpanel">
-        <div class="cpanel-title" style="justify-content:space-between">
-          <div style="display:flex;align-items:center;gap:6px"><div class="dot" style="background:#BA7517"></div><span style="color:var(--color-text-secondary)">ロック中</span></div>
-          <button class="lock-btn" id="lockBtn" onclick="toggleLock()">ロック解除</button>
+        <div class="cpanel-title">
+          <div class="cpanel-title-left"><div class="dot" style="background:#BA7517"></div><span style="color:var(--color-text-secondary)">ロック中</span></div>
+          <button class="lock-btn" id="lockBtn" onclick="clearLock()">解除</button>
         </div>
         <div class="swatch" id="kSwatch" style="background:var(--color-background-secondary)"></div>
         <div class="rgb-row">
@@ -175,16 +160,12 @@ canvas.hc{width:100%;display:block;}
           <div class="rgb-item"><div class="rgb-label">G</div><div class="rgb-value" id="kG">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="kGb" style="background:#639922"></div></div></div>
           <div class="rgb-item"><div class="rgb-label">B</div><div class="rgb-value" id="kB">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="kBb" style="background:#378ADD"></div></div></div>
         </div>
-        <div class="hex-row">
-          <div class="hex-box" id="kHex">#——————</div>
-          <button class="copy-btn" onclick="copyId('kHex',this)">コピー</button>
-        </div>
+        <div class="hex-row"><div class="hex-box" id="kHex">#——————</div><button class="copy-btn" onclick="copyId('kHex',this)">コピー</button></div>
         <div class="hsl-row" id="kHsl">HSL: —</div>
-        <div class="pos-info" id="kPos">クリックでロック</div>
+        <div class="pos-info" id="kPos">画像をクリックしてロック</div>
       </div>
     </div>
 
-    <!-- hist panels (one per image) -->
     <div class="hist-panels-row" id="histPanelsRow">
       <div class="hpanel" id="hp0">
         <div class="hpanel-title">ヒストグラム — 画像 1</div>
@@ -220,12 +201,11 @@ canvas.hc{width:100%;display:block;}
       </div>
     </div>
 
-    <!-- poster -->
     <div class="poster-panel">
       <div class="poster-top">
         <div>
           <div style="font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-text-tertiary);margin-bottom:3px">映画ポスター配色提案</div>
-          <div class="hint-text">画像をクリックして1色選択 → AIが3パターン提案</div>
+          <div class="hint-text">画像をクリックしてロック → AIが3パターン提案</div>
         </div>
         <div class="poster-actions">
           <button class="reset-btn" onclick="resetPoster()">リセット</button>
@@ -243,7 +223,7 @@ canvas.hc{width:100%;display:block;}
 
 <script>
 const slots=[null,null],imgDatas=[null,null],origImgs=[null,null],imgDims=[{w:0,h:0},{w:0,h:0}],histData=[null,null];
-let isLocked=false, lockedColor=null, posterColor=null;
+let posterColor=null;
 
 document.getElementById('fi0').onchange=function(){if(this.files[0])loadFile(0,this.files[0]);};
 document.getElementById('fi1').onchange=function(){if(this.files[0])loadFile(1,this.files[0]);};
@@ -274,8 +254,7 @@ function updateLayouts(){
   const two=slots[0]&&slots[1];
   document.getElementById('imagesRow').className=two?'images-row two':'images-row';
   document.getElementById('histPanelsRow').className=two?'hist-panels-row two':'hist-panels-row';
-  if(slots[1])document.getElementById('hp1').style.display='block';
-  else document.getElementById('hp1').style.display='none';
+  document.getElementById('hp1').style.display=slots[1]?'block':'none';
 }
 function updateAddBtns(){
   document.getElementById('addBtn0').style.display=slots[0]?'none':'block';
@@ -308,15 +287,12 @@ function setupEvents(i,canvas){
     const{cx,cy,rx,ry}=getPos(e,canvas,i);
     if(cx<0||cy<0||cx>=canvas.width||cy>=canvas.height)return;
     const idx=(cy*canvas.width+cx)*4,d=imgDatas[i].data;
-    const r=d[idx],g=d[idx+1],b=d[idx+2];
-    lockColor(r,g,b,rx,ry,i+1);
+    lockColor(d[idx],d[idx+1],d[idx+2],rx,ry,i+1);
   };
   canvas.onmouseleave=()=>document.getElementById('zoom'+i).style.display='none';
   canvas.onmouseenter=()=>{if(imgDatas[i])document.getElementById('zoom'+i).style.display='block';};
 }
-
 function updateLive(r,g,b,x,y,sn){
-  const hex=toHex(r,g,b);
   document.getElementById('lSwatch').style.background=`rgb(${r},${g},${b})`;
   document.getElementById('lR').textContent=r;
   document.getElementById('lG').textContent=g;
@@ -324,13 +300,12 @@ function updateLive(r,g,b,x,y,sn){
   document.getElementById('lRb').style.width=Math.round(r/255*100)+'%';
   document.getElementById('lGb').style.width=Math.round(g/255*100)+'%';
   document.getElementById('lBb').style.width=Math.round(b/255*100)+'%';
-  document.getElementById('lHex').textContent=hex;
+  document.getElementById('lHex').textContent=toHex(r,g,b);
   document.getElementById('lHsl').textContent='HSL: '+toHslStr(r,g,b);
   document.getElementById('lPos').textContent=`画像${sn}  (${x}, ${y})`;
 }
 function lockColor(r,g,b,x,y,sn){
   const hex=toHex(r,g,b);
-  isLocked=true; lockedColor=hex;
   document.getElementById('kSwatch').style.background=`rgb(${r},${g},${b})`;
   document.getElementById('kR').textContent=r;
   document.getElementById('kG').textContent=g;
@@ -344,18 +319,16 @@ function lockColor(r,g,b,x,y,sn){
   document.getElementById('lockBtn').className='lock-btn locked';
   setPosterColor(hex);
 }
-function toggleLock(){
-  isLocked=false; lockedColor=null;
+function clearLock(){
   document.getElementById('lockBtn').className='lock-btn';
   document.getElementById('kSwatch').style.background='var(--color-background-secondary)';
   ['kR','kG','kB'].forEach(id=>document.getElementById(id).textContent='—');
   ['kRb','kGb','kBb'].forEach(id=>document.getElementById(id).style.width='0%');
   document.getElementById('kHex').textContent='#——————';
   document.getElementById('kHsl').textContent='HSL: —';
-  document.getElementById('kPos').textContent='クリックでロック';
+  document.getElementById('kPos').textContent='画像をクリックしてロック';
 }
-
-function toHex(r,g,b){return '#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('').toUpperCase();}
+function toHex(r,g,b){return'#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('').toUpperCase();}
 function toHslStr(r,g,b){const h=toHsl(r,g,b);return`${h[0]}° ${h[1]}% ${h[2]}%`;}
 function toHsl(r,g,b){
   r/=255;g/=255;b/=255;
@@ -367,11 +340,7 @@ function toHsl(r,g,b){
 }
 function copyId(id,btn){
   const h=document.getElementById(id).textContent;
-  if(h&&!h.includes('—')){
-    navigator.clipboard.writeText(h).catch(()=>{});
-    btn.textContent='✓ コピー済み';
-    setTimeout(()=>btn.textContent='コピー',1500);
-  }
+  if(h&&!h.includes('—')){navigator.clipboard.writeText(h).catch(()=>{});btn.textContent='✓';setTimeout(()=>btn.textContent='コピー',1400);}
 }
 function drawZoom(i,canvas,cx,cy){
   const zc=document.getElementById('zc'+i),z=zc.getContext('2d');
@@ -379,7 +348,6 @@ function drawZoom(i,canvas,cx,cy){
   z.drawImage(canvas,cx-8,cy-8,16,16,0,0,64,64);
   z.strokeStyle='rgba(255,255,255,0.9)';z.lineWidth=1.5;z.strokeRect(24,24,16,16);
 }
-
 function buildHist(i){
   if(!imgDatas[i])return;
   const d=imgDatas[i].data;
@@ -410,14 +378,9 @@ function redrawHist(i){
   document.getElementById('sAR'+i).textContent=(iw/d2)+':'+(ih/d2);
   document.getElementById('sBr'+i).textContent=bright;
 }
-
 function setPosterColor(hex){
   posterColor=hex;
-  document.getElementById('selectedColorArea').innerHTML=`
-    <div class="selected-color-area">
-      <div class="sc-preview" style="background:${hex}"></div>
-      <div class="sc-info"><div class="sc-hex">${hex}</div><div class="sc-label">ポスターのベースカラーとして使用</div></div>
-    </div>`;
+  document.getElementById('selectedColorArea').innerHTML=`<div class="selected-color-area"><div class="sc-preview" style="background:${hex}"></div><div class="sc-info"><div class="sc-hex">${hex}</div><div class="sc-label">ポスターのベースカラーとして使用</div></div></div>`;
   document.getElementById('suggestBtn').disabled=false;
 }
 function resetPoster(){
@@ -426,36 +389,46 @@ function resetPoster(){
   document.getElementById('posterResults').innerHTML='';
   document.getElementById('suggestBtn').disabled=true;
 }
-
 async function runSuggest(){
   if(!posterColor)return;
   const btn=document.getElementById('suggestBtn');
-  btn.disabled=true;btn.textContent='生成中...';
+  btn.disabled=true; btn.textContent='生成中...';
   const res=document.getElementById('posterResults');
   res.innerHTML='<div class="ai-loading"><div class="ai-spinner"></div><p>AIが配色を分析中...</p></div>';
-  const prompt=`あなたは映画ポスターのプロのカラーデザイナーです。ベースカラー ${posterColor} を必ず含めた映画ポスターの配色パターンを3つ提案してください。各提案は異なるジャンルにしてください。以下のJSON配列のみ返してください：[{"genre":"ジャンル名","title":"架空の映画タイトル（日本語）","description":"この配色の雰囲気と効果（50文字以内）","colors":[{"hex":"#XXXXXX","role":"背景"},{"hex":"#XXXXXX","role":"メイン"},{"hex":"#XXXXXX","role":"アクセント"},{"hex":"#XXXXXX","role":"テキスト"},{"hex":"#XXXXXX","role":"補助"}]},{"genre":"..."},{"genre":"..."}] ${posterColor}を各提案のcolorsに必ず含めること。JSONのみ返すこと。`;
+  const color=posterColor;
   try{
     const resp=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1200,messages:[{role:'user',content:prompt}]})
+      headers:{
+        'Content-Type':'application/json',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-haiku-4-5-20251001',
+        max_tokens:1200,
+        system:'あなたは映画ポスターのプロのカラーデザイナーです。必ずJSON配列のみを返し、前置きや説明文は一切含めないでください。',
+        messages:[{role:'user',content:`ベースカラー ${color} を各提案に必ず含めた映画ポスターの配色パターンを3つ提案してください。各提案は異なるジャンルにしてください。\n\n以下の形式のJSON配列のみ返してください：\n[{"genre":"ジャンル名","title":"架空の映画タイトル（日本語）","description":"この配色の雰囲気と効果（50文字以内）","colors":[{"hex":"#XXXXXX","role":"背景"},{"hex":"#XXXXXX","role":"メイン"},{"hex":"#XXXXXX","role":"アクセント"},{"hex":"#XXXXXX","role":"テキスト"},{"hex":"#XXXXXX","role":"補助"}]},{"genre":"..."},{"genre":"..."}]`}]
+      })
     });
-    if(!resp.ok){const t=await resp.text().catch(()=>'');throw new Error(`HTTP ${resp.status}: ${t.slice(0,120)}`);}
+    if(!resp.ok){
+      const t=await resp.text().catch(()=>'');
+      throw new Error(`HTTP ${resp.status}: ${t.slice(0,200)}`);
+    }
     const data=await resp.json();
     const text=(data.content||[]).filter(c=>c.type==='text').map(c=>c.text).join('');
     const s=text.indexOf('['),e=text.lastIndexOf(']');
-    if(s===-1||e===-1)throw new Error('JSONが見つかりません');
+    if(s===-1||e===-1)throw new Error('JSONが見つかりません: '+text.slice(0,100));
     const proposals=JSON.parse(text.slice(s,e+1));
     renderCards(proposals);
   }catch(err){
-    res.innerHTML=`<div class="ai-error">エラー: ${err.message}<br>もう一度お試しください。</div>`;
+    res.innerHTML=`<div class="ai-error">エラー: ${err.message}</div>`;
   }
-  btn.disabled=false;btn.textContent='AIに提案させる';
+  btn.disabled=false; btn.textContent='AIに提案させる';
 }
 function renderCards(proposals){
-  const res=document.getElementById('posterResults');res.innerHTML='';
+  const res=document.getElementById('posterResults'); res.innerHTML='';
   proposals.forEach(p=>{
-    const card=document.createElement('div');card.className='poster-card';
+    const card=document.createElement('div'); card.className='poster-card';
     const pal=(p.colors||[]).map(c=>`<div class="palette-swatch" style="background:${c.hex}" title="${c.role}: ${c.hex}"></div>`).join('');
     const chips=(p.colors||[]).map(c=>`<div class="phchip" onclick="copyChip('${c.hex}',this)"><div class="phchip-dot" style="background:${c.hex}"></div>${c.hex}<span style="color:var(--color-text-tertiary);font-size:10px;margin-left:2px">${c.role}</span></div>`).join('');
     card.innerHTML=`<div class="poster-palette">${pal}</div><div class="poster-body"><div class="poster-genre">${p.genre||''}</div><div class="poster-title">${p.title||''}</div><div class="poster-desc">${p.description||''}</div><div class="poster-hexes">${chips}</div></div>`;
@@ -465,14 +438,13 @@ function renderCards(proposals){
 function copyChip(hex,el){
   navigator.clipboard.writeText(hex).catch(()=>{});
   const ob=el.style.background,oc=el.style.color;
-  el.style.background='#E6F1FB';el.style.color='#185FA5';
+  el.style.background='#E6F1FB'; el.style.color='#185FA5';
   setTimeout(()=>{el.style.background=ob;el.style.color=oc;},900);
 }
-
 document.addEventListener('dragover',e=>{e.preventDefault();document.getElementById('dropOverlay').classList.add('active');});
 document.addEventListener('dragleave',e=>{if(!e.relatedTarget)document.getElementById('dropOverlay').classList.remove('active');});
 document.addEventListener('drop',e=>{
-  e.preventDefault();document.getElementById('dropOverlay').classList.remove('active');
+  e.preventDefault(); document.getElementById('dropOverlay').classList.remove('active');
   const f=e.dataTransfer.files[0];
   if(!f||!f.type.startsWith('image/'))return;
   loadFile(slots[0]?(slots[1]?0:1):0,f);
