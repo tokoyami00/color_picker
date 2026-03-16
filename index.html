@@ -2,252 +2,226 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --c-blue:#185FA5;--c-blue-lt:#E6F1FB;--c-amber:#BA7517;--c-red:#E24B4A;--c-green:#3B6D11;
-  --fs-hero:28px;--fs-xl:24px;--fs-lg:20px;--fs-md:17px;--fs-sm:15px;--fs-xs:13px;
-  --btn-h:60px;--radius:16px;--gap:14px;
+  --blue:#185FA5;--blue-lt:#E6F1FB;--amber:#BA7517;
+  --radius:14px;--gap:12px;
 }
-body{font-family:var(--font-sans);background:var(--color-background-tertiary,#f5f5f3);}
-.app{max-width:520px;margin:0 auto;padding:0 0 60px;}
+body{font-family:var(--font-sans);}
 
-/* ─── drop overlay ─── */
-.drop-overlay{position:fixed;inset:0;z-index:9999;background:rgba(24,95,165,0.18);border:5px dashed #378ADD;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity 0.2s;}
+/* ── drop overlay ── */
+.drop-overlay{position:fixed;inset:0;z-index:9999;background:rgba(24,95,165,0.15);border:4px dashed #378ADD;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity 0.2s;}
 .drop-overlay.active{opacity:1;}
-.drop-msg{font-size:var(--fs-xl);font-weight:600;color:var(--c-blue);background:var(--c-blue-lt);padding:1.2rem 2.2rem;border-radius:18px;}
+.drop-msg{font-size:20px;font-weight:600;color:var(--blue);background:var(--blue-lt);padding:1rem 2rem;border-radius:14px;}
 
-/* ─── welcome ─── */
-.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;gap:22px;padding:32px 20px;}
-.welcome-icon{width:64px;height:64px;background:var(--c-blue-lt);border-radius:50%;display:flex;align-items:center;justify-content:center;}
-.welcome-icon svg{width:34px;height:34px;stroke:var(--c-blue);stroke-width:1.8;fill:none;}
-.welcome-title{font-size:var(--fs-hero);font-weight:600;color:var(--color-text-primary);text-align:center;line-height:1.35;}
-.welcome-sub{font-size:var(--fs-lg);color:var(--color-text-secondary);text-align:center;line-height:1.5;}
-.welcome-btns{display:flex;flex-direction:column;gap:14px;width:100%;}
-.wbtn{display:flex;align-items:center;gap:14px;height:72px;border-radius:var(--radius);border:2.5px solid var(--color-border-secondary);background:var(--color-background-primary);font-size:var(--fs-lg);font-weight:600;color:var(--color-text-primary);cursor:pointer;padding:0 22px;transition:border-color 0.2s,background 0.2s;}
-.wbtn:hover,.wbtn:active{border-color:var(--c-blue);background:var(--c-blue-lt);}
-.wbtn svg{width:28px;height:28px;stroke:var(--c-blue);fill:none;stroke-width:2;flex-shrink:0;}
-.welcome-hint{font-size:var(--fs-sm);color:var(--color-text-tertiary);}
+/* ── welcome ── */
+.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;gap:20px;padding:28px 16px;}
+.welcome-icon{width:60px;height:60px;background:var(--blue-lt);border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.welcome-icon svg{width:32px;height:32px;stroke:var(--blue);fill:none;stroke-width:1.8;}
+.welcome-title{font-size:26px;font-weight:700;color:var(--color-text-primary);text-align:center;}
+.welcome-sub{font-size:16px;color:var(--color-text-secondary);text-align:center;line-height:1.55;}
+.welcome-btns{display:flex;flex-direction:column;gap:12px;width:100%;max-width:340px;}
+.wbtn{display:flex;align-items:center;gap:12px;height:64px;border-radius:var(--radius);border:2px solid var(--color-border-secondary);background:var(--color-background-primary);font-size:18px;font-weight:600;color:var(--color-text-primary);cursor:pointer;padding:0 20px;transition:border-color 0.2s,background 0.2s;}
+.wbtn:hover,.wbtn:active{border-color:var(--blue);background:var(--blue-lt);}
+.wbtn svg{width:26px;height:26px;stroke:var(--blue);fill:none;stroke-width:2;flex-shrink:0;}
+.welcome-hint{font-size:13px;color:var(--color-text-tertiary);}
 
-/* ─── workspace ─── */
-.workspace{display:none;padding:0 12px;}
+/* ── workspace ── */
+.workspace{display:none;}
+
+/* PC 2-col / Mobile 1-col */
+.layout{display:grid;gap:var(--gap);grid-template-columns:1fr;padding:0 12px 48px;}
+@media(min-width:700px){
+  .layout{grid-template-columns:1fr 1fr;padding:0 16px 48px;align-items:start;}
+  .col-full{grid-column:1/3;}
+}
 
 /* section label */
-.sec{font-size:var(--fs-xs);font-weight:600;text-transform:uppercase;letter-spacing:0.09em;color:var(--color-text-tertiary);padding:18px 0 8px;}
+.sec{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.09em;color:var(--color-text-tertiary);padding:14px 0 6px;}
+/* mobile bigger sec */
+@media(max-width:699px){.sec{font-size:14px;padding:18px 0 8px;}}
 
-/* ─── image slot ─── */
-.img-slot{background:var(--color-background-secondary);border-radius:var(--radius);border:0.5px solid var(--color-border-tertiary);overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;min-height:120px;margin-bottom:10px;}
+/* ── card ── */
+.card{background:var(--color-background-primary);border-radius:var(--radius);border:0.5px solid var(--color-border-tertiary);padding:14px;}
+@media(max-width:699px){.card{padding:18px;border-radius:18px;}}
+
+/* ── image slot ── */
+.img-slot{background:var(--color-background-secondary);border-radius:var(--radius);border:0.5px solid var(--color-border-tertiary);overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;min-height:100px;}
 .img-slot canvas{display:block;width:100%;touch-action:none;}
-.slot-badge{position:absolute;top:10px;left:10px;font-size:var(--fs-sm);font-weight:600;padding:5px 12px;border-radius:8px;background:rgba(0,0,0,0.6);color:#fff;pointer-events:none;}
-.slot-btns{position:absolute;top:10px;right:10px;display:flex;gap:6px;}
-.slot-btn{font-size:var(--fs-sm);font-weight:600;padding:6px 14px;border-radius:8px;background:rgba(0,0,0,0.6);color:#fff;border:none;cursor:pointer;}
-.slot-btn:active{background:rgba(0,0,0,0.85);}
-.touch-hint{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);font-size:var(--fs-sm);font-weight:500;color:#fff;background:rgba(0,0,0,0.55);padding:5px 14px;border-radius:20px;pointer-events:none;white-space:nowrap;}
-.zoom-box{position:absolute;bottom:10px;right:10px;width:88px;height:88px;border-radius:10px;border:2.5px solid rgba(255,255,255,0.92);overflow:hidden;pointer-events:none;display:none;box-shadow:0 3px 14px rgba(0,0,0,0.45);}
-.zoom-box canvas{width:88px;height:88px;image-rendering:pixelated;}
+.slot-badge{position:absolute;top:8px;left:8px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:6px;background:rgba(0,0,0,0.55);color:#fff;pointer-events:none;}
+.slot-btns{position:absolute;top:8px;right:8px;display:flex;gap:5px;}
+.slot-btn{font-size:12px;font-weight:600;padding:4px 11px;border-radius:6px;background:rgba(0,0,0,0.55);color:#fff;border:none;cursor:pointer;}
+.slot-btn:active{background:rgba(0,0,0,0.8);}
+.touch-hint{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:500;color:#fff;background:rgba(0,0,0,0.5);padding:4px 12px;border-radius:20px;pointer-events:none;white-space:nowrap;}
+@media(max-width:699px){.touch-hint{font-size:14px;padding:6px 16px;}}
+.zoom-box{position:absolute;bottom:8px;right:8px;border-radius:8px;border:2px solid rgba(255,255,255,0.9);overflow:hidden;pointer-events:none;display:none;box-shadow:0 3px 12px rgba(0,0,0,0.4);}
+.zoom-box canvas{display:block;image-rendering:pixelated;}
 
-/* add button */
-.add-btn{width:100%;height:var(--btn-h);border:2.5px dashed var(--color-border-secondary);border-radius:var(--radius);background:var(--color-background-primary);font-size:var(--fs-lg);font-weight:600;color:var(--color-text-secondary);cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:10px;}
+/* add btn */
+.add-btn{width:100%;height:52px;border:2px dashed var(--color-border-secondary);border-radius:var(--radius);background:transparent;font-size:15px;font-weight:600;color:var(--color-text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
 .add-btn:active{background:var(--color-background-secondary);}
-.add-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2.5;}
+@media(max-width:699px){.add-btn{height:64px;font-size:18px;border-radius:18px;}}
 
-/* ─── color card ─── */
-.color-card{background:var(--color-background-primary);border-radius:var(--radius);border:0.5px solid var(--color-border-tertiary);padding:18px;margin-bottom:10px;}
-.cc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
-.cc-label{display:flex;align-items:center;gap:9px;font-size:var(--fs-lg);font-weight:600;color:var(--color-text-primary);}
-.cc-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;}
-.unlock-btn{height:38px;padding:0 18px;border-radius:20px;border:1.5px solid var(--color-border-secondary);background:transparent;cursor:pointer;font-size:var(--fs-sm);font-weight:600;color:var(--color-text-secondary);}
-.unlock-btn:active{background:var(--color-background-secondary);}
-.big-swatch{width:100%;height:64px;border-radius:12px;border:0.5px solid var(--color-border-tertiary);margin-bottom:12px;}
-.rgb-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
-.rgb-box{background:var(--color-background-secondary);border-radius:12px;padding:10px 6px;text-align:center;}
-.rgb-name{font-size:var(--fs-xs);font-weight:600;color:var(--color-text-tertiary);margin-bottom:3px;text-transform:uppercase;letter-spacing:0.06em;}
-.rgb-num{font-size:var(--fs-hero);font-weight:700;color:var(--color-text-primary);line-height:1.1;}
-.rgb-bar-track{height:5px;background:var(--color-border-tertiary);border-radius:3px;margin-top:5px;}
-.rgb-bar{height:5px;border-radius:3px;width:0%;transition:width 0.05s;}
-.hex-row{display:flex;gap:10px;align-items:center;margin-top:12px;}
-.hex-val{flex:1;background:var(--color-background-secondary);border-radius:12px;padding:12px 14px;font-size:var(--fs-xl);font-family:var(--font-mono);font-weight:700;color:var(--color-text-primary);border:0.5px solid var(--color-border-tertiary);letter-spacing:0.04em;}
-.copy-btn{height:52px;padding:0 20px;border-radius:12px;border:1.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);cursor:pointer;font-size:var(--fs-md);font-weight:600;white-space:nowrap;}
-.copy-btn:active{background:var(--color-background-secondary);}
-.hsl-val{margin-top:8px;font-size:var(--fs-md);color:var(--color-text-secondary);font-family:var(--font-mono);background:var(--color-background-secondary);border-radius:10px;padding:9px 12px;font-weight:500;}
-.pos-val{font-size:var(--fs-sm);color:var(--color-text-tertiary);margin-top:6px;font-family:var(--font-mono);}
+/* ── color card ── */
+.cc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.cc-label{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:600;color:var(--color-text-primary);}
+@media(max-width:699px){.cc-label{font-size:18px;}}
+.cc-dot{width:10px;height:10px;border-radius:50%;}
+@media(max-width:699px){.cc-dot{width:14px;height:14px;}}
+.unlock-btn{height:32px;padding:0 14px;border-radius:20px;border:1px solid var(--color-border-secondary);background:transparent;cursor:pointer;font-size:12px;font-weight:600;color:var(--color-text-secondary);}
+@media(max-width:699px){.unlock-btn{height:42px;padding:0 18px;font-size:15px;}}
+.big-swatch{width:100%;border-radius:10px;border:0.5px solid var(--color-border-tertiary);margin-bottom:10px;}
+.rgb-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
+.rgb-box{background:var(--color-background-secondary);border-radius:10px;padding:7px 5px;text-align:center;}
+@media(max-width:699px){.rgb-box{border-radius:12px;padding:10px 6px;}}
+.rgb-name{font-size:10px;font-weight:700;color:var(--color-text-tertiary);margin-bottom:2px;text-transform:uppercase;letter-spacing:0.06em;}
+@media(max-width:699px){.rgb-name{font-size:13px;margin-bottom:4px;}}
+.rgb-num{font-size:22px;font-weight:700;color:var(--color-text-primary);line-height:1.1;}
+@media(max-width:699px){.rgb-num{font-size:30px;}}
+.rgb-bar-track{height:3px;background:var(--color-border-tertiary);border-radius:2px;margin-top:4px;}
+@media(max-width:699px){.rgb-bar-track{height:5px;margin-top:6px;}}
+.rgb-bar{height:100%;border-radius:2px;width:0%;transition:width 0.05s;}
+.hex-row{display:flex;gap:8px;align-items:center;margin-top:10px;}
+.hex-val{flex:1;background:var(--color-background-secondary);border-radius:10px;padding:8px 12px;font-size:16px;font-family:var(--font-mono);font-weight:700;color:var(--color-text-primary);border:0.5px solid var(--color-border-tertiary);letter-spacing:0.04em;}
+@media(max-width:699px){.hex-val{font-size:22px;padding:12px 14px;border-radius:12px;}}
+.copy-btn{height:42px;padding:0 16px;border-radius:10px;border:1px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);cursor:pointer;font-size:13px;font-weight:600;white-space:nowrap;}
+@media(max-width:699px){.copy-btn{height:52px;padding:0 20px;font-size:16px;border-radius:12px;}}
+.hsl-val{margin-top:7px;font-size:12px;color:var(--color-text-secondary);font-family:var(--font-mono);background:var(--color-background-secondary);border-radius:8px;padding:7px 10px;font-weight:500;}
+@media(max-width:699px){.hsl-val{font-size:15px;padding:10px 12px;border-radius:10px;}}
+.pos-val{font-size:11px;color:var(--color-text-tertiary);margin-top:5px;font-family:var(--font-mono);}
+@media(max-width:699px){.pos-val{font-size:13px;margin-top:6px;}}
 
-/* ─── histogram card ─── */
-.hist-card{background:var(--color-background-primary);border-radius:var(--radius);border:0.5px solid var(--color-border-tertiary);padding:18px;margin-bottom:10px;}
-.hist-title{font-size:var(--fs-lg);font-weight:600;color:var(--color-text-primary);margin-bottom:10px;}
+/* ── histogram ── */
+.hist-title{font-size:13px;font-weight:600;color:var(--color-text-primary);margin-bottom:8px;}
+@media(max-width:699px){.hist-title{font-size:18px;margin-bottom:10px;}}
 .hist-wrap{position:relative;}
-canvas.hc{width:100%;display:block;border-radius:8px;}
-.hmarker{position:absolute;top:0;bottom:0;width:2.5px;pointer-events:none;display:none;border-radius:2px;}
-.hist-legend{display:flex;gap:14px;margin-top:8px;flex-wrap:wrap;}
-.hl-item{display:flex;align-items:center;gap:5px;font-size:var(--fs-sm);font-weight:500;color:var(--color-text-secondary);}
-.hl-dot{width:11px;height:11px;border-radius:50%;}
-.stats-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
-.stat-box{background:var(--color-background-secondary);border-radius:12px;padding:10px 12px;}
-.stat-lbl{font-size:var(--fs-sm);color:var(--color-text-tertiary);font-weight:500;}
-.stat-val{font-size:var(--fs-lg);font-weight:700;color:var(--color-text-primary);margin-top:3px;}
+canvas.hc{width:100%;display:block;border-radius:6px;}
+.hmarker{position:absolute;top:0;bottom:0;width:2px;pointer-events:none;display:none;border-radius:2px;}
+.hist-legend{display:flex;gap:10px;margin-top:6px;flex-wrap:wrap;}
+.hl-item{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:500;color:var(--color-text-secondary);}
+@media(max-width:699px){.hl-item{font-size:14px;gap:6px;}}
+.hl-dot{width:9px;height:9px;border-radius:50%;}
+@media(max-width:699px){.hl-dot{width:12px;height:12px;}}
+.stats-2{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px;}
+.stat-box{background:var(--color-background-secondary);border-radius:10px;padding:8px 10px;}
+@media(max-width:699px){.stat-box{border-radius:12px;padding:10px 12px;}}
+.stat-lbl{font-size:10px;color:var(--color-text-tertiary);font-weight:500;}
+@media(max-width:699px){.stat-lbl{font-size:13px;}}
+.stat-val{font-size:14px;font-weight:700;color:var(--color-text-primary);margin-top:2px;}
+@media(max-width:699px){.stat-val{font-size:18px;margin-top:3px;}}
 
-/* ─── poster card ─── */
-.poster-card{background:var(--color-background-primary);border-radius:var(--radius);border:0.5px solid var(--color-border-tertiary);padding:18px;margin-bottom:10px;}
-.poster-hd{font-size:var(--fs-lg);font-weight:600;color:var(--color-text-primary);margin-bottom:4px;}
-.poster-sub{font-size:var(--fs-sm);color:var(--color-text-secondary);margin-bottom:14px;line-height:1.55;}
-.sel-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1.5px solid var(--color-border-secondary);border-radius:12px;background:var(--color-background-secondary);margin-bottom:14px;}
-.sel-swatch{width:48px;height:48px;border-radius:10px;border:0.5px solid var(--color-border-tertiary);flex-shrink:0;}
-.sel-hex{font-family:var(--font-mono);font-size:var(--fs-xl);font-weight:700;color:var(--color-text-primary);}
-.sel-lbl{font-size:var(--fs-sm);color:var(--color-text-tertiary);margin-top:2px;}
-.sel-empty{font-size:var(--fs-md);color:var(--color-text-tertiary);padding:4px 0;}
-.poster-btns{display:flex;gap:10px;margin-bottom:14px;}
-.p-reset{height:var(--btn-h);flex:1;border-radius:var(--radius);border:1.5px solid var(--color-border-secondary);background:transparent;font-size:var(--fs-md);font-weight:600;color:var(--color-text-secondary);cursor:pointer;}
-.p-reset:active{background:var(--color-background-secondary);}
-.p-ai{height:var(--btn-h);flex:2;border-radius:var(--radius);border:none;background:var(--c-blue);font-size:var(--fs-md);font-weight:700;color:#fff;cursor:pointer;letter-spacing:0.02em;}
-.p-ai:active{background:#0C447C;}
-.p-ai:disabled{opacity:0.38;cursor:not-allowed;}
+/* ── poster section ── */
+.poster-hd{font-size:14px;font-weight:700;color:var(--color-text-primary);margin-bottom:4px;}
+@media(max-width:699px){.poster-hd{font-size:20px;margin-bottom:6px;}}
+.poster-sub{font-size:12px;color:var(--color-text-secondary);line-height:1.55;margin-bottom:12px;}
+@media(max-width:699px){.poster-sub{font-size:15px;margin-bottom:16px;}}
+.sel-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1.5px solid var(--color-border-secondary);border-radius:10px;background:var(--color-background-secondary);margin-bottom:12px;}
+@media(max-width:699px){.sel-row{padding:14px;border-radius:14px;margin-bottom:16px;}}
+.sel-swatch{width:40px;height:40px;border-radius:8px;border:0.5px solid var(--color-border-tertiary);flex-shrink:0;}
+@media(max-width:699px){.sel-swatch{width:52px;height:52px;border-radius:10px;}}
+.sel-hex{font-family:var(--font-mono);font-size:18px;font-weight:700;color:var(--color-text-primary);}
+@media(max-width:699px){.sel-hex{font-size:24px;}}
+.sel-lbl{font-size:11px;color:var(--color-text-tertiary);margin-top:2px;}
+@media(max-width:699px){.sel-lbl{font-size:14px;}}
+.sel-empty{font-size:13px;color:var(--color-text-tertiary);}
+@media(max-width:699px){.sel-empty{font-size:16px;}}
+.match-btn{width:100%;height:48px;border-radius:var(--radius);border:none;background:var(--blue);font-size:14px;font-weight:700;color:#fff;cursor:pointer;margin-bottom:12px;}
+.match-btn:active{background:#0C447C;}
+.match-btn:disabled{opacity:0.38;cursor:not-allowed;}
+@media(max-width:699px){.match-btn{height:64px;font-size:18px;border-radius:18px;margin-bottom:16px;}}
+
+/* poster result cards */
 .r-cards{display:flex;flex-direction:column;gap:10px;}
-.r-card{border:1.5px solid var(--color-border-secondary);border-radius:var(--radius);overflow:hidden;}
-.r-pal{display:flex;height:60px;}
+.r-card{border:1px solid var(--color-border-secondary);border-radius:var(--radius);overflow:hidden;}
+@media(max-width:699px){.r-card{border-radius:18px;}}
+.r-pal{display:flex;height:48px;}
+@media(max-width:699px){.r-pal{height:64px;}}
 .r-sw{flex:1;}
-.r-body{padding:14px 16px;}
-.r-genre{font-size:var(--fs-xs);font-weight:700;text-transform:uppercase;letter-spacing:0.09em;color:var(--color-text-tertiary);margin-bottom:4px;}
-.r-title{font-size:var(--fs-xl);font-weight:700;color:var(--color-text-primary);margin-bottom:5px;line-height:1.3;}
-.r-desc{font-size:var(--fs-md);color:var(--color-text-secondary);line-height:1.6;}
-.r-hexes{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
-.r-hex{display:flex;align-items:center;gap:5px;font-size:var(--fs-sm);font-family:var(--font-mono);font-weight:600;color:var(--color-text-secondary);background:var(--color-background-secondary);border-radius:8px;padding:5px 10px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);}
-.r-hex:active{background:var(--c-blue-lt);color:var(--c-blue);}
-.r-hex-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+.r-body{padding:12px 14px;}
+@media(max-width:699px){.r-body{padding:16px 18px;}}
+.r-movie{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.09em;color:var(--color-text-tertiary);margin-bottom:3px;}
+@media(max-width:699px){.r-movie{font-size:13px;}}
+.r-title{font-size:15px;font-weight:700;color:var(--color-text-primary);margin-bottom:2px;line-height:1.3;}
+@media(max-width:699px){.r-title{font-size:20px;margin-bottom:4px;}}
+.r-year{font-size:11px;color:var(--color-text-tertiary);margin-bottom:6px;}
+@media(max-width:699px){.r-year{font-size:14px;margin-bottom:8px;}}
+.r-desc{font-size:11px;color:var(--color-text-secondary);line-height:1.6;}
+@media(max-width:699px){.r-desc{font-size:14px;}}
+.r-match{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;background:var(--blue-lt);color:var(--blue);padding:3px 9px;border-radius:20px;margin-bottom:6px;}
+@media(max-width:699px){.r-match{font-size:14px;padding:5px 12px;}}
+.r-hexes{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap;}
+.r-hex{display:flex;align-items:center;gap:4px;font-size:11px;font-family:var(--font-mono);font-weight:600;color:var(--color-text-secondary);background:var(--color-background-secondary);border-radius:6px;padding:3px 8px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);}
+.r-hex:active{background:var(--blue-lt);color:var(--blue);}
+@media(max-width:699px){.r-hex{font-size:14px;padding:5px 10px;border-radius:8px;}}
+.r-hex-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+@media(max-width:699px){.r-hex-dot{width:13px;height:13px;}}
 </style>
 
-<div class="app">
-  <div class="drop-overlay" id="dropOverlay"><div class="drop-msg">ここにドロップ</div></div>
+<div class="drop-overlay" id="dropOverlay"><div class="drop-msg">ここにドロップ</div></div>
 
-  <!-- ── Welcome ── -->
-  <div class="welcome" id="welcome">
-    <div class="welcome-icon">
-      <svg viewBox="0 0 32 32"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="14" r="2.5"/><path d="M4 22l7-7 5 5 4-4 8 8"/></svg>
-    </div>
-    <div class="welcome-title">写真カラー分析</div>
-    <div class="welcome-sub">写真を選ぶと、色の情報をわかりやすく表示します</div>
-    <div class="welcome-btns">
-      <button class="wbtn" onclick="triggerFile(0)">
-        <svg viewBox="0 0 32 32"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="14" r="2"/><path d="M4 22l7-7 5 5 4-4 8 8"/></svg>
-        写真 1 を選ぶ
-      </button>
-      <button class="wbtn" onclick="triggerFile(1)">
-        <svg viewBox="0 0 32 32"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="14" r="2"/><path d="M4 22l7-7 5 5 4-4 8 8"/></svg>
-        写真 2 を選ぶ
-      </button>
-    </div>
-    <div class="welcome-hint">または写真をこの画面にドラッグ＆ドロップ</div>
+<!-- welcome -->
+<div class="welcome" id="welcome">
+  <div class="welcome-icon"><svg viewBox="0 0 32 32"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="14" r="2.5"/><path d="M4 22l7-7 5 5 4-4 8 8"/></svg></div>
+  <div class="welcome-title">写真カラー分析</div>
+  <div class="welcome-sub">写真を選ぶと色の情報を表示します</div>
+  <div class="welcome-btns">
+    <button class="wbtn" onclick="triggerFile(0)">
+      <svg viewBox="0 0 32 32"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="14" r="2"/><path d="M4 22l7-7 5 5 4-4 8 8"/></svg>
+      写真 1 を選ぶ
+    </button>
+    <button class="wbtn" onclick="triggerFile(1)">
+      <svg viewBox="0 0 32 32"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="14" r="2"/><path d="M4 22l7-7 5 5 4-4 8 8"/></svg>
+      写真 2 を選ぶ
+    </button>
   </div>
+  <div class="welcome-hint">または写真をドラッグ＆ドロップ</div>
+</div>
 
-  <!-- ── Workspace ── -->
-  <div class="workspace" id="workspace">
-    <div class="sec">写真</div>
+<!-- workspace -->
+<div class="workspace" id="workspace">
+<div class="layout">
 
-    <div id="slot0" class="img-slot" style="display:none">
+  <!-- col1: images + live color + hist1 -->
+  <div>
+    <div class="sec col-full">写真</div>
+    <div class="img-slot" id="slot0" style="display:none;margin-bottom:8px">
       <canvas id="c0" style="touch-action:none"></canvas>
       <div class="slot-badge">写真 1</div>
       <div class="slot-btns">
         <button class="slot-btn" onclick="triggerFile(0)">交換</button>
         <button class="slot-btn" onclick="removeSlot(0)">削除</button>
       </div>
-      <div class="touch-hint">タップ → 色をロック ／ 指をスライド → 色を確認</div>
-      <div class="zoom-box" id="zoom0"><canvas id="zc0" width="88" height="88"></canvas></div>
+      <div class="touch-hint">タップ → ロック ／ スライド → 確認</div>
+      <div class="zoom-box" id="zoom0"><canvas id="zc0"></canvas></div>
     </div>
-    <div id="slot1" class="img-slot" style="display:none">
-      <canvas id="c1" style="touch-action:none"></canvas>
-      <div class="slot-badge">写真 2</div>
-      <div class="slot-btns">
-        <button class="slot-btn" onclick="triggerFile(1)">交換</button>
-        <button class="slot-btn" onclick="removeSlot(1)">削除</button>
-      </div>
-      <div class="touch-hint">タップ → 色をロック ／ 指をスライド → 色を確認</div>
-      <div class="zoom-box" id="zoom1"><canvas id="zc1" width="88" height="88"></canvas></div>
-    </div>
+    <button class="add-btn" id="addBtn0" onclick="triggerFile(0)" style="display:none;margin-bottom:8px">＋ 写真 1 を追加</button>
 
-    <button class="add-btn" id="addBtn0" onclick="triggerFile(0)" style="display:none">
-      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      写真 1 を追加
-    </button>
-    <button class="add-btn" id="addBtn1" onclick="triggerFile(1)" style="display:none">
-      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      写真 2 を追加
-    </button>
-
-    <!-- live color -->
     <div class="sec">リアルタイムの色</div>
-    <div class="color-card">
+    <div class="card">
       <div class="cc-head">
         <div class="cc-label"><div class="cc-dot" style="background:#378ADD"></div>カーソル位置</div>
       </div>
-      <div class="big-swatch" id="lSwatch" style="background:var(--color-background-secondary)"></div>
+      <div class="big-swatch" id="lSwatch" style="height:48px;background:var(--color-background-secondary)"></div>
       <div class="rgb-3">
-        <div class="rgb-box">
-          <div class="rgb-name">赤 R</div>
-          <div class="rgb-num" id="lR">—</div>
-          <div class="rgb-bar-track"><div class="rgb-bar" id="lRb" style="background:#E24B4A"></div></div>
-        </div>
-        <div class="rgb-box">
-          <div class="rgb-name">緑 G</div>
-          <div class="rgb-num" id="lG">—</div>
-          <div class="rgb-bar-track"><div class="rgb-bar" id="lGb" style="background:#3B6D11"></div></div>
-        </div>
-        <div class="rgb-box">
-          <div class="rgb-name">青 B</div>
-          <div class="rgb-num" id="lB">—</div>
-          <div class="rgb-bar-track"><div class="rgb-bar" id="lBb" style="background:#378ADD"></div></div>
-        </div>
+        <div class="rgb-box"><div class="rgb-name">赤 R</div><div class="rgb-num" id="lR">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="lRb" style="background:#E24B4A"></div></div></div>
+        <div class="rgb-box"><div class="rgb-name">緑 G</div><div class="rgb-num" id="lG">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="lGb" style="background:#3B6D11"></div></div></div>
+        <div class="rgb-box"><div class="rgb-name">青 B</div><div class="rgb-num" id="lB">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="lBb" style="background:#378ADD"></div></div></div>
       </div>
-      <div class="hex-row">
-        <div class="hex-val" id="lHex">#——————</div>
-        <button class="copy-btn" onclick="copyEl('lHex',this)">コピー</button>
-      </div>
+      <div class="hex-row"><div class="hex-val" id="lHex">#——————</div><button class="copy-btn" onclick="copyEl('lHex',this)">コピー</button></div>
       <div class="hsl-val" id="lHsl">HSL: —</div>
       <div class="pos-val" id="lPos">写真にタップ／カーソルを合わせてください</div>
     </div>
 
-    <!-- locked color -->
-    <div class="sec">ロックした色</div>
-    <div class="color-card">
-      <div class="cc-head">
-        <div class="cc-label"><div class="cc-dot" style="background:#BA7517"></div>クリック・タップで固定</div>
-        <button class="unlock-btn" onclick="clearLock()">解除する</button>
-      </div>
-      <div class="big-swatch" id="kSwatch" style="background:var(--color-background-secondary)"></div>
-      <div class="rgb-3">
-        <div class="rgb-box">
-          <div class="rgb-name">赤 R</div>
-          <div class="rgb-num" id="kR">—</div>
-          <div class="rgb-bar-track"><div class="rgb-bar" id="kRb" style="background:#E24B4A"></div></div>
-        </div>
-        <div class="rgb-box">
-          <div class="rgb-name">緑 G</div>
-          <div class="rgb-num" id="kG">—</div>
-          <div class="rgb-bar-track"><div class="rgb-bar" id="kGb" style="background:#3B6D11"></div></div>
-        </div>
-        <div class="rgb-box">
-          <div class="rgb-name">青 B</div>
-          <div class="rgb-num" id="kB">—</div>
-          <div class="rgb-bar-track"><div class="rgb-bar" id="kBb" style="background:#378ADD"></div></div>
-        </div>
-      </div>
-      <div class="hex-row">
-        <div class="hex-val" id="kHex">#——————</div>
-        <button class="copy-btn" onclick="copyEl('kHex',this)">コピー</button>
-      </div>
-      <div class="hsl-val" id="kHsl">HSL: —</div>
-      <div class="pos-val" id="kPos">写真をタップ／クリックしてロック</div>
-    </div>
-
-    <!-- histograms -->
-    <div class="sec">ヒストグラム（色の分布）</div>
-    <div class="hist-card" id="hp0">
-      <div class="hist-title">写真 1</div>
+    <div class="sec">ヒストグラム（写真 1）</div>
+    <div class="card" id="hp0">
       <div class="hist-wrap" id="hw0">
-        <canvas class="hc" id="hc0" height="100"></canvas>
+        <canvas class="hc" id="hc0" height="90"></canvas>
         <div class="hmarker" id="hm0r" style="background:rgba(226,75,74,0.9)"></div>
         <div class="hmarker" id="hm0g" style="background:rgba(59,109,17,0.9)"></div>
         <div class="hmarker" id="hm0b" style="background:rgba(55,138,221,0.9)"></div>
       </div>
       <div class="hist-legend">
-        <div class="hl-item"><div class="hl-dot" style="background:#E24B4A"></div>赤 (R)</div>
-        <div class="hl-item"><div class="hl-dot" style="background:#3B6D11"></div>緑 (G)</div>
-        <div class="hl-item"><div class="hl-dot" style="background:#378ADD"></div>青 (B)</div>
+        <div class="hl-item"><div class="hl-dot" style="background:#E24B4A"></div>赤</div>
+        <div class="hl-item"><div class="hl-dot" style="background:#3B6D11"></div>緑</div>
+        <div class="hl-item"><div class="hl-dot" style="background:#378ADD"></div>青</div>
         <div class="hl-item"><div class="hl-dot" style="background:#888780"></div>明るさ</div>
       </div>
       <div class="stats-2">
@@ -257,18 +231,52 @@ canvas.hc{width:100%;display:block;border-radius:8px;}
         <div class="stat-box"><div class="stat-lbl">平均明るさ</div><div class="stat-val" id="sBr0">—</div></div>
       </div>
     </div>
-    <div class="hist-card" id="hp1" style="display:none">
-      <div class="hist-title">写真 2</div>
+  </div>
+
+  <!-- col2: image2 + locked color + hist2 + poster -->
+  <div>
+    <div class="sec" style="padding-top:14px">　</div><!-- spacer to align with col1 sec -->
+    <div class="img-slot" id="slot1" style="display:none;margin-bottom:8px">
+      <canvas id="c1" style="touch-action:none"></canvas>
+      <div class="slot-badge">写真 2</div>
+      <div class="slot-btns">
+        <button class="slot-btn" onclick="triggerFile(1)">交換</button>
+        <button class="slot-btn" onclick="removeSlot(1)">削除</button>
+      </div>
+      <div class="touch-hint">タップ → ロック ／ スライド → 確認</div>
+      <div class="zoom-box" id="zoom1"><canvas id="zc1"></canvas></div>
+    </div>
+    <button class="add-btn" id="addBtn1" onclick="triggerFile(1)" style="display:none;margin-bottom:8px">＋ 写真 2 を追加</button>
+
+    <div class="sec">ロックした色</div>
+    <div class="card">
+      <div class="cc-head">
+        <div class="cc-label"><div class="cc-dot" style="background:#BA7517"></div>タップ／クリックで固定</div>
+        <button class="unlock-btn" onclick="clearLock()">解除する</button>
+      </div>
+      <div class="big-swatch" id="kSwatch" style="height:48px;background:var(--color-background-secondary)"></div>
+      <div class="rgb-3">
+        <div class="rgb-box"><div class="rgb-name">赤 R</div><div class="rgb-num" id="kR">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="kRb" style="background:#E24B4A"></div></div></div>
+        <div class="rgb-box"><div class="rgb-name">緑 G</div><div class="rgb-num" id="kG">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="kGb" style="background:#3B6D11"></div></div></div>
+        <div class="rgb-box"><div class="rgb-name">青 B</div><div class="rgb-num" id="kB">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="kBb" style="background:#378ADD"></div></div></div>
+      </div>
+      <div class="hex-row"><div class="hex-val" id="kHex">#——————</div><button class="copy-btn" onclick="copyEl('kHex',this)">コピー</button></div>
+      <div class="hsl-val" id="kHsl">HSL: —</div>
+      <div class="pos-val" id="kPos">写真をタップ／クリックしてロック</div>
+    </div>
+
+    <div class="sec" id="hp1sec" style="display:none">ヒストグラム（写真 2）</div>
+    <div class="card" id="hp1" style="display:none">
       <div class="hist-wrap" id="hw1">
-        <canvas class="hc" id="hc1" height="100"></canvas>
+        <canvas class="hc" id="hc1" height="90"></canvas>
         <div class="hmarker" id="hm1r" style="background:rgba(226,75,74,0.9)"></div>
         <div class="hmarker" id="hm1g" style="background:rgba(59,109,17,0.9)"></div>
         <div class="hmarker" id="hm1b" style="background:rgba(55,138,221,0.9)"></div>
       </div>
       <div class="hist-legend">
-        <div class="hl-item"><div class="hl-dot" style="background:#E24B4A"></div>赤 (R)</div>
-        <div class="hl-item"><div class="hl-dot" style="background:#3B6D11"></div>緑 (G)</div>
-        <div class="hl-item"><div class="hl-dot" style="background:#378ADD"></div>青 (B)</div>
+        <div class="hl-item"><div class="hl-dot" style="background:#E24B4A"></div>赤</div>
+        <div class="hl-item"><div class="hl-dot" style="background:#3B6D11"></div>緑</div>
+        <div class="hl-item"><div class="hl-dot" style="background:#378ADD"></div>青</div>
         <div class="hl-item"><div class="hl-dot" style="background:#888780"></div>明るさ</div>
       </div>
       <div class="stats-2">
@@ -279,52 +287,84 @@ canvas.hc{width:100%;display:block;border-radius:8px;}
       </div>
     </div>
 
-    <!-- poster -->
-    <div class="sec">映画ポスター配色提案</div>
-    <div class="poster-card">
-      <div class="poster-hd">AIに配色を提案してもらう</div>
-      <div class="poster-sub">色をロックしてから「AIに提案してもらう」ボタンを押してください。映画ポスターに合う配色を3パターン提案します。</div>
+    <div class="sec">映画ポスター参考配色</div>
+    <div class="card">
+      <div class="poster-hd">近い色の映画ポスターを探す</div>
+      <div class="poster-sub">色をロックして「近い映画を探す」を押すと、その色に近い配色の有名映画ポスターを表示します。</div>
       <div id="scArea"><div class="sel-empty">まず写真の色をタップしてロックしてください</div></div>
-      <div style="height:12px"></div>
-      <div class="poster-btns">
-        <button class="p-reset" onclick="resetPoster()">リセット</button>
-        <button class="p-ai" id="suggestBtn" onclick="runSuggest()" disabled>AIに提案してもらう ↗</button>
-      </div>
-      <div class="r-cards" id="posterResults"></div>
+      <div style="height:10px"></div>
+      <button class="match-btn" id="matchBtn" onclick="findMovies()" disabled>近い映画を探す</button>
+      <div class="r-cards" id="movieResults"></div>
     </div>
   </div>
+
+</div>
 </div>
 
 <input type="file" id="fi0" accept="image/*" style="display:none">
 <input type="file" id="fi1" accept="image/*" style="display:none">
 
 <script>
+// ─── Movie palette database ───
+// Each entry: title, year, genre, palette(5 hex), description
+const MOVIES = [
+  {title:"マトリックス",year:1999,genre:"SF",palette:["#0D2B1A","#00FF41","#1A3A1A","#FFFFFF","#003B00"],desc:"濃い緑とブラックで構成されたデジタル世界の表現"},
+  {title:"ラ・ラ・ランド",year:2016,genre:"ミュージカル",palette:["#1B2A4A","#F4C842","#E8507A","#7BA7D4","#F9F0DC"],desc:"夜の青と暖かい黄・ピンクのコントラスト"},
+  {title:"ブレードランナー2049",year:2017,genre:"SF",palette:["#0A0A0F","#C87941","#2B4B6F","#E8C8A0","#1A1A2E"],desc:"砂漠のオレンジと深夜の青による未来都市"},
+  {title:"グランド・ブダペスト・ホテル",year:2014,genre:"コメディ",palette:["#E8B4C8","#6B2D5E","#F5E6C8","#C84B4B","#2D4B6B"],desc:"ピンクとパープルの牧歌的ヴィンテージパレット"},
+  {title:"ゴッドファーザー",year:1972,genre:"ドラマ",palette:["#1A0A00","#8B4513","#D4A867","#2C1810","#F5DEB3"],desc:"暗いセピアとブラウンによる重厚な権力の表現"},
+  {title:"インセプション",year:2010,genre:"SF",palette:["#0A1628","#2E5F8A","#C8A850","#4A4A4A","#DCDCDC"],desc:"灰青と金の夢の中の建築空間"},
+  {title:"バービー",year:2023,genre:"コメディ",palette:["#FF69B4","#FF1493","#FFB6C1","#FFFFFF","#C71585"],desc:"鮮やかなホットピンクのポップワールド"},
+  {title:"デューン",year:2021,genre:"SF",palette:["#C8A050","#8B6914","#1A1000","#D4B896","#4A3000"],desc:"砂漠の金と茶による壮大なスケール"},
+  {title:"スパイダーマン:スパイダーバース",year:2018,genre:"アニメ",palette:["#E01B1B","#0A0A2A","#FFD700","#FF6B9D","#00CFFF"],desc:"コミック的な原色と黒による躍動感"},
+  {title:"ジョーカー",year:2019,genre:"ドラマ",palette:["#8B0000","#1A1A1A","#C8702A","#4A0000","#2C1A0A"],desc:"深紅とダークブラウンの病んだ孤独"},
+  {title:"アバター",year:2009,genre:"SF",palette:["#0A2030","#00A8FF","#1A4020","#7FFFB4","#003050"],desc:"蛍光ブルーとグリーンの生命あふれる惑星"},
+  {title:"ノスタルジア",year:1983,genre:"ドラマ",palette:["#8B7355","#D4C4A0","#2C2418","#A89060","#4A3C28"],desc:"セピアとベージュの詩的な記憶"},
+  {title:"マッドマックス 怒りのデス・ロード",year:2015,genre:"アクション",palette:["#C87820","#1A0A00","#FF4500","#8B6914","#4A2800"],desc:"燃えるオレンジと荒廃した茶で描く終末世界"},
+  {title:"君の名は。",year:2016,genre:"アニメ",palette:["#1A3050","#E87050","#87CEEB","#F5DEB3","#C05030"],desc:"黄昏の橙と夜明けの青の鮮やかな対比"},
+  {title:"ミッドサマー",year:2019,genre:"ホラー",palette:["#F5E6A0","#90B848","#FFFFFF","#D4C870","#6B8C28"],desc:"明るい黄と白昼の緑による不穏な祝祭"},
+  {title:"シェイプ・オブ・ウォーター",year:2017,genre:"ファンタジー",palette:["#0A3040","#00888A","#2A6050","#C8A040","#004050"],desc:"深い青緑と水のティールで描く愛の物語"},
+  {title:"ムーンライト",year:2016,genre:"ドラマ",palette:["#0A1830","#1A5070","#C87840","#2A3050","#E0B880"],desc:"夜の青と暖かい肌色の対比"},
+  {title:"パラサイト",year:2019,genre:"ドラマ",palette:["#1A3010","#405820","#8B9870","#C0C8A0","#D4C878"],desc:"緑と灰色がかった色調で格差を表現"},
+  {title:"アメリ",year:2001,genre:"コメディ",palette:["#2A1A00","#C84B00","#F5A020","#1A3020","#8B4500"],desc:"深いレッドとアンバーの温かいパリ情緒"},
+  {title:"2001年宇宙の旅",year:1968,genre:"SF",palette:["#000000","#FFFFFF","#C8140A","#1E3A5F","#A0A0A0"],desc:"白黒と原色の未来的ミニマリズム"},
+];
+
+function colorDist(hex1, hex2){
+  const p=h=>parseInt(h.slice(1),16);
+  const a=p(hex1),b=p(hex2);
+  const dr=((a>>16)&255)-((b>>16)&255);
+  const dg=((a>>8)&255)-((b>>8)&255);
+  const db=(a&255)-(b&255);
+  return Math.sqrt(dr*dr+dg*dg+db*db);
+}
+function bestMatch(lockedHex, movie){
+  return Math.min(...movie.palette.map(c=>colorDist(lockedHex,c)));
+}
+
 const slots=[null,null],imgDatas=[null,null],origImgs=[null,null],imgDims=[{w:0,h:0},{w:0,h:0}],histData=[null,null];
-let posterColor=null,lockedRGB=null;
+let lockedRGB=null,lockedHex=null;
 
 document.getElementById('fi0').onchange=function(){if(this.files[0])loadFile(0,this.files[0]);};
 document.getElementById('fi1').onchange=function(){if(this.files[0])loadFile(1,this.files[0]);};
 function triggerFile(i){document.getElementById('fi'+i).click();}
 
-function loadFile(i,f){
-  const url=URL.createObjectURL(f),img=new Image();
-  img.onload=()=>loadSlot(i,img); img.src=url;
-}
+function loadFile(i,f){const url=URL.createObjectURL(f),img=new Image();img.onload=()=>loadSlot(i,img);img.src=url;}
 function loadSlot(i,img){
-  origImgs[i]=img; imgDims[i]={w:img.naturalWidth,h:img.naturalHeight}; slots[i]=true;
+  origImgs[i]=img;imgDims[i]={w:img.naturalWidth,h:img.naturalHeight};slots[i]=true;
   document.getElementById('welcome').style.display='none';
   document.getElementById('workspace').style.display='block';
   document.getElementById('slot'+i).style.display='flex';
   const c=document.getElementById('c'+i);
-  renderCanvas(i,c); setupEvents(i,c); buildHist(i);
+  renderCanvas(i,c);setupEvents(i,c);buildHist(i);
   setTimeout(()=>redrawHist(i),60);
   updateAddBtns();
-  if(slots[1]) document.getElementById('hp1').style.display='block';
+  if(slots[1]){document.getElementById('hp1').style.display='block';document.getElementById('hp1sec').style.display='block';}
 }
 function removeSlot(i){
-  slots[i]=null; origImgs[i]=null; imgDatas[i]=null; imgDims[i]={w:0,h:0}; histData[i]=null;
+  slots[i]=null;origImgs[i]=null;imgDatas[i]=null;imgDims[i]={w:0,h:0};histData[i]=null;
   document.getElementById('slot'+i).style.display='none';
-  document.getElementById('hp'+i).style.display='none';
+  if(i===1){document.getElementById('hp1').style.display='none';document.getElementById('hp1sec').style.display='none';}
   updateAddBtns();
   if(!slots[0]&&!slots[1]){document.getElementById('workspace').style.display='none';document.getElementById('welcome').style.display='flex';}
 }
@@ -334,9 +374,9 @@ function updateAddBtns(){
 }
 function renderCanvas(i,canvas){
   const wrap=document.getElementById('slot'+i);
-  const maxW=Math.max(wrap.offsetWidth-2,200),maxH=400;
+  const maxW=Math.max(wrap.offsetWidth-2,180),maxH=360;
   const{w,h}=imgDims[i],s=Math.min(maxW/w,maxH/h,1);
-  canvas.width=Math.round(w*s); canvas.height=Math.round(h*s);
+  canvas.width=Math.round(w*s);canvas.height=Math.round(h*s);
   const ctx=canvas.getContext('2d');
   ctx.drawImage(origImgs[i],0,0,canvas.width,canvas.height);
   imgDatas[i]=ctx.getImageData(0,0,canvas.width,canvas.height);
@@ -355,13 +395,13 @@ function getPx(i,cx,cy){
 function setupEvents(i,canvas){
   canvas.addEventListener('mousemove',e=>{
     const{cx,cy,rx,ry}=getPos(e.clientX,e.clientY,canvas,i);
-    const px=getPx(i,cx,cy); if(!px)return;
+    const px=getPx(i,cx,cy);if(!px)return;
     updateLive(px[0],px[1],px[2],rx,ry,i+1);
     drawZoom(i,canvas,cx,cy,false);
   });
   canvas.addEventListener('click',e=>{
     const{cx,cy,rx,ry}=getPos(e.clientX,e.clientY,canvas,i);
-    const px=getPx(i,cx,cy); if(!px)return;
+    const px=getPx(i,cx,cy);if(!px)return;
     doLock(px[0],px[1],px[2],rx,ry,i+1);
   });
   canvas.addEventListener('mouseleave',()=>document.getElementById('zoom'+i).style.display='none');
@@ -369,27 +409,28 @@ function setupEvents(i,canvas){
   canvas.addEventListener('touchmove',e=>{
     e.preventDefault();
     const t=e.touches[0],{cx,cy,rx,ry}=getPos(t.clientX,t.clientY,canvas,i);
-    const px=getPx(i,cx,cy); if(!px)return;
+    const px=getPx(i,cx,cy);if(!px)return;
     updateLive(px[0],px[1],px[2],rx,ry,i+1);
     drawZoom(i,canvas,cx,cy,true);
   },{passive:false});
   canvas.addEventListener('touchend',e=>{
     e.preventDefault();
     const t=e.changedTouches[0],{cx,cy,rx,ry}=getPos(t.clientX,t.clientY,canvas,i);
-    const px=getPx(i,cx,cy); if(!px)return;
+    const px=getPx(i,cx,cy);if(!px)return;
     doLock(px[0],px[1],px[2],rx,ry,i+1);
-    setTimeout(()=>{const z=document.getElementById('zoom'+i);z.style.display='none';},800);
+    setTimeout(()=>document.getElementById('zoom'+i).style.display='none',700);
   },{passive:false});
 }
 function drawZoom(i,canvas,cx,cy,large){
   const zEl=document.getElementById('zoom'+i),zc=document.getElementById('zc'+i);
-  const sz=large?88:66; zEl.style.width=sz+'px'; zEl.style.height=sz+'px'; zEl.style.display='block';
-  zc.width=sz; zc.height=sz;
+  const sz=large?88:64;
+  zEl.style.width=sz+'px';zEl.style.height=sz+'px';zEl.style.display='block';
+  zc.width=sz;zc.height=sz;
   const z=zc.getContext('2d');
-  z.imageSmoothingEnabled=false; z.clearRect(0,0,sz,sz);
+  z.imageSmoothingEnabled=false;z.clearRect(0,0,sz,sz);
   z.drawImage(canvas,cx-8,cy-8,16,16,0,0,sz,sz);
-  const c=Math.round(sz*0.3),s=Math.round(sz*0.4);
-  z.strokeStyle='rgba(255,255,255,0.95)'; z.lineWidth=2.5; z.strokeRect(c,c,s,s);
+  const c=Math.round(sz*.3),s=Math.round(sz*.4);
+  z.strokeStyle='rgba(255,255,255,0.95)';z.lineWidth=2;z.strokeRect(c,c,s,s);
 }
 function updateLive(r,g,b,x,y,sn){
   document.getElementById('lSwatch').style.background=`rgb(${r},${g},${b})`;
@@ -404,8 +445,7 @@ function updateLive(r,g,b,x,y,sn){
   document.getElementById('lPos').textContent=`写真${sn}  (${x}, ${y})`;
 }
 function doLock(r,g,b,x,y,sn){
-  lockedRGB={r,g,b};
-  const hex=toHex(r,g,b);
+  lockedRGB={r,g,b};lockedHex=toHex(r,g,b);
   document.getElementById('kSwatch').style.background=`rgb(${r},${g},${b})`;
   document.getElementById('kR').textContent=r;
   document.getElementById('kG').textContent=g;
@@ -413,14 +453,16 @@ function doLock(r,g,b,x,y,sn){
   document.getElementById('kRb').style.width=pct(r);
   document.getElementById('kGb').style.width=pct(g);
   document.getElementById('kBb').style.width=pct(b);
-  document.getElementById('kHex').textContent=hex;
+  document.getElementById('kHex').textContent=lockedHex;
   document.getElementById('kHsl').textContent='HSL: '+toHslStr(r,g,b);
   document.getElementById('kPos').textContent=`写真${sn}  (${x}, ${y})`;
   updateMarkers(r,g,b);
-  setPosterColor(hex);
+  // update poster area
+  document.getElementById('scArea').innerHTML=`<div class="sel-row"><div class="sel-swatch" style="background:${lockedHex}"></div><div><div class="sel-hex">${lockedHex}</div><div class="sel-lbl">ロックされた色</div></div></div>`;
+  document.getElementById('matchBtn').disabled=false;
 }
 function clearLock(){
-  lockedRGB=null;
+  lockedRGB=null;lockedHex=null;
   document.getElementById('kSwatch').style.background='var(--color-background-secondary)';
   ['kR','kG','kB'].forEach(id=>document.getElementById(id).textContent='—');
   ['kRb','kGb','kBb'].forEach(id=>document.getElementById(id).style.width='0%');
@@ -428,6 +470,9 @@ function clearLock(){
   document.getElementById('kHsl').textContent='HSL: —';
   document.getElementById('kPos').textContent='写真をタップ／クリックしてロック';
   hideMarkers();
+  document.getElementById('scArea').innerHTML='<div class="sel-empty">まず写真の色をタップしてロックしてください</div>';
+  document.getElementById('matchBtn').disabled=true;
+  document.getElementById('movieResults').innerHTML='';
 }
 function pct(v){return Math.round(v/255*100)+'%';}
 function toHex(r,g,b){return'#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('').toUpperCase();}
@@ -445,8 +490,7 @@ function copyEl(id,btn){
   if(v&&!v.includes('—')){
     navigator.clipboard.writeText(v).catch(()=>{});
     btn.textContent='✓ コピーしました！';
-    btn.style.background='var(--color-background-secondary)';
-    setTimeout(()=>{btn.textContent='コピー';btn.style.background='';},2000);
+    setTimeout(()=>btn.textContent='コピー',2000);
   }
 }
 function buildHist(i){
@@ -464,13 +508,13 @@ function buildHist(i){
 function redrawHist(i){
   if(!histData[i])return;
   const hc=document.getElementById('hc'+i),hx=hc.getContext('2d');
-  const w=hc.offsetWidth||320; hc.width=w; hc.height=100; hx.clearRect(0,0,w,100);
+  const w=hc.offsetWidth||280;hc.width=w;hc.height=90;hx.clearRect(0,0,w,90);
   const{rH,gH,bH,lH,bright}=histData[i];
   const mx=Math.max(...rH,...gH,...bH,...lH),bw=w/256;
   [[lH,'rgba(136,135,128,0.38)'],[rH,'rgba(226,75,74,0.55)'],[gH,'rgba(59,109,17,0.55)'],[bH,'rgba(55,138,221,0.55)']].forEach(([h,c])=>{
-    hx.beginPath();hx.moveTo(0,100);
-    for(let j=0;j<256;j++)hx.lineTo(j*bw+bw/2,100-(h[j]/mx)*94);
-    hx.lineTo(w,100);hx.closePath();hx.fillStyle=c;hx.fill();
+    hx.beginPath();hx.moveTo(0,90);
+    for(let j=0;j<256;j++)hx.lineTo(j*bw+bw/2,90-(h[j]/mx)*85);
+    hx.lineTo(w,90);hx.closePath();hx.fillStyle=c;hx.fill();
   });
   const{w:iw,h:ih}=imgDims[i];
   document.getElementById('sW'+i).textContent=iw+'px';
@@ -478,41 +522,48 @@ function redrawHist(i){
   const gcd=(a,b)=>b?gcd(b,a%b):a,d2=gcd(iw,ih);
   document.getElementById('sAR'+i).textContent=(iw/d2)+':'+(ih/d2);
   document.getElementById('sBr'+i).textContent=bright;
-  if(lockedRGB) updateMarkers(lockedRGB.r,lockedRGB.g,lockedRGB.b);
+  if(lockedRGB)updateMarkers(lockedRGB.r,lockedRGB.g,lockedRGB.b);
 }
 function updateMarkers(r,g,b){
   for(let i=0;i<2;i++){
-    const hw=document.getElementById('hw'+i); if(!hw)continue;
-    const w=hw.offsetWidth||320,bw=w/256;
+    const hw=document.getElementById('hw'+i);if(!hw)continue;
+    const w=hw.offsetWidth||280,bw=w/256;
     [['hm'+i+'r',r],['hm'+i+'g',g],['hm'+i+'b',b]].forEach(([id,val])=>{
-      const el=document.getElementById(id); if(!el)return;
-      el.style.display='block'; el.style.left=(val*bw)+'px'; el.style.top='0'; el.style.height='100px';
+      const el=document.getElementById(id);if(!el)return;
+      el.style.display='block';el.style.left=(val*bw)+'px';el.style.top='0';el.style.height='90px';
     });
   }
 }
 function hideMarkers(){
   ['hm0r','hm0g','hm0b','hm1r','hm1g','hm1b'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
 }
-function setPosterColor(hex){
-  posterColor=hex;
-  document.getElementById('scArea').innerHTML=`<div class="sel-row"><div class="sel-swatch" style="background:${hex}"></div><div><div class="sel-hex">${hex}</div><div class="sel-lbl">ポスターのベースカラー</div></div></div>`;
-  document.getElementById('suggestBtn').disabled=false;
+
+function findMovies(){
+  if(!lockedHex)return;
+  const sorted=[...MOVIES].map(m=>({...m,dist:bestMatch(lockedHex,m)})).sort((a,b)=>a.dist-b.dist).slice(0,5);
+  const res=document.getElementById('movieResults');
+  res.innerHTML='';
+  sorted.forEach(m=>{
+    const matchPct=Math.round(Math.max(0,100-m.dist/4.41));
+    const pal=m.palette.map(c=>`<div class="r-sw" style="background:${c}"></div>`).join('');
+    const hexChips=m.palette.map(c=>`<div class="r-hex" onclick="copyChip('${c}',this)"><div class="r-hex-dot" style="background:${c}"></div>${c}</div>`).join('');
+    const card=document.createElement('div');
+    card.className='r-card';
+    card.innerHTML=`<div class="r-pal">${pal}</div><div class="r-body"><div class="r-movie">${m.genre}</div><div class="r-match">色の一致度 ${matchPct}%</div><div class="r-title">${m.title}</div><div class="r-year">${m.year}年</div><div class="r-desc">${m.desc}</div><div class="r-hexes">${hexChips}</div></div>`;
+    res.appendChild(card);
+  });
 }
-function resetPoster(){
-  posterColor=null;
-  document.getElementById('scArea').innerHTML='<div class="sel-empty">まず写真の色をタップしてロックしてください</div>';
-  document.getElementById('posterResults').innerHTML='';
-  document.getElementById('suggestBtn').disabled=true;
+function copyChip(hex,el){
+  navigator.clipboard.writeText(hex).catch(()=>{});
+  el.style.background='var(--blue-lt)';el.style.color='var(--blue)';
+  setTimeout(()=>{el.style.background='';el.style.color='';},900);
 }
-function runSuggest(){
-  if(!posterColor)return;
-  sendPrompt(`ベースカラー ${posterColor} を使った映画ポスターの配色を3パターン提案してください。各パターンについて以下を教えてください：\n・映画ジャンル\n・架空の映画タイトル（日本語）\n・配色5色（HEXコード＋役割：背景・メイン・アクセント・テキスト・補助）\n・その配色の雰囲気の説明（50文字以内）\n必ず ${posterColor} を各パターンに含めてください。`);
-}
+
 document.addEventListener('dragover',e=>{e.preventDefault();document.getElementById('dropOverlay').classList.add('active');});
 document.addEventListener('dragleave',e=>{if(!e.relatedTarget)document.getElementById('dropOverlay').classList.remove('active');});
 document.addEventListener('drop',e=>{
-  e.preventDefault(); document.getElementById('dropOverlay').classList.remove('active');
-  const f=e.dataTransfer.files[0]; if(!f||!f.type.startsWith('image/'))return;
+  e.preventDefault();document.getElementById('dropOverlay').classList.remove('active');
+  const f=e.dataTransfer.files[0];if(!f||!f.type.startsWith('image/'))return;
   loadFile(slots[0]?(slots[1]?0:1):0,f);
 });
 window.addEventListener('resize',()=>{
