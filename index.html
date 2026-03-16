@@ -1,251 +1,268 @@
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-.app{font-family:var(--font-sans);position:relative;}
-.drop-overlay{position:fixed;inset:0;z-index:9999;background:rgba(55,138,221,0.12);border:3px dashed #378ADD;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity 0.2s;}
+:root{--fs-xl:22px;--fs-lg:18px;--fs-md:15px;--fs-sm:13px;--fs-xs:11px;--gap:14px;--radius:14px;--btn-h:52px;}
+body{font-family:var(--font-sans);}
+.app{max-width:680px;margin:0 auto;padding:0 0 40px;}
+
+/* welcome */
+.welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:20px;padding:24px 16px;}
+.welcome-title{font-size:var(--fs-xl);font-weight:500;color:var(--color-text-primary);text-align:center;}
+.welcome-sub{font-size:var(--fs-md);color:var(--color-text-secondary);text-align:center;}
+.welcome-btns{display:flex;flex-direction:column;gap:12px;width:100%;max-width:320px;}
+.welcome-btn{display:flex;align-items:center;justify-content:center;gap:10px;height:var(--btn-h);border-radius:var(--radius);border:2px solid var(--color-border-secondary);background:var(--color-background-secondary);font-size:var(--fs-lg);font-weight:500;color:var(--color-text-primary);cursor:pointer;transition:border-color 0.2s,background 0.2s;}
+.welcome-btn:hover,.welcome-btn:active{border-color:#378ADD;background:#E6F1FB;}
+.welcome-drop-hint{font-size:var(--fs-sm);color:var(--color-text-tertiary);text-align:center;}
+
+.drop-overlay{position:fixed;inset:0;z-index:9999;background:rgba(55,138,221,0.15);border:4px dashed #378ADD;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity 0.2s;}
 .drop-overlay.active{opacity:1;}
-.drop-msg{font-size:18px;font-weight:500;color:#185FA5;background:#E6F1FB;padding:0.9rem 1.8rem;border-radius:14px;}
-.welcome{padding:2.5rem 1rem;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:280px;gap:1.2rem;}
-.welcome-cards{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
-.slot-card{width:160px;height:140px;border:1.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-lg);background:var(--color-background-secondary);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:border-color 0.2s,background 0.2s;gap:6px;}
-.slot-card:hover,.slot-card:active{border-color:#378ADD;background:#E6F1FB;}
-.slot-card svg{opacity:0.35;}
-.slot-card span{font-size:12px;color:var(--color-text-secondary);}
-.slot-num{font-size:10px;font-weight:500;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:0.06em;}
-.workspace{display:none;}
-.images-row{display:grid;gap:8px;grid-template-columns:1fr;margin-bottom:6px;}
-.images-row.two{grid-template-columns:1fr 1fr;}
-.img-slot{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);overflow:hidden;position:relative;min-height:120px;display:flex;align-items:center;justify-content:center;}
-.img-slot canvas{display:block;max-width:100%;cursor:crosshair;touch-action:none;}
-.slot-label{position:absolute;top:6px;left:6px;font-size:10px;font-weight:500;padding:2px 7px;border-radius:4px;background:rgba(0,0,0,0.5);color:#fff;pointer-events:none;}
-.slot-actions{position:absolute;top:6px;right:6px;display:flex;gap:3px;}
-.slot-action-btn{font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(0,0,0,0.5);color:#fff;border:none;cursor:pointer;}
-.slot-action-btn:hover{background:rgba(0,0,0,0.7);}
-.zoom-strip{position:absolute;bottom:6px;right:6px;width:60px;height:60px;border-radius:6px;border:1.5px solid rgba(255,255,255,0.85);overflow:hidden;pointer-events:none;display:none;box-shadow:0 2px 8px rgba(0,0,0,0.35);}
-.zoom-strip canvas{width:60px;height:60px;image-rendering:pixelated;}
-.add-row{display:flex;gap:6px;margin-bottom:6px;}
-.add-slot-btn{flex:1;padding:7px;border:1.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-lg);background:transparent;cursor:pointer;font-size:12px;color:var(--color-text-secondary);transition:background 0.2s;}
-.add-slot-btn:hover{background:var(--color-background-secondary);}
+.drop-msg{font-size:var(--fs-xl);font-weight:500;color:#185FA5;background:#E6F1FB;padding:1.2rem 2rem;border-radius:16px;}
 
-/* color panels */
-.color-panels-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
-.cpanel{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:0.75rem;}
-.cpanel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
-.cpanel-label{display:flex;align-items:center;gap:5px;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.07em;color:var(--color-text-tertiary);}
-.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-.swatch{width:100%;height:34px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);margin-bottom:6px;transition:background 0.04s;}
-.rgb-row{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;}
-.rgb-item{background:var(--color-background-secondary);border-radius:6px;padding:4px;text-align:center;}
-.rgb-label{font-size:9px;color:var(--color-text-tertiary);font-weight:500;}
-.rgb-value{font-size:14px;font-weight:500;color:var(--color-text-primary);line-height:1.3;}
-.rgb-bar-track{height:2px;background:var(--color-border-tertiary);border-radius:2px;margin-top:3px;}
-.rgb-bar{height:2px;border-radius:2px;width:0%;transition:width 0.04s;}
-.hex-row{margin-top:6px;display:flex;gap:4px;align-items:center;}
-.hex-box{flex:1;background:var(--color-background-secondary);border-radius:6px;padding:4px 7px;font-size:11px;font-family:var(--font-mono);font-weight:500;color:var(--color-text-primary);border:0.5px solid var(--color-border-tertiary);}
-.copy-btn{font-size:10px;padding:3px 8px;border-radius:6px;border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);cursor:pointer;white-space:nowrap;}
-.copy-btn:hover{background:var(--color-background-secondary);}
-.hsl-row{margin-top:4px;font-size:10px;color:var(--color-text-secondary);font-family:var(--font-mono);background:var(--color-background-secondary);border-radius:6px;padding:3px 7px;}
-.pos-info{font-size:9px;color:var(--color-text-tertiary);margin-top:3px;font-family:var(--font-mono);}
-.lock-btn{font-size:9px;padding:2px 7px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:transparent;cursor:pointer;color:var(--color-text-secondary);white-space:nowrap;}
-.lock-btn.active{background:#185FA5;color:#fff;border-color:#185FA5;}
+/* workspace */
+.workspace{display:none;padding:0 12px;}
 
-/* hist panels */
-.hist-panels-row{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:8px;}
-.hist-panels-row.two{grid-template-columns:1fr 1fr;}
-.hpanel{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:0.75rem;position:relative;}
-.hpanel-title{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.07em;color:var(--color-text-tertiary);margin-bottom:5px;}
+/* section header */
+.sec-head{display:flex;align-items:center;justify-content:space-between;padding:12px 0 6px;}
+.sec-title{font-size:var(--fs-sm);font-weight:500;text-transform:uppercase;letter-spacing:0.07em;color:var(--color-text-tertiary);}
+
+/* image slots */
+.images-col{display:flex;flex-direction:column;gap:10px;margin-bottom:10px;}
+.img-slot{background:var(--color-background-secondary);border-radius:var(--radius);border:0.5px solid var(--color-border-tertiary);overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;min-height:120px;}
+.img-slot canvas{display:block;width:100%;cursor:crosshair;touch-action:none;}
+.slot-badge{position:absolute;top:8px;left:8px;font-size:var(--fs-sm);font-weight:500;padding:4px 10px;border-radius:6px;background:rgba(0,0,0,0.55);color:#fff;pointer-events:none;}
+.slot-btns{position:absolute;top:8px;right:8px;display:flex;gap:5px;}
+.slot-btn{font-size:var(--fs-sm);padding:5px 11px;border-radius:6px;background:rgba(0,0,0,0.55);color:#fff;border:none;cursor:pointer;font-weight:500;}
+.slot-btn:active{background:rgba(0,0,0,0.8);}
+.touch-hint{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:var(--fs-xs);color:#fff;background:rgba(0,0,0,0.5);padding:3px 10px;border-radius:20px;pointer-events:none;white-space:nowrap;}
+.zoom-overlay{position:absolute;bottom:8px;right:8px;width:80px;height:80px;border-radius:10px;border:2px solid rgba(255,255,255,0.9);overflow:hidden;pointer-events:none;display:none;box-shadow:0 3px 12px rgba(0,0,0,0.4);}
+.zoom-overlay canvas{width:80px;height:80px;image-rendering:pixelated;}
+
+/* add button */
+.add-btn{width:100%;height:var(--btn-h);border:2px dashed var(--color-border-secondary);border-radius:var(--radius);background:transparent;font-size:var(--fs-md);color:var(--color-text-secondary);cursor:pointer;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.add-btn:active{background:var(--color-background-secondary);}
+
+/* color cards */
+.color-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--radius);padding:14px;margin-bottom:10px;}
+.cc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.cc-label{display:flex;align-items:center;gap:7px;font-size:var(--fs-md);font-weight:500;color:var(--color-text-primary);}
+.cc-dot{width:10px;height:10px;border-radius:50%;}
+.cc-badge{font-size:var(--fs-xs);padding:3px 9px;border-radius:20px;background:var(--color-background-secondary);color:var(--color-text-tertiary);border:0.5px solid var(--color-border-secondary);}
+.cc-badge.on{background:#185FA5;color:#fff;border-color:#185FA5;}
+.swatch{width:100%;height:52px;border-radius:10px;border:0.5px solid var(--color-border-tertiary);margin-bottom:10px;}
+.rgb-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.rgb-box{background:var(--color-background-secondary);border-radius:10px;padding:8px 6px;text-align:center;}
+.rgb-lbl{font-size:var(--fs-xs);color:var(--color-text-tertiary);font-weight:500;margin-bottom:2px;}
+.rgb-val{font-size:var(--fs-xl);font-weight:500;color:var(--color-text-primary);}
+.rgb-bar-track{height:4px;background:var(--color-border-tertiary);border-radius:2px;margin-top:4px;}
+.rgb-bar{height:4px;border-radius:2px;width:0%;transition:width 0.04s;}
+.hex-row{display:flex;gap:8px;align-items:center;margin-top:10px;}
+.hex-val{flex:1;background:var(--color-background-secondary);border-radius:10px;padding:10px 12px;font-size:var(--fs-lg);font-family:var(--font-mono);font-weight:500;color:var(--color-text-primary);border:0.5px solid var(--color-border-tertiary);}
+.copy-btn{height:44px;padding:0 16px;border-radius:10px;border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);cursor:pointer;font-size:var(--fs-md);white-space:nowrap;}
+.copy-btn:active{background:var(--color-background-secondary);}
+.hsl-val{margin-top:6px;font-size:var(--fs-sm);color:var(--color-text-secondary);font-family:var(--font-mono);background:var(--color-background-secondary);border-radius:8px;padding:7px 10px;}
+.pos-val{font-size:var(--fs-xs);color:var(--color-text-tertiary);margin-top:5px;font-family:var(--font-mono);}
+.unlock-btn{height:36px;padding:0 14px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:transparent;cursor:pointer;font-size:var(--fs-sm);color:var(--color-text-secondary);}
+.unlock-btn:active{background:var(--color-background-secondary);}
+
+/* histogram card */
+.hist-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--radius);padding:14px;margin-bottom:10px;}
+.hist-title{font-size:var(--fs-sm);font-weight:500;text-transform:uppercase;letter-spacing:0.07em;color:var(--color-text-tertiary);margin-bottom:8px;}
 .hist-wrap{position:relative;}
-canvas.hc{width:100%;display:block;}
-.hist-marker-line{position:absolute;top:0;bottom:0;width:1.5px;pointer-events:none;display:none;}
-.hist-legend{display:flex;gap:7px;margin-top:3px;flex-wrap:wrap;}
-.hist-leg-item{display:flex;align-items:center;gap:3px;font-size:9px;color:var(--color-text-secondary);}
-.hist-dot{width:6px;height:6px;border-radius:50%;}
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:6px;}
-.stat-item{background:var(--color-background-secondary);border-radius:6px;padding:4px 7px;}
-.stat-label{font-size:9px;color:var(--color-text-tertiary);}
-.stat-value{font-size:11px;font-weight:500;color:var(--color-text-primary);margin-top:1px;}
+canvas.hc{width:100%;display:block;border-radius:6px;}
+.hmarker{position:absolute;top:0;bottom:0;width:2px;pointer-events:none;display:none;border-radius:2px;}
+.hist-legend{display:flex;gap:12px;margin-top:6px;flex-wrap:wrap;}
+.hl-item{display:flex;align-items:center;gap:4px;font-size:var(--fs-sm);color:var(--color-text-secondary);}
+.hl-dot{width:9px;height:9px;border-radius:50%;}
+.stats-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+.stat-box{background:var(--color-background-secondary);border-radius:10px;padding:8px 10px;}
+.stat-lbl{font-size:var(--fs-xs);color:var(--color-text-tertiary);}
+.stat-val{font-size:var(--fs-md);font-weight:500;color:var(--color-text-primary);margin-top:2px;}
 
-/* poster */
-.poster-panel{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:0.75rem;}
-.poster-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:7px;flex-wrap:wrap;}
-.poster-actions{display:flex;gap:5px;flex-shrink:0;}
-.suggest-btn{font-size:11px;padding:5px 13px;border-radius:20px;border:0.5px solid #378ADD;background:#E6F1FB;color:#185FA5;cursor:pointer;font-weight:500;}
-.suggest-btn:hover{background:#B5D4F4;}
-.suggest-btn:disabled{opacity:0.4;cursor:not-allowed;}
-.reset-btn{font-size:11px;padding:5px 11px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);cursor:pointer;}
-.reset-btn:hover{background:var(--color-background-secondary);}
-.sc-area{display:flex;align-items:center;gap:8px;padding:6px 9px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-secondary);margin-bottom:7px;}
-.sc-preview{width:28px;height:28px;border-radius:6px;border:0.5px solid var(--color-border-tertiary);flex-shrink:0;}
-.sc-hex{font-family:var(--font-mono);font-size:12px;font-weight:500;color:var(--color-text-primary);}
-.sc-lbl{font-size:9px;color:var(--color-text-tertiary);margin-top:1px;}
-.sc-empty{font-size:11px;color:var(--color-text-tertiary);padding:2px 0;}
-.poster-results{display:flex;flex-direction:column;gap:8px;}
-.poster-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;}
-.poster-palette{display:flex;height:40px;}
-.pal-sw{flex:1;cursor:pointer;transition:flex 0.2s;}
-.pal-sw:hover{flex:2;}
-.poster-body{padding:8px 10px;}
-.poster-genre{font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:0.07em;color:var(--color-text-tertiary);margin-bottom:2px;}
-.poster-title{font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px;}
-.poster-desc{font-size:10px;color:var(--color-text-secondary);line-height:1.55;}
-.poster-hexes{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;}
-.phchip{display:flex;align-items:center;gap:3px;font-size:10px;font-family:var(--font-mono);color:var(--color-text-secondary);background:var(--color-background-secondary);border-radius:4px;padding:2px 5px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);}
-.phchip:hover{background:var(--color-background-tertiary);}
-.phchip-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.ai-loading{text-align:center;padding:1.2rem;}
-.ai-spinner{width:22px;height:22px;border:2px solid var(--color-border-secondary);border-top-color:#378ADD;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 7px;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.ai-loading p{font-size:11px;color:var(--color-text-secondary);}
-.ai-error{font-size:11px;color:#E24B4A;padding:0.65rem;border-radius:var(--border-radius-md);background:var(--color-background-secondary);line-height:1.6;}
-.hint{font-size:10px;color:var(--color-text-tertiary);}
+/* poster card */
+.poster-card-outer{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--radius);padding:14px;margin-bottom:10px;}
+.poster-card-outer .pt{font-size:var(--fs-sm);font-weight:500;text-transform:uppercase;letter-spacing:0.07em;color:var(--color-text-tertiary);margin-bottom:4px;}
+.poster-card-outer .ph{font-size:var(--fs-sm);color:var(--color-text-secondary);margin-bottom:10px;}
+.poster-btns{display:flex;gap:8px;margin-bottom:10px;}
+.poster-reset-btn{height:44px;flex:1;border-radius:10px;border:0.5px solid var(--color-border-secondary);background:transparent;font-size:var(--fs-md);color:var(--color-text-secondary);cursor:pointer;}
+.poster-reset-btn:active{background:var(--color-background-secondary);}
+.poster-ai-btn{height:44px;flex:2;border-radius:10px;border:none;background:#185FA5;font-size:var(--fs-md);font-weight:500;color:#fff;cursor:pointer;}
+.poster-ai-btn:active{background:#0C447C;}
+.poster-ai-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.sel-color-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border:0.5px solid var(--color-border-tertiary);border-radius:10px;background:var(--color-background-secondary);margin-bottom:0;}
+.sel-preview{width:40px;height:40px;border-radius:8px;border:0.5px solid var(--color-border-tertiary);flex-shrink:0;}
+.sel-hex{font-family:var(--font-mono);font-size:var(--fs-lg);font-weight:500;color:var(--color-text-primary);}
+.sel-lbl{font-size:var(--fs-xs);color:var(--color-text-tertiary);margin-top:2px;}
+.sel-empty{font-size:var(--fs-md);color:var(--color-text-tertiary);}
+.result-cards{display:flex;flex-direction:column;gap:10px;margin-top:10px;}
+.r-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--radius);overflow:hidden;}
+.r-palette{display:flex;height:56px;}
+.r-sw{flex:1;}
+.r-body{padding:12px 14px;}
+.r-genre{font-size:var(--fs-xs);font-weight:500;text-transform:uppercase;letter-spacing:0.07em;color:var(--color-text-tertiary);margin-bottom:3px;}
+.r-title{font-size:var(--fs-lg);font-weight:500;color:var(--color-text-primary);margin-bottom:4px;}
+.r-desc{font-size:var(--fs-sm);color:var(--color-text-secondary);line-height:1.6;}
+.r-hexes{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+.r-hex{display:flex;align-items:center;gap:4px;font-size:var(--fs-sm);font-family:var(--font-mono);color:var(--color-text-secondary);background:var(--color-background-secondary);border-radius:6px;padding:4px 8px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);}
+.r-hex-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
 
-/* mobile tap indicator */
-.tap-hint{position:absolute;bottom:6px;left:6px;font-size:9px;color:#fff;background:rgba(0,0,0,0.45);padding:2px 6px;border-radius:4px;pointer-events:none;}
-
-@media(max-width:480px){
-  .color-panels-row{grid-template-columns:1fr;}
-  .hist-panels-row.two{grid-template-columns:1fr;}
-  .images-row.two{grid-template-columns:1fr;}
-  .rgb-value{font-size:16px;}
+@media(min-width:600px){
+  :root{--fs-xl:24px;--fs-lg:18px;--fs-md:15px;--fs-sm:13px;--fs-xs:11px;--btn-h:52px;}
+  .images-col{flex-direction:row;}
+  .images-col .img-slot{flex:1;}
+  .color-panels-pc{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .hist-panels-pc{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 }
 </style>
 
 <div class="app">
-  <div class="drop-overlay" id="dropOverlay"><div class="drop-msg">画像をドロップ</div></div>
+  <div class="drop-overlay" id="dropOverlay"><div class="drop-msg">ここにドロップ</div></div>
+
+  <!-- welcome -->
   <div class="welcome" id="welcome">
-    <div style="font-size:14px;font-weight:500;color:var(--color-text-primary)">画像をドロップ、またはスロットを選択</div>
-    <div class="welcome-cards">
-      <div class="slot-card" onclick="triggerFile(0)">
-        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="14" r="2"/><path d="M4 22l7-7 5 5 4-4 8 8"/></svg>
-        <div class="slot-num">画像 1</div><span>タップして選択</span>
-      </div>
-      <div class="slot-card" onclick="triggerFile(1)">
-        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="14" r="2"/><path d="M4 22l7-7 5 5 4-4 8 8"/></svg>
-        <div class="slot-num">画像 2</div><span>タップして選択</span>
-      </div>
+    <div class="welcome-title">写真分析ツール</div>
+    <div class="welcome-sub">写真を選んで色を調べましょう</div>
+    <div class="welcome-btns">
+      <button class="welcome-btn" onclick="triggerFile(0)">
+        <svg width="24" height="24" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="14" r="2"/><path d="M4 22l7-7 5 5 4-4 8 8"/></svg>
+        写真 1 を選ぶ
+      </button>
+      <button class="welcome-btn" onclick="triggerFile(1)">
+        <svg width="24" height="24" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="14" r="2"/><path d="M4 22l7-7 5 5 4-4 8 8"/></svg>
+        写真 2 を選ぶ
+      </button>
     </div>
-    <div class="hint">画面のどこにでもドロップできます</div>
+    <div class="welcome-drop-hint">または写真をここにドラッグ＆ドロップ</div>
   </div>
 
+  <!-- workspace -->
   <div class="workspace" id="workspace">
-    <div class="images-row" id="imagesRow">
+
+    <!-- images -->
+    <div class="sec-head">
+      <div class="sec-title">写真</div>
+    </div>
+    <div class="images-col" id="imagesCol">
       <div class="img-slot" id="slot0" style="display:none">
-        <span class="slot-label">画像 1</span>
-        <canvas id="c0"></canvas>
-        <div class="zoom-strip" id="zoom0"><canvas id="zc0" width="60" height="60"></canvas></div>
-        <div class="slot-actions">
-          <button class="slot-action-btn" onclick="triggerFile(0)">交換</button>
-          <button class="slot-action-btn" onclick="removeSlot(0)">削除</button>
+        <canvas id="c0" style="touch-action:none"></canvas>
+        <div class="slot-badge">写真 1</div>
+        <div class="slot-btns">
+          <button class="slot-btn" onclick="triggerFile(0)">交換</button>
+          <button class="slot-btn" onclick="removeSlot(0)">削除</button>
         </div>
-        <div class="tap-hint" id="tapHint0">タップでロック</div>
+        <div class="touch-hint">タップで色をロック／スライドで確認</div>
+        <div class="zoom-overlay" id="zoom0"><canvas id="zc0" width="80" height="80"></canvas></div>
       </div>
       <div class="img-slot" id="slot1" style="display:none">
-        <span class="slot-label">画像 2</span>
-        <canvas id="c1"></canvas>
-        <div class="zoom-strip" id="zoom1"><canvas id="zc1" width="60" height="60"></canvas></div>
-        <div class="slot-actions">
-          <button class="slot-action-btn" onclick="triggerFile(1)">交換</button>
-          <button class="slot-action-btn" onclick="removeSlot(1)">削除</button>
+        <canvas id="c1" style="touch-action:none"></canvas>
+        <div class="slot-badge">写真 2</div>
+        <div class="slot-btns">
+          <button class="slot-btn" onclick="triggerFile(1)">交換</button>
+          <button class="slot-btn" onclick="removeSlot(1)">削除</button>
         </div>
-        <div class="tap-hint" id="tapHint1">タップでロック</div>
+        <div class="touch-hint">タップで色をロック／スライドで確認</div>
+        <div class="zoom-overlay" id="zoom1"><canvas id="zc1" width="80" height="80"></canvas></div>
       </div>
     </div>
-    <div class="add-row">
-      <button class="add-slot-btn" id="addBtn0" onclick="triggerFile(0)">＋ 画像 1 を追加</button>
-      <button class="add-slot-btn" id="addBtn1" onclick="triggerFile(1)">＋ 画像 2 を追加</button>
+    <div id="addBtnsRow">
+      <button class="add-btn" id="addBtn0" onclick="triggerFile(0)">＋ 写真 1 を追加</button>
+      <button class="add-btn" id="addBtn1" onclick="triggerFile(1)">＋ 写真 2 を追加</button>
     </div>
 
-    <div class="color-panels-row">
-      <div class="cpanel">
-        <div class="cpanel-head">
-          <div class="cpanel-label"><div class="dot" style="background:#378ADD"></div>リアルタイム</div>
+    <!-- live color -->
+    <div class="sec-head"><div class="sec-title">カーソル位置の色</div></div>
+    <div class="color-panels-pc" id="colorPanels">
+      <div class="color-card">
+        <div class="cc-head">
+          <div class="cc-label"><div class="cc-dot" style="background:#378ADD"></div>リアルタイム</div>
+          <div class="cc-badge">動いています</div>
         </div>
         <div class="swatch" id="lSwatch" style="background:var(--color-background-secondary)"></div>
-        <div class="rgb-row">
-          <div class="rgb-item"><div class="rgb-label">R</div><div class="rgb-value" id="lR">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="lRb" style="background:#E24B4A"></div></div></div>
-          <div class="rgb-item"><div class="rgb-label">G</div><div class="rgb-value" id="lG">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="lGb" style="background:#639922"></div></div></div>
-          <div class="rgb-item"><div class="rgb-label">B</div><div class="rgb-value" id="lB">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="lBb" style="background:#378ADD"></div></div></div>
+        <div class="rgb-3">
+          <div class="rgb-box"><div class="rgb-lbl">R</div><div class="rgb-val" id="lR">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="lRb" style="background:#E24B4A"></div></div></div>
+          <div class="rgb-box"><div class="rgb-lbl">G</div><div class="rgb-val" id="lG">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="lGb" style="background:#639922"></div></div></div>
+          <div class="rgb-box"><div class="rgb-lbl">B</div><div class="rgb-val" id="lB">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="lBb" style="background:#378ADD"></div></div></div>
         </div>
-        <div class="hex-row"><div class="hex-box" id="lHex">#——————</div><button class="copy-btn" onclick="copyId('lHex',this)">コピー</button></div>
-        <div class="hsl-row" id="lHsl">HSL: —</div>
-        <div class="pos-info" id="lPos">カーソルを画像に合わせてください</div>
+        <div class="hex-row"><div class="hex-val" id="lHex">#——————</div><button class="copy-btn" onclick="copyEl('lHex',this)">コピー</button></div>
+        <div class="hsl-val" id="lHsl">HSL: —</div>
+        <div class="pos-val" id="lPos">写真にタップ／カーソルを合わせてください</div>
       </div>
-      <div class="cpanel">
-        <div class="cpanel-head">
-          <div class="cpanel-label"><div class="dot" style="background:#BA7517"></div>ロック中</div>
-          <button class="lock-btn" id="lockBtn" onclick="clearLock()">解除</button>
+      <div class="color-card">
+        <div class="cc-head">
+          <div class="cc-label"><div class="cc-dot" style="background:#BA7517"></div>ロックした色</div>
+          <button class="unlock-btn" onclick="clearLock()">解除</button>
         </div>
         <div class="swatch" id="kSwatch" style="background:var(--color-background-secondary)"></div>
-        <div class="rgb-row">
-          <div class="rgb-item"><div class="rgb-label">R</div><div class="rgb-value" id="kR">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="kRb" style="background:#E24B4A"></div></div></div>
-          <div class="rgb-item"><div class="rgb-label">G</div><div class="rgb-value" id="kG">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="kGb" style="background:#639922"></div></div></div>
-          <div class="rgb-item"><div class="rgb-label">B</div><div class="rgb-value" id="kB">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="kBb" style="background:#378ADD"></div></div></div>
+        <div class="rgb-3">
+          <div class="rgb-box"><div class="rgb-lbl">R</div><div class="rgb-val" id="kR">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="kRb" style="background:#E24B4A"></div></div></div>
+          <div class="rgb-box"><div class="rgb-lbl">G</div><div class="rgb-val" id="kG">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="kGb" style="background:#639922"></div></div></div>
+          <div class="rgb-box"><div class="rgb-lbl">B</div><div class="rgb-val" id="kB">—</div><div class="rgb-bar-track"><div class="rgb-bar" id="kBb" style="background:#378ADD"></div></div></div>
         </div>
-        <div class="hex-row"><div class="hex-box" id="kHex">#——————</div><button class="copy-btn" onclick="copyId('kHex',this)">コピー</button></div>
-        <div class="hsl-row" id="kHsl">HSL: —</div>
-        <div class="pos-info" id="kPos">タップ/クリックでロック</div>
+        <div class="hex-row"><div class="hex-val" id="kHex">#——————</div><button class="copy-btn" onclick="copyEl('kHex',this)">コピー</button></div>
+        <div class="hsl-val" id="kHsl">HSL: —</div>
+        <div class="pos-val" id="kPos">写真をタップ／クリックしてロック</div>
       </div>
     </div>
 
-    <div class="hist-panels-row" id="histPanelsRow">
-      <div class="hpanel" id="hp0">
-        <div class="hpanel-title">ヒストグラム — 画像 1</div>
+    <!-- histograms -->
+    <div class="sec-head"><div class="sec-title">ヒストグラム</div></div>
+    <div class="hist-panels-pc" id="histPanels">
+      <div class="hist-card" id="hp0">
+        <div class="hist-title">写真 1</div>
         <div class="hist-wrap" id="hw0">
-          <canvas class="hc" id="hc0" height="80"></canvas>
-          <div class="hist-marker-line" id="hm0_r" style="background:rgba(226,75,74,0.85)"></div>
-          <div class="hist-marker-line" id="hm0_g" style="background:rgba(99,153,34,0.85)"></div>
-          <div class="hist-marker-line" id="hm0_b" style="background:rgba(55,138,221,0.85)"></div>
+          <canvas class="hc" id="hc0" height="90"></canvas>
+          <div class="hmarker" id="hm0r" style="background:rgba(226,75,74,0.9)"></div>
+          <div class="hmarker" id="hm0g" style="background:rgba(99,153,34,0.9)"></div>
+          <div class="hmarker" id="hm0b" style="background:rgba(55,138,221,0.9)"></div>
         </div>
         <div class="hist-legend">
-          <div class="hist-leg-item"><div class="hist-dot" style="background:#E24B4A"></div>R</div>
-          <div class="hist-leg-item"><div class="hist-dot" style="background:#639922"></div>G</div>
-          <div class="hist-leg-item"><div class="hist-dot" style="background:#378ADD"></div>B</div>
-          <div class="hist-leg-item"><div class="hist-dot" style="background:#888780"></div>輝度</div>
+          <div class="hl-item"><div class="hl-dot" style="background:#E24B4A"></div>赤 (R)</div>
+          <div class="hl-item"><div class="hl-dot" style="background:#639922"></div>緑 (G)</div>
+          <div class="hl-item"><div class="hl-dot" style="background:#378ADD"></div>青 (B)</div>
+          <div class="hl-item"><div class="hl-dot" style="background:#888780"></div>輝度</div>
         </div>
-        <div class="stats-grid">
-          <div class="stat-item"><div class="stat-label">幅</div><div class="stat-value" id="sW0">—</div></div>
-          <div class="stat-item"><div class="stat-label">高さ</div><div class="stat-value" id="sH0">—</div></div>
-          <div class="stat-item"><div class="stat-label">アスペクト比</div><div class="stat-value" id="sAR0">—</div></div>
-          <div class="stat-item"><div class="stat-label">平均輝度</div><div class="stat-value" id="sBr0">—</div></div>
+        <div class="stats-2">
+          <div class="stat-box"><div class="stat-lbl">幅</div><div class="stat-val" id="sW0">—</div></div>
+          <div class="stat-box"><div class="stat-lbl">高さ</div><div class="stat-val" id="sH0">—</div></div>
+          <div class="stat-box"><div class="stat-lbl">縦横比</div><div class="stat-val" id="sAR0">—</div></div>
+          <div class="stat-box"><div class="stat-lbl">平均明るさ</div><div class="stat-val" id="sBr0">—</div></div>
         </div>
       </div>
-      <div class="hpanel" id="hp1" style="display:none">
-        <div class="hpanel-title">ヒストグラム — 画像 2</div>
+      <div class="hist-card" id="hp1" style="display:none">
+        <div class="hist-title">写真 2</div>
         <div class="hist-wrap" id="hw1">
-          <canvas class="hc" id="hc1" height="80"></canvas>
-          <div class="hist-marker-line" id="hm1_r" style="background:rgba(226,75,74,0.85)"></div>
-          <div class="hist-marker-line" id="hm1_g" style="background:rgba(99,153,34,0.85)"></div>
-          <div class="hist-marker-line" id="hm1_b" style="background:rgba(55,138,221,0.85)"></div>
+          <canvas class="hc" id="hc1" height="90"></canvas>
+          <div class="hmarker" id="hm1r" style="background:rgba(226,75,74,0.9)"></div>
+          <div class="hmarker" id="hm1g" style="background:rgba(99,153,34,0.9)"></div>
+          <div class="hmarker" id="hm1b" style="background:rgba(55,138,221,0.9)"></div>
         </div>
         <div class="hist-legend">
-          <div class="hist-leg-item"><div class="hist-dot" style="background:#E24B4A"></div>R</div>
-          <div class="hist-leg-item"><div class="hist-dot" style="background:#639922"></div>G</div>
-          <div class="hist-leg-item"><div class="hist-dot" style="background:#378ADD"></div>B</div>
-          <div class="hist-leg-item"><div class="hist-dot" style="background:#888780"></div>輝度</div>
+          <div class="hl-item"><div class="hl-dot" style="background:#E24B4A"></div>赤 (R)</div>
+          <div class="hl-item"><div class="hl-dot" style="background:#639922"></div>緑 (G)</div>
+          <div class="hl-item"><div class="hl-dot" style="background:#378ADD"></div>青 (B)</div>
+          <div class="hl-item"><div class="hl-dot" style="background:#888780"></div>輝度</div>
         </div>
-        <div class="stats-grid">
-          <div class="stat-item"><div class="stat-label">幅</div><div class="stat-value" id="sW1">—</div></div>
-          <div class="stat-item"><div class="stat-label">高さ</div><div class="stat-value" id="sH1">—</div></div>
-          <div class="stat-item"><div class="stat-label">アスペクト比</div><div class="stat-value" id="sAR1">—</div></div>
-          <div class="stat-item"><div class="stat-label">平均輝度</div><div class="stat-value" id="sBr1">—</div></div>
+        <div class="stats-2">
+          <div class="stat-box"><div class="stat-lbl">幅</div><div class="stat-val" id="sW1">—</div></div>
+          <div class="stat-box"><div class="stat-lbl">高さ</div><div class="stat-val" id="sH1">—</div></div>
+          <div class="stat-box"><div class="stat-lbl">縦横比</div><div class="stat-val" id="sAR1">—</div></div>
+          <div class="stat-box"><div class="stat-lbl">平均明るさ</div><div class="stat-val" id="sBr1">—</div></div>
         </div>
       </div>
     </div>
 
-    <div class="poster-panel">
-      <div class="poster-top">
-        <div>
-          <div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-text-tertiary);margin-bottom:2px">映画ポスター配色提案</div>
-          <div class="hint">色をロックして「AIに提案させる」を押すと、チャットに提案が届きます</div>
-        </div>
-        <div class="poster-actions">
-          <button class="reset-btn" onclick="resetPoster()">リセット</button>
-          <button class="suggest-btn" id="suggestBtn" onclick="runSuggest()" disabled>AIに提案させる ↗</button>
-        </div>
+    <!-- poster -->
+    <div class="sec-head"><div class="sec-title">映画ポスター配色提案</div></div>
+    <div class="poster-card-outer">
+      <div class="ph">ロックした色をもとにAIが映画ポスターの配色を提案します</div>
+      <div id="scArea"><div class="sel-empty">色をロックすると、ここに表示されます</div></div>
+      <div style="height:10px"></div>
+      <div class="poster-btns">
+        <button class="poster-reset-btn" onclick="resetPoster()">リセット</button>
+        <button class="poster-ai-btn" id="suggestBtn" onclick="runSuggest()" disabled>AIに提案してもらう ↗</button>
       </div>
-      <div id="scArea"><div class="sc-empty">ロックした色がここにセットされます</div></div>
-      <div class="poster-results" id="posterResults"></div>
+      <div class="result-cards" id="posterResults"></div>
     </div>
+
   </div>
 </div>
 
@@ -260,8 +277,8 @@ document.getElementById('fi0').onchange=function(){if(this.files[0])loadFile(0,t
 document.getElementById('fi1').onchange=function(){if(this.files[0])loadFile(1,this.files[0]);};
 function triggerFile(i){document.getElementById('fi'+i).click();}
 
-function loadFile(i,file){
-  const url=URL.createObjectURL(file),img=new Image();
+function loadFile(i,f){
+  const url=URL.createObjectURL(f),img=new Image();
   img.onload=()=>loadSlot(i,img); img.src=url;
 }
 function loadSlot(i,img){
@@ -269,161 +286,117 @@ function loadSlot(i,img){
   document.getElementById('welcome').style.display='none';
   document.getElementById('workspace').style.display='block';
   document.getElementById('slot'+i).style.display='flex';
-  updateLayouts();
   const c=document.getElementById('c'+i);
-  renderCanvas(i,c); setupEvents(i,c); buildHist(i); redrawHist(i);
+  renderCanvas(i,c); setupEvents(i,c); buildHist(i);
+  setTimeout(()=>redrawHist(i),50);
   updateAddBtns();
 }
 function removeSlot(i){
   slots[i]=null; origImgs[i]=null; imgDatas[i]=null; imgDims[i]={w:0,h:0}; histData[i]=null;
   document.getElementById('slot'+i).style.display='none';
   document.getElementById('hp'+i).style.display='none';
-  updateLayouts(); updateAddBtns();
+  updateAddBtns();
   if(!slots[0]&&!slots[1]){document.getElementById('workspace').style.display='none';document.getElementById('welcome').style.display='flex';}
 }
-function updateLayouts(){
-  const two=slots[0]&&slots[1];
-  document.getElementById('imagesRow').className=two?'images-row two':'images-row';
-  document.getElementById('histPanelsRow').className=two?'hist-panels-row two':'hist-panels-row';
-  document.getElementById('hp1').style.display=slots[1]?'block':'none';
-}
 function updateAddBtns(){
-  document.getElementById('addBtn0').style.display=slots[0]?'none':'block';
-  document.getElementById('addBtn1').style.display=slots[1]?'none':'block';
+  document.getElementById('addBtn0').style.display=slots[0]?'none':'flex';
+  document.getElementById('addBtn1').style.display=slots[1]?'none':'flex';
+  if(slots[1])document.getElementById('hp1').style.display='block';
 }
 function renderCanvas(i,canvas){
   const wrap=document.getElementById('slot'+i);
-  const maxW=Math.max(wrap.offsetWidth-2,160),maxH=300;
-  const{w,h}=imgDims[i],scale=Math.min(maxW/w,maxH/h,1);
-  canvas.width=Math.round(w*scale); canvas.height=Math.round(h*scale);
+  const maxW=Math.max(wrap.offsetWidth-2,200),maxH=360;
+  const{w,h}=imgDims[i],s=Math.min(maxW/w,maxH/h,1);
+  canvas.width=Math.round(w*s); canvas.height=Math.round(h*s);
   const ctx=canvas.getContext('2d');
   ctx.drawImage(origImgs[i],0,0,canvas.width,canvas.height);
   imgDatas[i]=ctx.getImageData(0,0,canvas.width,canvas.height);
 }
-function getPos(e,canvas,i){
+function getCanvasPos(clientX,clientY,canvas,i){
   const r=canvas.getBoundingClientRect();
   const sx=canvas.width/r.width,sy=canvas.height/r.height;
-  let cx,cy;
-  if(e.touches){
-    cx=Math.floor((e.touches[0].clientX-r.left)*sx);
-    cy=Math.floor((e.touches[0].clientY-r.top)*sy);
-  } else {
-    cx=Math.floor((e.clientX-r.left)*sx);
-    cy=Math.floor((e.clientY-r.top)*sy);
-  }
+  const cx=Math.floor((clientX-r.left)*sx),cy=Math.floor((clientY-r.top)*sy);
   return{cx,cy,rx:Math.round(cx*(imgDims[i].w/canvas.width)),ry:Math.round(cy*(imgDims[i].h/canvas.height))};
 }
+function getPixel(i,cx,cy){
+  if(!imgDatas[i]||cx<0||cy<0||cx>=imgDatas[i].width||cy>=imgDatas[i].height)return null;
+  const idx=(cy*imgDatas[i].width+cx)*4,d=imgDatas[i].data;
+  return[d[idx],d[idx+1],d[idx+2]];
+}
 function setupEvents(i,canvas){
-  // mouse
   canvas.addEventListener('mousemove',e=>{
-    const{cx,cy,rx,ry}=getPos(e,canvas,i);
-    if(cx<0||cy<0||cx>=canvas.width||cy>=canvas.height)return;
-    const idx=(cy*canvas.width+cx)*4,d=imgDatas[i].data;
-    updateLive(d[idx],d[idx+1],d[idx+2],rx,ry,i+1);
-    drawZoom(i,canvas,cx,cy);
+    const{cx,cy,rx,ry}=getCanvasPos(e.clientX,e.clientY,canvas,i);
+    const px=getPixel(i,cx,cy); if(!px)return;
+    updateLive(px[0],px[1],px[2],rx,ry,i+1);
+    drawZoom(i,canvas,cx,cy,false);
   });
   canvas.addEventListener('click',e=>{
-    const{cx,cy,rx,ry}=getPos(e,canvas,i);
-    if(cx<0||cy<0||cx>=canvas.width||cy>=canvas.height)return;
-    const idx=(cy*canvas.width+cx)*4,d=imgDatas[i].data;
-    lockColor(d[idx],d[idx+1],d[idx+2],rx,ry,i+1);
+    const{cx,cy,rx,ry}=getCanvasPos(e.clientX,e.clientY,canvas,i);
+    const px=getPixel(i,cx,cy); if(!px)return;
+    doLock(px[0],px[1],px[2],rx,ry,i+1);
   });
   canvas.addEventListener('mouseleave',()=>document.getElementById('zoom'+i).style.display='none');
   canvas.addEventListener('mouseenter',()=>{if(imgDatas[i])document.getElementById('zoom'+i).style.display='block';});
-  // touch — move shows live, end locks
+  // touch
   canvas.addEventListener('touchmove',e=>{
     e.preventDefault();
-    const{cx,cy,rx,ry}=getPos(e,canvas,i);
-    if(cx<0||cy<0||cx>=canvas.width||cy>=canvas.height)return;
-    const idx=(cy*canvas.width+cx)*4,d=imgDatas[i].data;
-    updateLive(d[idx],d[idx+1],d[idx+2],rx,ry,i+1);
-    // big zoom overlay for touch
-    const zs=document.getElementById('zoom'+i);
-    zs.style.display='block'; zs.style.width='100px'; zs.style.height='100px';
-    const zc=document.getElementById('zc'+i),z=zc.getContext('2d');
-    zc.width=100; zc.height=100;
-    z.imageSmoothingEnabled=false; z.clearRect(0,0,100,100);
-    z.drawImage(canvas,cx-8,cy-8,16,16,0,0,100,100);
-    z.strokeStyle='rgba(255,255,255,0.9)'; z.lineWidth=2; z.strokeRect(40,40,20,20);
+    const t=e.touches[0];
+    const{cx,cy,rx,ry}=getCanvasPos(t.clientX,t.clientY,canvas,i);
+    const px=getPixel(i,cx,cy); if(!px)return;
+    updateLive(px[0],px[1],px[2],rx,ry,i+1);
+    drawZoom(i,canvas,cx,cy,true);
   },{passive:false});
   canvas.addEventListener('touchend',e=>{
     e.preventDefault();
-    const{cx,cy,rx,ry}=getPos({clientX:e.changedTouches[0].clientX,clientY:e.changedTouches[0].clientY},canvas,i);
-    if(cx<0||cy<0||cx>=canvas.width||cy>=canvas.height)return;
-    const idx=(cy*canvas.width+cx)*4,d=imgDatas[i].data;
-    lockColor(d[idx],d[idx+1],d[idx+2],rx,ry,i+1);
-    setTimeout(()=>{
-      const zs=document.getElementById('zoom'+i);
-      zs.style.display='none'; zs.style.width='60px'; zs.style.height='60px';
-    },600);
+    const t=e.changedTouches[0];
+    const{cx,cy,rx,ry}=getCanvasPos(t.clientX,t.clientY,canvas,i);
+    const px=getPixel(i,cx,cy); if(!px)return;
+    doLock(px[0],px[1],px[2],rx,ry,i+1);
+    setTimeout(()=>{const z=document.getElementById('zoom'+i);z.style.display='none';},700);
   },{passive:false});
 }
-
-function updateLive(r,g,b,x,y,sn){
-  document.getElementById('lSwatch').style.background=`rgb(${r},${g},${b})`;
-  document.getElementById('lR').textContent=r;
-  document.getElementById('lG').textContent=g;
-  document.getElementById('lB').textContent=b;
-  document.getElementById('lRb').style.width=Math.round(r/255*100)+'%';
-  document.getElementById('lGb').style.width=Math.round(g/255*100)+'%';
-  document.getElementById('lBb').style.width=Math.round(b/255*100)+'%';
-  document.getElementById('lHex').textContent=toHex(r,g,b);
-  document.getElementById('lHsl').textContent='HSL: '+toHslStr(r,g,b);
-  document.getElementById('lPos').textContent=`画像${sn}  (${x}, ${y})`;
+function drawZoom(i,canvas,cx,cy,large){
+  const zEl=document.getElementById('zoom'+i),zc=document.getElementById('zc'+i);
+  const sz=large?80:60;
+  zEl.style.width=sz+'px'; zEl.style.height=sz+'px'; zEl.style.display='block';
+  zc.width=sz; zc.height=sz;
+  const z=zc.getContext('2d');
+  z.imageSmoothingEnabled=false; z.clearRect(0,0,sz,sz);
+  z.drawImage(canvas,cx-8,cy-8,16,16,0,0,sz,sz);
+  const c=Math.round(sz*0.3),s=Math.round(sz*0.4);
+  z.strokeStyle='rgba(255,255,255,0.95)'; z.lineWidth=2; z.strokeRect(c,c,s,s);
 }
-function lockColor(r,g,b,x,y,sn){
+function updateLive(r,g,b,x,y,sn){
+  set('lSwatch','style.background',`rgb(${r},${g},${b})`);
+  set('lR','textContent',r); set('lG','textContent',g); set('lB','textContent',b);
+  set('lRb','style.width',pct(r)); set('lGb','style.width',pct(g)); set('lBb','style.width',pct(b));
+  set('lHex','textContent',toHex(r,g,b));
+  set('lHsl','textContent','HSL: '+toHslStr(r,g,b));
+  set('lPos','textContent',`写真${sn}  (${x}, ${y})`);
+}
+function doLock(r,g,b,x,y,sn){
   lockedRGB={r,g,b};
   const hex=toHex(r,g,b);
-  document.getElementById('kSwatch').style.background=`rgb(${r},${g},${b})`;
-  document.getElementById('kR').textContent=r;
-  document.getElementById('kG').textContent=g;
-  document.getElementById('kB').textContent=b;
-  document.getElementById('kRb').style.width=Math.round(r/255*100)+'%';
-  document.getElementById('kGb').style.width=Math.round(g/255*100)+'%';
-  document.getElementById('kBb').style.width=Math.round(b/255*100)+'%';
-  document.getElementById('kHex').textContent=hex;
-  document.getElementById('kHsl').textContent='HSL: '+toHslStr(r,g,b);
-  document.getElementById('kPos').textContent=`画像${sn}  (${x}, ${y})`;
-  document.getElementById('lockBtn').className='lock-btn active';
-  updateHistMarkers(r,g,b);
+  set('kSwatch','style.background',`rgb(${r},${g},${b})`);
+  set('kR','textContent',r); set('kG','textContent',g); set('kB','textContent',b);
+  set('kRb','style.width',pct(r)); set('kGb','style.width',pct(g)); set('kBb','style.width',pct(b));
+  set('kHex','textContent',hex);
+  set('kHsl','textContent','HSL: '+toHslStr(r,g,b));
+  set('kPos','textContent',`写真${sn}  (${x}, ${y})`);
+  updateMarkers(r,g,b);
   setPosterColor(hex);
 }
 function clearLock(){
   lockedRGB=null;
-  document.getElementById('lockBtn').className='lock-btn';
-  document.getElementById('kSwatch').style.background='var(--color-background-secondary)';
-  ['kR','kG','kB'].forEach(id=>document.getElementById(id).textContent='—');
-  ['kRb','kGb','kBb'].forEach(id=>document.getElementById(id).style.width='0%');
-  document.getElementById('kHex').textContent='#——————';
-  document.getElementById('kHsl').textContent='HSL: —';
-  document.getElementById('kPos').textContent='タップ/クリックでロック';
-  hideHistMarkers();
+  set('kSwatch','style.background','var(--color-background-secondary)');
+  ['kR','kG','kB'].forEach(id=>set(id,'textContent','—'));
+  ['kRb','kGb','kBb'].forEach(id=>set(id,'style.width','0%'));
+  set('kHex','textContent','#——————'); set('kHsl','textContent','HSL: —');
+  set('kPos','textContent','写真をタップ／クリックしてロック');
+  hideMarkers();
 }
-
-function updateHistMarkers(r,g,b){
-  for(let i=0;i<2;i++){
-    const hw=document.getElementById('hw'+i);
-    if(!hw)continue;
-    const w=hw.offsetWidth||260;
-    const bw=w/256;
-    const setM=(id,val)=>{
-      const el=document.getElementById(id);
-      if(!el)return;
-      el.style.display='block';
-      el.style.left=(val*bw)+'px';
-      el.style.height='80px';
-    };
-    setM('hm'+i+'_r',r);
-    setM('hm'+i+'_g',g);
-    setM('hm'+i+'_b',b);
-  }
-}
-function hideHistMarkers(){
-  ['hm0_r','hm0_g','hm0_b','hm1_r','hm1_g','hm1_b'].forEach(id=>{
-    const el=document.getElementById(id); if(el)el.style.display='none';
-  });
-}
-
+function set(id,prop,val){const el=document.getElementById(id);if(!el)return;const parts=prop.split('.');if(parts.length===2)el[parts[0]][parts[1]]=val;else el[prop]=val;}
+function pct(v){return Math.round(v/255*100)+'%';}
 function toHex(r,g,b){return'#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('').toUpperCase();}
 function toHslStr(r,g,b){const h=toHsl(r,g,b);return`${h[0]}° ${h[1]}% ${h[2]}%`;}
 function toHsl(r,g,b){
@@ -434,15 +407,9 @@ function toHsl(r,g,b){
   else{const d=mx-mn;s=l>0.5?d/(2-mx-mn):d/(mx+mn);switch(mx){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;case b:h=((r-g)/d+4)/6;break;}}
   return[Math.round(h*360),Math.round(s*100),Math.round(l*100)];
 }
-function copyId(id,btn){
-  const h=document.getElementById(id).textContent;
-  if(h&&!h.includes('—')){navigator.clipboard.writeText(h).catch(()=>{});btn.textContent='✓';setTimeout(()=>btn.textContent='コピー',1400);}
-}
-function drawZoom(i,canvas,cx,cy){
-  const zc=document.getElementById('zc'+i),z=zc.getContext('2d');
-  z.imageSmoothingEnabled=false;z.clearRect(0,0,60,60);
-  z.drawImage(canvas,cx-7,cy-7,14,14,0,0,60,60);
-  z.strokeStyle='rgba(255,255,255,0.9)';z.lineWidth=1.5;z.strokeRect(22,22,16,16);
+function copyEl(id,btn){
+  const v=document.getElementById(id).textContent;
+  if(v&&!v.includes('—')){navigator.clipboard.writeText(v).catch(()=>{});btn.textContent='✓ コピーしました';setTimeout(()=>btn.textContent='コピー',1600);}
 }
 function buildHist(i){
   if(!imgDatas[i])return;
@@ -459,70 +426,58 @@ function buildHist(i){
 function redrawHist(i){
   if(!histData[i])return;
   const hc=document.getElementById('hc'+i),hx=hc.getContext('2d');
-  const w=hc.offsetWidth||260;hc.width=w;hc.height=80;hx.clearRect(0,0,w,80);
+  const w=hc.offsetWidth||300; hc.width=w; hc.height=90; hx.clearRect(0,0,w,90);
   const{rH,gH,bH,lH,bright}=histData[i];
   const mx=Math.max(...rH,...gH,...bH,...lH),bw=w/256;
   [[lH,'rgba(136,135,128,0.4)'],[rH,'rgba(226,75,74,0.55)'],[gH,'rgba(99,153,34,0.55)'],[bH,'rgba(55,138,221,0.55)']].forEach(([h,c])=>{
-    hx.beginPath();hx.moveTo(0,80);
-    for(let j=0;j<256;j++)hx.lineTo(j*bw+bw/2,80-(h[j]/mx)*75);
-    hx.lineTo(w,80);hx.closePath();hx.fillStyle=c;hx.fill();
+    hx.beginPath();hx.moveTo(0,90);
+    for(let j=0;j<256;j++)hx.lineTo(j*bw+bw/2,90-(h[j]/mx)*85);
+    hx.lineTo(w,90);hx.closePath();hx.fillStyle=c;hx.fill();
   });
   const{w:iw,h:ih}=imgDims[i];
-  document.getElementById('sW'+i).textContent=iw+'px';
-  document.getElementById('sH'+i).textContent=ih+'px';
+  set('sW'+i,'textContent',iw+'px'); set('sH'+i,'textContent',ih+'px');
   const gcd=(a,b)=>b?gcd(b,a%b):a,d2=gcd(iw,ih);
-  document.getElementById('sAR'+i).textContent=(iw/d2)+':'+(ih/d2);
-  document.getElementById('sBr'+i).textContent=bright;
-  // re-show markers if locked
-  if(lockedRGB)updateHistMarkers(lockedRGB.r,lockedRGB.g,lockedRGB.b);
+  set('sAR'+i,'textContent',(iw/d2)+':'+(ih/d2));
+  set('sBr'+i,'textContent',bright);
+  if(lockedRGB)updateMarkers(lockedRGB.r,lockedRGB.g,lockedRGB.b);
+}
+function updateMarkers(r,g,b){
+  for(let i=0;i<2;i++){
+    const hw=document.getElementById('hw'+i); if(!hw)continue;
+    const w=hw.offsetWidth||300,bw=w/256;
+    [['hm'+i+'r',r],['hm'+i+'g',g],['hm'+i+'b',b]].forEach(([id,val])=>{
+      const el=document.getElementById(id); if(!el)return;
+      el.style.display='block'; el.style.left=(val*bw)+'px'; el.style.top='0'; el.style.height='90px';
+    });
+  }
+}
+function hideMarkers(){
+  ['hm0r','hm0g','hm0b','hm1r','hm1g','hm1b'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
 }
 function setPosterColor(hex){
   posterColor=hex;
-  document.getElementById('scArea').innerHTML=`<div class="sc-area"><div class="sc-preview" style="background:${hex}"></div><div><div class="sc-hex">${hex}</div><div class="sc-lbl">ポスターのベースカラー</div></div></div>`;
+  document.getElementById('scArea').innerHTML=`<div class="sel-color-row"><div class="sel-preview" style="background:${hex}"></div><div><div class="sel-hex">${hex}</div><div class="sel-lbl">ポスターのベースカラー</div></div></div>`;
   document.getElementById('suggestBtn').disabled=false;
 }
 function resetPoster(){
   posterColor=null;
-  document.getElementById('scArea').innerHTML='<div class="sc-empty">ロックした色がここにセットされます</div>';
+  document.getElementById('scArea').innerHTML='<div class="sel-empty">色をロックすると、ここに表示されます</div>';
   document.getElementById('posterResults').innerHTML='';
   document.getElementById('suggestBtn').disabled=true;
 }
 function runSuggest(){
   if(!posterColor)return;
-  const hex=posterColor;
-  sendPrompt(`ベースカラー ${hex} を使った映画ポスターの配色を3パターン提案してください。各パターンについて以下を教えてください：
-- 映画ジャンル
-- 架空の映画タイトル（日本語）
-- 配色5色（HEXコード＋役割：背景・メイン・アクセント・テキスト・補助）
-- その配色の雰囲気の説明（50文字以内）
-必ず ${hex} を各パターンに含めてください。`);
-}
-function renderCards(proposals){
-  const res=document.getElementById('posterResults'); res.innerHTML='';
-  proposals.forEach(p=>{
-    const card=document.createElement('div'); card.className='poster-card';
-    const pal=(p.colors||[]).map(c=>`<div class="pal-sw" style="background:${c.hex}" title="${c.role}: ${c.hex}"></div>`).join('');
-    const chips=(p.colors||[]).map(c=>`<div class="phchip" onclick="copyChip('${c.hex}',this)"><div class="phchip-dot" style="background:${c.hex}"></div>${c.hex}<span style="color:var(--color-text-tertiary);font-size:9px;margin-left:2px">${c.role}</span></div>`).join('');
-    card.innerHTML=`<div class="poster-palette">${pal}</div><div class="poster-body"><div class="poster-genre">${p.genre||''}</div><div class="poster-title">${p.title||''}</div><div class="poster-desc">${p.description||''}</div><div class="poster-hexes">${chips}</div></div>`;
-    res.appendChild(card);
-  });
-}
-function copyChip(hex,el){
-  navigator.clipboard.writeText(hex).catch(()=>{});
-  const ob=el.style.background,oc=el.style.color;
-  el.style.background='#E6F1FB';el.style.color='#185FA5';
-  setTimeout(()=>{el.style.background=ob;el.style.color=oc;},900);
+  sendPrompt(`ベースカラー ${posterColor} を使った映画ポスターの配色を3パターン提案してください。各パターンについて以下を教えてください：\n・映画ジャンル\n・架空の映画タイトル（日本語）\n・配色5色（HEXコード＋役割：背景・メイン・アクセント・テキスト・補助）\n・その配色の雰囲気の説明（50文字以内）\n必ず ${posterColor} を各パターンに含めてください。`);
 }
 document.addEventListener('dragover',e=>{e.preventDefault();document.getElementById('dropOverlay').classList.add('active');});
 document.addEventListener('dragleave',e=>{if(!e.relatedTarget)document.getElementById('dropOverlay').classList.remove('active');});
 document.addEventListener('drop',e=>{
   e.preventDefault(); document.getElementById('dropOverlay').classList.remove('active');
-  const f=e.dataTransfer.files[0];
-  if(!f||!f.type.startsWith('image/'))return;
+  const f=e.dataTransfer.files[0]; if(!f||!f.type.startsWith('image/'))return;
   loadFile(slots[0]?(slots[1]?0:1):0,f);
 });
 window.addEventListener('resize',()=>{
-  for(let i=0;i<2;i++){if(origImgs[i]){const c=document.getElementById('c'+i);renderCanvas(i,c);buildHist(i);redrawHist(i);}}
+  for(let i=0;i<2;i++){if(origImgs[i]){const c=document.getElementById('c'+i);renderCanvas(i,c);buildHist(i);setTimeout(()=>redrawHist(i),30);}}
 });
 updateAddBtns();
 </script>
