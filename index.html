@@ -1,615 +1,1079 @@
-
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>写真カラー分析ツール</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
-.wrap{font-family:var(--font-sans);padding-bottom:32px;}
-.welcome{display:flex;flex-direction:column;align-items:center;gap:16px;padding:40px 16px;min-height:300px;justify-content:center;}
-.wtitle{font-size:22px;font-weight:500;color:var(--color-text-primary);text-align:center;}
-.wsub{font-size:15px;color:var(--color-text-secondary);text-align:center;}
-.wbtns{display:flex;flex-direction:column;gap:10px;width:100%;max-width:320px;}
-.wbtn{display:flex;align-items:center;gap:10px;height:56px;border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);font-size:17px;font-weight:500;color:var(--color-text-primary);cursor:pointer;padding:0 18px;}
-.wbtn:hover{border-color:#378ADD;background:#E6F1FB;}
-.workspace{display:none;padding:0 10px;}
-.layout{display:grid;gap:10px;grid-template-columns:1fr;}
-@media(min-width:680px){.layout{grid-template-columns:1fr 1fr;align-items:start;}}
-.sec{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-text-tertiary);padding:14px 0 6px;}
-@media(max-width:679px){.sec{font-size:14px;padding:18px 0 8px;}}
-.card{background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);padding:14px;margin-bottom:10px;}
-@media(max-width:679px){.card{padding:18px;}}
-.imgslot{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;min-height:80px;margin-bottom:10px;}
-.imgslot canvas{display:block;width:100%;touch-action:none;cursor:crosshair;}
-.sbadge{position:absolute;top:7px;left:7px;font-size:12px;font-weight:500;padding:3px 9px;border-radius:6px;background:rgba(0,0,0,0.52);color:#fff;pointer-events:none;}
-.sbtns{position:absolute;top:7px;right:7px;display:flex;gap:4px;}
-.sbtn{font-size:12px;font-weight:500;padding:3px 10px;border-radius:6px;background:rgba(0,0,0,0.52);color:#fff;border:none;cursor:pointer;}
-.sbtn:active{background:rgba(0,0,0,0.8);}
-.thint{position:absolute;bottom:7px;left:50%;transform:translateX(-50%);font-size:11px;color:#fff;background:rgba(0,0,0,0.48);padding:3px 11px;border-radius:20px;pointer-events:none;white-space:nowrap;}
-@media(max-width:679px){.thint{font-size:14px;padding:5px 14px;}}
-.zbox{position:absolute;bottom:7px;right:7px;border-radius:8px;border:2px solid rgba(255,255,255,0.88);overflow:hidden;pointer-events:none;display:none;}
-.zbox canvas{display:block;image-rendering:pixelated;}
-.addbtn{width:100%;height:50px;border:1.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-lg);background:transparent;font-size:15px;font-weight:500;color:var(--color-text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;}
-.addbtn:hover{background:var(--color-background-secondary);}
-@media(max-width:679px){.addbtn{height:60px;font-size:17px;}}
-.chead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.clabel{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:500;color:var(--color-text-primary);}
-@media(max-width:679px){.clabel{font-size:18px;}}
-.cdot{width:10px;height:10px;border-radius:50%;}
-@media(max-width:679px){.cdot{width:13px;height:13px;}}
-.ulbtn{height:30px;padding:0 13px;border-radius:20px;border:0.5px solid var(--color-border-secondary);background:transparent;cursor:pointer;font-size:12px;color:var(--color-text-secondary);}
-@media(max-width:679px){.ulbtn{height:40px;padding:0 16px;font-size:15px;}}
-.swatch{width:100%;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);margin-bottom:9px;}
-.rgb3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;}
-.rbox{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:7px 5px;text-align:center;}
-@media(max-width:679px){.rbox{padding:10px 6px;}}
-.rlbl{font-size:10px;font-weight:500;color:var(--color-text-tertiary);margin-bottom:2px;text-transform:uppercase;letter-spacing:0.05em;}
-@media(max-width:679px){.rlbl{font-size:13px;margin-bottom:4px;}}
-.rnum{font-size:20px;font-weight:500;color:var(--color-text-primary);line-height:1.1;}
-@media(max-width:679px){.rnum{font-size:28px;}}
-.rtrack{height:3px;background:var(--color-border-tertiary);border-radius:2px;margin-top:4px;}
-@media(max-width:679px){.rtrack{height:5px;margin-top:5px;}}
-.rbar{height:100%;border-radius:2px;width:0%;transition:width 0.05s;}
-.hexrow{display:flex;gap:7px;align-items:center;margin-top:9px;}
-.hexval{flex:1;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 11px;font-size:15px;font-family:var(--font-mono);font-weight:500;color:var(--color-text-primary);border:0.5px solid var(--color-border-tertiary);}
-@media(max-width:679px){.hexval{font-size:20px;padding:11px 13px;}}
-.cpybtn{height:40px;padding:0 14px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);cursor:pointer;font-size:12px;font-weight:500;white-space:nowrap;}
-@media(max-width:679px){.cpybtn{height:50px;padding:0 18px;font-size:15px;}}
-.hslval{margin-top:6px;font-size:11px;color:var(--color-text-secondary);font-family:var(--font-mono);background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:6px 9px;}
-@media(max-width:679px){.hslval{font-size:14px;padding:9px 11px;}}
-.posval{font-size:10px;color:var(--color-text-tertiary);margin-top:4px;font-family:var(--font-mono);}
-@media(max-width:679px){.posval{font-size:13px;margin-top:5px;}}
-.wheelsub{font-size:11px;color:var(--color-text-secondary);margin-bottom:10px;line-height:1.5;}
-@media(max-width:679px){.wheelsub{font-size:14px;}}
-.wheelrow{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;}
-#wheelCanvas{display:block;border-radius:50%;flex-shrink:0;}
-.wheelinfo{flex:1;min-width:120px;}
-.huebox{padding:9px 11px;border-radius:var(--border-radius-md);margin-bottom:9px;transition:background 0.2s;}
-@media(max-width:679px){.huebox{padding:12px 13px;margin-bottom:11px;}}
-.huelbl{font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:0.07em;opacity:0.72;margin-bottom:2px;}
-@media(max-width:679px){.huelbl{font-size:12px;}}
-.huename{font-size:16px;font-weight:500;}
-@media(max-width:679px){.huename{font-size:20px;}}
-.huedeg{font-size:11px;opacity:0.72;margin-top:2px;font-family:var(--font-mono);}
-@media(max-width:679px){.huedeg{font-size:13px;}}
-.htitle{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.07em;color:var(--color-text-tertiary);margin-bottom:5px;}
-@media(max-width:679px){.htitle{font-size:13px;margin-bottom:7px;}}
-.hlist{display:flex;flex-direction:column;gap:5px;}
-.hitem{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--color-text-secondary);}
-@media(max-width:679px){.hitem{gap:8px;font-size:14px;}}
-.hdot{width:18px;height:18px;border-radius:50%;border:0.5px solid var(--color-border-tertiary);flex-shrink:0;cursor:pointer;}
-@media(max-width:679px){.hdot{width:24px;height:24px;}}
-.hhex{font-family:var(--font-mono);font-weight:500;cursor:pointer;color:var(--color-text-primary);}
-.wlegend{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;}
-.wleg{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--color-text-secondary);}
-@media(max-width:679px){.wleg{font-size:13px;}}
-.hwrap{position:relative;}
-canvas.hc{width:100%;display:block;border-radius:4px;}
-.hmark{position:absolute;top:0;bottom:0;width:2px;pointer-events:none;display:none;border-radius:2px;}
-.hleg{display:flex;gap:9px;margin-top:5px;flex-wrap:wrap;}
-.hlegitem{display:flex;align-items:center;gap:3px;font-size:11px;color:var(--color-text-secondary);}
-@media(max-width:679px){.hlegitem{font-size:13px;gap:5px;}}
-.hlegdot{width:8px;height:8px;border-radius:50%;}
-@media(max-width:679px){.hlegdot{width:11px;height:11px;}}
-.sg2{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px;}
-.sbox{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:7px 9px;}
-@media(max-width:679px){.sbox{padding:9px 11px;}}
-.slbl{font-size:10px;color:var(--color-text-tertiary);}
-@media(max-width:679px){.slbl{font-size:13px;}}
-.sval{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-top:2px;}
-@media(max-width:679px){.sval{font-size:16px;margin-top:3px;}}
-.psub{font-size:12px;color:var(--color-text-secondary);line-height:1.55;margin-bottom:11px;}
-@media(max-width:679px){.psub{font-size:15px;}}
-.selrow{display:flex;align-items:center;gap:9px;padding:9px 11px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-secondary);margin-bottom:10px;}
-@media(max-width:679px){.selrow{padding:13px;margin-bottom:14px;}}
-.selswat{width:38px;height:38px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);flex-shrink:0;}
-@media(max-width:679px){.selswat{width:50px;height:50px;}}
-.selhex{font-family:var(--font-mono);font-size:16px;font-weight:500;color:var(--color-text-primary);}
-@media(max-width:679px){.selhex{font-size:22px;}}
-.sellbl{font-size:10px;color:var(--color-text-tertiary);margin-top:1px;}
-@media(max-width:679px){.sellbl{font-size:13px;}}
-.selempty{font-size:13px;color:var(--color-text-tertiary);}
-@media(max-width:679px){.selempty{font-size:15px;}}
-.mbtn{width:100%;height:46px;border-radius:var(--border-radius-lg);border:none;background:#185FA5;font-size:14px;font-weight:500;color:#fff;cursor:pointer;margin-bottom:10px;}
-.mbtn:active{background:#0C447C;}
-.mbtn:disabled{opacity:0.38;cursor:not-allowed;}
-@media(max-width:679px){.mbtn{height:60px;font-size:17px;margin-bottom:14px;}}
-.rcards{display:flex;flex-direction:column;gap:9px;}
-.rcard{border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);overflow:hidden;}
-.rpal{display:flex;height:46px;}
-@media(max-width:679px){.rpal{height:60px;}}
-.rsw{flex:1;}
-.rbody{padding:11px 13px;}
-@media(max-width:679px){.rbody{padding:14px 16px;}}
-.rgenre{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--color-text-tertiary);margin-bottom:3px;}
-@media(max-width:679px){.rgenre{font-size:13px;}}
-.rmatch{display:inline-flex;font-size:11px;font-weight:500;background:#E6F1FB;color:#185FA5;padding:2px 8px;border-radius:20px;margin-bottom:5px;}
-@media(max-width:679px){.rmatch{font-size:13px;padding:4px 11px;}}
-.rtitle{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px;line-height:1.3;}
-@media(max-width:679px){.rtitle{font-size:18px;margin-bottom:3px;}}
-.ryear{font-size:11px;color:var(--color-text-tertiary);margin-bottom:5px;}
-@media(max-width:679px){.ryear{font-size:13px;margin-bottom:7px;}}
-.rdesc{font-size:11px;color:var(--color-text-secondary);line-height:1.55;}
-@media(max-width:679px){.rdesc{font-size:13px;}}
-.rhexes{display:flex;gap:4px;margin-top:7px;flex-wrap:wrap;}
-.rhex{display:flex;align-items:center;gap:3px;font-size:11px;font-family:var(--font-mono);font-weight:500;color:var(--color-text-secondary);background:var(--color-background-secondary);border-radius:5px;padding:3px 7px;cursor:pointer;border:0.5px solid var(--color-border-tertiary);}
-.rhex:active{background:#E6F1FB;color:#185FA5;}
-@media(max-width:679px){.rhex{font-size:13px;padding:4px 9px;border-radius:7px;}}
-.rhdot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-@media(max-width:679px){.rhdot{width:12px;height:12px;}}
-.toast{display:none;position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:#185FA5;color:#fff;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:500;white-space:nowrap;z-index:10;pointer-events:none;}
+/* ─────────────────────────────────────
+   写真カラー分析ツール
+   GitHub: https://github.com/your-username/photo-color-analyzer
+   ───────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:      #f4f3ef;
+  --card:    #ffffff;
+  --border:  rgba(0,0,0,0.12);
+  --border2: rgba(0,0,0,0.22);
+  --text:    #1a1a18;
+  --text2:   #5a5a57;
+  --text3:   #9a9a97;
+  --blue:    #185FA5;
+  --blue-lt: #E6F1FB;
+  --amber:   #BA7517;
+  --radius:  12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:      #1a1a18;
+    --card:    #242422;
+    --border:  rgba(255,255,255,0.12);
+    --border2: rgba(255,255,255,0.22);
+    --text:    #f0efeb;
+    --text2:   #a0a09c;
+    --text3:   #606060;
+    --blue-lt: #0d2540;
+  }
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.app { max-width: 960px; margin: 0 auto; padding: 0 12px 48px; }
+
+/* ── welcome ── */
+.welcome {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 18px;
+  padding: 60px 20px; min-height: 70vh;
+}
+.welcome-icon {
+  width: 64px; height: 64px; background: var(--blue-lt); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.welcome-icon svg { width: 34px; height: 34px; stroke: var(--blue); fill: none; stroke-width: 1.8; }
+.welcome h1 { font-size: 26px; font-weight: 600; color: var(--text); text-align: center; }
+.welcome p  { font-size: 15px; color: var(--text2); text-align: center; line-height: 1.6; }
+.welcome-btns { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 320px; }
+.wbtn {
+  display: flex; align-items: center; gap: 12px;
+  height: 58px; border-radius: var(--radius);
+  border: 1px solid var(--border2);
+  background: var(--card);
+  font-size: 17px; font-weight: 600; color: var(--text);
+  cursor: pointer; padding: 0 20px;
+  transition: border-color .15s, background .15s;
+}
+.wbtn:hover, .wbtn:active { border-color: var(--blue); background: var(--blue-lt); }
+.wbtn svg { width: 24px; height: 24px; stroke: var(--blue); fill: none; stroke-width: 2; flex-shrink: 0; }
+.welcome-hint { font-size: 12px; color: var(--text3); }
+
+/* ── layout ── */
+.workspace { display: none; }
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: start;
+}
+@media (max-width: 600px) { .layout { grid-template-columns: 1fr; } }
+
+.sec {
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.09em;
+  color: var(--text3); padding: 14px 0 6px;
+}
+@media (max-width: 599px) { .sec { font-size: 13px; padding: 18px 0 8px; } }
+
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 14px;
+  margin-bottom: 10px;
+}
+@media (max-width: 599px) { .card { padding: 16px; } }
+
+/* ── image slot ── */
+.img-slot {
+  background: var(--bg); border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden; position: relative;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 80px; margin-bottom: 10px;
+}
+.img-slot canvas { display: block; width: 100%; touch-action: none; cursor: crosshair; }
+.slot-badge {
+  position: absolute; top: 7px; left: 7px;
+  font-size: 11px; font-weight: 600; padding: 3px 9px;
+  border-radius: 5px; background: rgba(0,0,0,0.52); color: #fff; pointer-events: none;
+}
+.slot-btns { position: absolute; top: 7px; right: 7px; display: flex; gap: 4px; }
+.slot-btn {
+  font-size: 11px; font-weight: 600; padding: 3px 10px;
+  border-radius: 5px; background: rgba(0,0,0,0.52); color: #fff; border: none; cursor: pointer;
+}
+.slot-btn:active { background: rgba(0,0,0,0.8); }
+.touch-hint {
+  position: absolute; bottom: 7px; left: 50%; transform: translateX(-50%);
+  font-size: 11px; color: #fff; background: rgba(0,0,0,0.45);
+  padding: 3px 11px; border-radius: 16px; pointer-events: none; white-space: nowrap;
+}
+@media (max-width: 599px) { .touch-hint { font-size: 13px; padding: 5px 14px; } }
+.zoom-box {
+  position: absolute; bottom: 7px; right: 7px;
+  border-radius: 7px; border: 2px solid rgba(255,255,255,0.88);
+  overflow: hidden; pointer-events: none; display: none;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+}
+.zoom-box canvas { display: block; image-rendering: pixelated; }
+.add-btn {
+  width: 100%; height: 48px; border: 1.5px dashed var(--border2);
+  border-radius: var(--radius); background: transparent;
+  font-size: 14px; font-weight: 600; color: var(--text2);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  gap: 7px; margin-bottom: 10px;
+}
+.add-btn:hover { background: var(--bg); }
+@media (max-width: 599px) { .add-btn { height: 58px; font-size: 16px; } }
+
+/* ── color card ── */
+.cc-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; }
+.cc-label { display: flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--text); }
+@media (max-width: 599px) { .cc-label { font-size: 17px; } }
+.cc-dot { width: 10px; height: 10px; border-radius: 50%; }
+@media (max-width: 599px) { .cc-dot { width: 13px; height: 13px; } }
+.unlock-btn {
+  height: 28px; padding: 0 12px; border-radius: 20px;
+  border: 1px solid var(--border2); background: transparent;
+  cursor: pointer; font-size: 12px; color: var(--text2);
+}
+.unlock-btn:hover { background: var(--bg); }
+.swatch {
+  width: 100%; height: 44px; border-radius: 8px;
+  border: 1px solid var(--border); margin-bottom: 9px;
+  transition: background .05s;
+}
+.rgb3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; }
+.rgb-box { background: var(--bg); border-radius: 8px; padding: 7px 5px; text-align: center; }
+@media (max-width: 599px) { .rgb-box { padding: 10px 5px; } }
+.rgb-lbl { font-size: 10px; font-weight: 600; color: var(--text3); margin-bottom: 2px; text-transform: uppercase; letter-spacing: .05em; }
+@media (max-width: 599px) { .rgb-lbl { font-size: 12px; margin-bottom: 3px; } }
+.rgb-num { font-size: 20px; font-weight: 600; color: var(--text); line-height: 1.1; }
+@media (max-width: 599px) { .rgb-num { font-size: 28px; } }
+.rgb-track { height: 3px; background: var(--border); border-radius: 2px; margin-top: 4px; }
+@media (max-width: 599px) { .rgb-track { height: 5px; margin-top: 5px; } }
+.rgb-bar { height: 100%; border-radius: 2px; width: 0%; transition: width .04s; }
+.hex-row { display: flex; gap: 6px; align-items: center; margin-top: 9px; }
+.hex-val {
+  flex: 1; background: var(--bg); border-radius: 8px;
+  padding: 8px 11px; font-size: 14px; font-family: 'SF Mono', monospace;
+  font-weight: 600; color: var(--text); border: 1px solid var(--border);
+  letter-spacing: .04em;
+}
+@media (max-width: 599px) { .hex-val { font-size: 19px; padding: 11px; } }
+.copy-btn {
+  height: 36px; padding: 0 12px; border-radius: 8px;
+  border: 1px solid var(--border2); background: transparent;
+  color: var(--text2); cursor: pointer; font-size: 12px; font-weight: 600;
+  white-space: nowrap;
+}
+.copy-btn:hover { background: var(--bg); }
+@media (max-width: 599px) { .copy-btn { height: 46px; padding: 0 16px; font-size: 14px; } }
+.hsl-val {
+  margin-top: 6px; font-size: 11px; color: var(--text2);
+  font-family: 'SF Mono', monospace; background: var(--bg);
+  border-radius: 7px; padding: 5px 8px;
+}
+@media (max-width: 599px) { .hsl-val { font-size: 13px; padding: 8px 10px; } }
+.pos-val { font-size: 10px; color: var(--text3); margin-top: 4px; font-family: 'SF Mono', monospace; }
+@media (max-width: 599px) { .pos-val { font-size: 12px; margin-top: 5px; } }
+
+/* ── color wheel ── */
+.wheel-note {
+  font-size: 11px; color: var(--text2); margin-bottom: 10px; line-height: 1.6;
+}
+@media (max-width: 599px) { .wheel-note { font-size: 13px; } }
+.wheel-wrap { display: flex; gap: 14px; align-items: flex-start; flex-wrap: wrap; }
+#wCanvas { display: block; border-radius: 50%; flex-shrink: 0; }
+.wheel-info { flex: 1; min-width: 130px; }
+.hue-box {
+  padding: 9px 11px; border-radius: 8px; margin-bottom: 9px;
+  transition: background .15s, color .15s;
+}
+.hue-lbl { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; opacity: .7; margin-bottom: 2px; }
+@media (max-width: 599px) { .hue-lbl { font-size: 12px; } }
+.hue-name { font-size: 16px; font-weight: 600; line-height: 1.2; }
+@media (max-width: 599px) { .hue-name { font-size: 20px; } }
+.hue-deg { font-size: 10px; opacity: .72; margin-top: 2px; font-family: 'SF Mono', monospace; }
+@media (max-width: 599px) { .hue-deg { font-size: 12px; } }
+.harmony-title {
+  font-size: 10px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .07em; color: var(--text3); margin-bottom: 5px;
+}
+.harmony-list { display: flex; flex-direction: column; gap: 4px; }
+.harmony-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text2); }
+@media (max-width: 599px) { .harmony-item { gap: 8px; font-size: 13px; } }
+.h-dot {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 1px solid var(--border); flex-shrink: 0; cursor: pointer;
+}
+@media (max-width: 599px) { .h-dot { width: 22px; height: 22px; } }
+.h-hex { font-family: 'SF Mono', monospace; font-weight: 600; cursor: pointer; color: var(--text); }
+.h-hex:hover { color: var(--blue); }
+.wheel-legend { display: flex; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
+.wl-item { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text2); }
+@media (max-width: 599px) { .wl-item { font-size: 13px; } }
+
+/* ── histogram ── */
+.h-wrap { position: relative; }
+canvas.hc { width: 100%; display: block; border-radius: 4px; }
+.h-mark { position: absolute; top: 0; bottom: 0; width: 2px; pointer-events: none; display: none; border-radius: 1px; }
+.h-legend { display: flex; gap: 8px; margin-top: 5px; flex-wrap: wrap; }
+.h-leg-item { display: flex; align-items: center; gap: 3px; font-size: 10px; color: var(--text2); }
+@media (max-width: 599px) { .h-leg-item { font-size: 12px; gap: 5px; } }
+.h-leg-dot { width: 8px; height: 8px; border-radius: 50%; }
+@media (max-width: 599px) { .h-leg-dot { width: 11px; height: 11px; } }
+.stats2 { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 8px; }
+.stat-box { background: var(--bg); border-radius: 8px; padding: 6px 9px; }
+.stat-lbl { font-size: 10px; color: var(--text3); }
+@media (max-width: 599px) { .stat-lbl { font-size: 12px; } }
+.stat-val { font-size: 13px; font-weight: 600; color: var(--text); margin-top: 1px; }
+@media (max-width: 599px) { .stat-val { font-size: 15px; } }
+
+/* ── movie section ── */
+.movie-sub { font-size: 11px; color: var(--text2); line-height: 1.55; margin-bottom: 9px; }
+@media (max-width: 599px) { .movie-sub { font-size: 14px; } }
+.sel-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 11px; border: 1px solid var(--border2);
+  border-radius: 8px; background: var(--bg); margin-bottom: 9px;
+}
+.sel-swatch { width: 38px; height: 38px; border-radius: 7px; border: 1px solid var(--border); flex-shrink: 0; }
+@media (max-width: 599px) { .sel-swatch { width: 48px; height: 48px; } }
+.sel-hex { font-family: 'SF Mono', monospace; font-size: 15px; font-weight: 600; color: var(--text); }
+@media (max-width: 599px) { .sel-hex { font-size: 20px; } }
+.sel-lbl { font-size: 10px; color: var(--text3); margin-top: 1px; }
+@media (max-width: 599px) { .sel-lbl { font-size: 13px; } }
+.sel-empty { font-size: 12px; color: var(--text3); }
+@media (max-width: 599px) { .sel-empty { font-size: 14px; } }
+.match-btn {
+  width: 100%; height: 46px; border-radius: var(--radius);
+  border: none; background: var(--blue);
+  font-size: 14px; font-weight: 600; color: #fff;
+  cursor: pointer; margin-bottom: 9px;
+}
+.match-btn:active { background: #0C447C; }
+.match-btn:disabled { opacity: .38; cursor: not-allowed; }
+@media (max-width: 599px) { .match-btn { height: 58px; font-size: 16px; } }
+.r-cards { display: flex; flex-direction: column; gap: 8px; }
+.r-card { border: 1px solid var(--border2); border-radius: var(--radius); overflow: hidden; }
+.r-pal { display: flex; height: 46px; }
+@media (max-width: 599px) { .r-pal { height: 58px; } }
+.r-sw { flex: 1; }
+.r-body { padding: 10px 13px; }
+.r-genre { font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--text3); margin-bottom: 2px; }
+@media (max-width: 599px) { .r-genre { font-size: 12px; } }
+.r-match {
+  display: inline-flex; font-size: 10px; font-weight: 600;
+  background: var(--blue-lt); color: var(--blue);
+  padding: 2px 8px; border-radius: 16px; margin-bottom: 4px;
+}
+@media (max-width: 599px) { .r-match { font-size: 12px; padding: 3px 10px; } }
+.r-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 2px; line-height: 1.3; }
+@media (max-width: 599px) { .r-title { font-size: 17px; } }
+.r-year { font-size: 10px; color: var(--text3); margin-bottom: 4px; }
+@media (max-width: 599px) { .r-year { font-size: 13px; } }
+.r-desc { font-size: 10px; color: var(--text2); line-height: 1.55; }
+@media (max-width: 599px) { .r-desc { font-size: 13px; } }
+.r-hexes { display: flex; gap: 4px; margin-top: 7px; flex-wrap: wrap; }
+.r-hex {
+  display: flex; align-items: center; gap: 3px;
+  font-size: 10px; font-family: 'SF Mono', monospace; font-weight: 600;
+  color: var(--text2); background: var(--bg);
+  border-radius: 4px; padding: 3px 7px; cursor: pointer;
+  border: 1px solid var(--border);
+}
+.r-hex:hover { background: var(--blue-lt); color: var(--blue); }
+@media (max-width: 599px) { .r-hex { font-size: 13px; padding: 4px 9px; border-radius: 6px; } }
+.r-hex-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── drag overlay ── */
+#drop-overlay {
+  display: none; position: fixed; inset: 0; z-index: 9999;
+  background: rgba(24,95,165,.15); border: 4px dashed #378ADD;
+  align-items: center; justify-content: center;
+  pointer-events: none;
+}
+#drop-overlay.active { display: flex; }
+#drop-overlay span {
+  font-size: 20px; font-weight: 600; color: var(--blue);
+  background: var(--blue-lt); padding: 1rem 2rem; border-radius: 14px;
+}
+
+/* ── toast ── */
+#toast {
+  display: none; position: fixed; bottom: 20px; left: 50%;
+  transform: translateX(-50%); z-index: 9999;
+  background: #185FA5; color: #fff;
+  padding: 8px 20px; border-radius: 20px;
+  font-size: 13px; font-weight: 600; white-space: nowrap;
+  pointer-events: none;
+}
 </style>
+</head>
+<body>
 
-<div class="wrap" id="root">
-<div class="toast" id="toast"></div>
+<div id="drop-overlay"><span>ここにドロップ</span></div>
+<div id="toast"></div>
 
+<div class="app">
+
+<!-- ── welcome ── -->
 <div class="welcome" id="welcome">
-  <div class="wtitle">写真カラー分析</div>
-  <div class="wsub">写真を選ぶと色の情報・色相環・調和色を表示します</div>
-  <div class="wbtns">
-    <button class="wbtn" onclick="triggerFile(0)">
-      <svg width="22" height="22" viewBox="0 0 32 32" fill="none" stroke="#185FA5" stroke-width="2"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="14" r="2"/><path d="M4 22l7-7 5 5 4-4 8 8"/></svg>
+  <div class="welcome-icon">
+    <svg viewBox="0 0 32 32"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="14" r="2.5"/><path d="M4 22l7-7 5 5 4-4 8 8"/></svg>
+  </div>
+  <h1>写真カラー分析</h1>
+  <p>写真をアップロードすると<br>色相環・RGB・ヒストグラムを表示します</p>
+  <div class="welcome-btns">
+    <button class="wbtn" onclick="TF(0)">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="15" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M3 17l5-5 3 3 3-3 6 6"/></svg>
       写真 1 を選ぶ
     </button>
-    <button class="wbtn" onclick="triggerFile(1)">
-      <svg width="22" height="22" viewBox="0 0 32 32" fill="none" stroke="#185FA5" stroke-width="2"><rect x="4" y="6" width="24" height="20" rx="3"/><circle cx="11" cy="14" r="2"/><path d="M4 22l7-7 5 5 4-4 8 8"/></svg>
+    <button class="wbtn" onclick="TF(1)">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="15" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M3 17l5-5 3 3 3-3 6 6"/></svg>
       写真 2 を選ぶ
     </button>
   </div>
-  <div style="font-size:12px;color:var(--color-text-tertiary)">またはここに写真をドラッグ＆ドロップ</div>
+  <span class="welcome-hint">またはドラッグ＆ドロップで追加できます</span>
 </div>
 
-<div class="workspace" id="workspace">
+<!-- ── workspace ── -->
+<div class="workspace" id="ws">
 <div class="layout">
 
+  <!-- LEFT COL -->
   <div>
     <div class="sec">写真</div>
-    <div class="imgslot" id="slot0" style="display:none">
+    <div class="img-slot" id="sl0" style="display:none">
       <canvas id="c0"></canvas>
-      <div class="sbadge">写真 1</div>
-      <div class="sbtns"><button class="sbtn" onclick="triggerFile(0)">交換</button><button class="sbtn" onclick="removeSlot(0)">削除</button></div>
-      <div class="thint">タップ→ロック ／ スライド→確認</div>
-      <div class="zbox" id="z0"><canvas id="zc0"></canvas></div>
+      <div class="slot-badge">写真 1</div>
+      <div class="slot-btns">
+        <button class="slot-btn" onclick="TF(0)">交換</button>
+        <button class="slot-btn" onclick="RS(0)">削除</button>
+      </div>
+      <div class="touch-hint">タップ→ロック ／ スライド→確認</div>
+      <div class="zoom-box" id="z0"><canvas id="zc0"></canvas></div>
     </div>
-    <button class="addbtn" id="ab0" onclick="triggerFile(0)" style="display:none">＋ 写真 1 を追加</button>
+    <button class="add-btn" id="ab0" onclick="TF(0)" style="display:none">＋ 写真 1 を追加</button>
 
     <div class="sec">リアルタイムの色</div>
     <div class="card">
-      <div class="chead"><div class="clabel"><div class="cdot" style="background:#378ADD"></div>カーソル位置</div></div>
-      <div class="swatch" id="lsw" style="height:44px;background:var(--color-background-secondary)"></div>
-      <div class="rgb3">
-        <div class="rbox"><div class="rlbl">赤 R</div><div class="rnum" id="lR">—</div><div class="rtrack"><div class="rbar" id="lRb" style="background:#E24B4A"></div></div></div>
-        <div class="rbox"><div class="rlbl">緑 G</div><div class="rnum" id="lG">—</div><div class="rtrack"><div class="rbar" id="lGb" style="background:#3B6D11"></div></div></div>
-        <div class="rbox"><div class="rlbl">青 B</div><div class="rnum" id="lB">—</div><div class="rtrack"><div class="rbar" id="lBb" style="background:#378ADD"></div></div></div>
+      <div class="cc-head">
+        <div class="cc-label"><div class="cc-dot" style="background:#378ADD"></div>カーソル位置</div>
       </div>
-      <div class="hexrow"><div class="hexval" id="lHex">#——————</div><button class="cpybtn" onclick="cpy('lHex',this)">コピー</button></div>
-      <div class="hslval" id="lHsl">HSL: —</div>
-      <div class="posval" id="lPos">写真にタップ／カーソルを合わせてください</div>
+      <div class="swatch" id="lsw" style="background:var(--bg)"></div>
+      <div class="rgb3">
+        <div class="rgb-box"><div class="rgb-lbl">赤 R</div><div class="rgb-num" id="lR">—</div><div class="rgb-track"><div class="rgb-bar" id="lRb" style="background:#E24B4A"></div></div></div>
+        <div class="rgb-box"><div class="rgb-lbl">緑 G</div><div class="rgb-num" id="lG">—</div><div class="rgb-track"><div class="rgb-bar" id="lGb" style="background:#3B6D11"></div></div></div>
+        <div class="rgb-box"><div class="rgb-lbl">青 B</div><div class="rgb-num" id="lB">—</div><div class="rgb-track"><div class="rgb-bar" id="lBb" style="background:#378ADD"></div></div></div>
+      </div>
+      <div class="hex-row">
+        <div class="hex-val" id="lHex">#——————</div>
+        <button class="copy-btn" onclick="CPY('lHex',this)">コピー</button>
+      </div>
+      <div class="hsl-val" id="lHsl">HSL: —</div>
+      <div class="pos-val" id="lPos">写真にカーソル／タップを合わせてください</div>
     </div>
 
     <div class="sec">ヒストグラム（写真 1）</div>
     <div class="card" id="hp0">
-      <div class="hwrap" id="hw0">
-        <canvas class="hc" id="hc0" height="86"></canvas>
-        <div class="hmark" id="hm0r" style="background:rgba(226,75,74,0.9)"></div>
-        <div class="hmark" id="hm0g" style="background:rgba(59,109,17,0.9)"></div>
-        <div class="hmark" id="hm0b" style="background:rgba(55,138,221,0.9)"></div>
+      <div class="h-wrap" id="hw0">
+        <canvas class="hc" id="hc0" height="80"></canvas>
+        <div class="h-mark" id="hm0r" style="background:rgba(226,75,74,.9)"></div>
+        <div class="h-mark" id="hm0g" style="background:rgba(59,109,17,.9)"></div>
+        <div class="h-mark" id="hm0b" style="background:rgba(55,138,221,.9)"></div>
       </div>
-      <div class="hleg">
-        <div class="hlegitem"><div class="hlegdot" style="background:#E24B4A"></div>赤</div>
-        <div class="hlegitem"><div class="hlegdot" style="background:#3B6D11"></div>緑</div>
-        <div class="hlegitem"><div class="hlegdot" style="background:#378ADD"></div>青</div>
-        <div class="hlegitem"><div class="hlegdot" style="background:#888780"></div>明るさ</div>
+      <div class="h-legend">
+        <div class="h-leg-item"><div class="h-leg-dot" style="background:#E24B4A"></div>赤</div>
+        <div class="h-leg-item"><div class="h-leg-dot" style="background:#3B6D11"></div>緑</div>
+        <div class="h-leg-item"><div class="h-leg-dot" style="background:#378ADD"></div>青</div>
+        <div class="h-leg-item"><div class="h-leg-dot" style="background:#888780"></div>明るさ</div>
       </div>
-      <div class="sg2">
-        <div class="sbox"><div class="slbl">幅</div><div class="sval" id="sW0">—</div></div>
-        <div class="sbox"><div class="slbl">高さ</div><div class="sval" id="sH0">—</div></div>
-        <div class="sbox"><div class="slbl">縦横比</div><div class="sval" id="sAR0">—</div></div>
-        <div class="sbox"><div class="slbl">平均明るさ</div><div class="sval" id="sBr0">—</div></div>
+      <div class="stats2">
+        <div class="stat-box"><div class="stat-lbl">幅</div><div class="stat-val" id="sW0">—</div></div>
+        <div class="stat-box"><div class="stat-lbl">高さ</div><div class="stat-val" id="sH0">—</div></div>
+        <div class="stat-box"><div class="stat-lbl">縦横比</div><div class="stat-val" id="sAR0">—</div></div>
+        <div class="stat-box"><div class="stat-lbl">平均明るさ</div><div class="stat-val" id="sBr0">—</div></div>
       </div>
     </div>
   </div>
 
+  <!-- RIGHT COL -->
   <div>
     <div class="sec" style="padding-top:14px"> </div>
-    <div class="imgslot" id="slot1" style="display:none">
+    <div class="img-slot" id="sl1" style="display:none">
       <canvas id="c1"></canvas>
-      <div class="sbadge">写真 2</div>
-      <div class="sbtns"><button class="sbtn" onclick="triggerFile(1)">交換</button><button class="sbtn" onclick="removeSlot(1)">削除</button></div>
-      <div class="thint">タップ→ロック ／ スライド→確認</div>
-      <div class="zbox" id="z1"><canvas id="zc1"></canvas></div>
+      <div class="slot-badge">写真 2</div>
+      <div class="slot-btns">
+        <button class="slot-btn" onclick="TF(1)">交換</button>
+        <button class="slot-btn" onclick="RS(1)">削除</button>
+      </div>
+      <div class="touch-hint">タップ→ロック ／ スライド→確認</div>
+      <div class="zoom-box" id="z1"><canvas id="zc1"></canvas></div>
     </div>
-    <button class="addbtn" id="ab1" onclick="triggerFile(1)" style="display:none">＋ 写真 2 を追加</button>
+    <button class="add-btn" id="ab1" onclick="TF(1)" style="display:none">＋ 写真 2 を追加</button>
 
     <div class="sec">ロックした色</div>
     <div class="card">
-      <div class="chead">
-        <div class="clabel"><div class="cdot" style="background:#BA7517"></div>タップ／クリックで固定</div>
-        <button class="ulbtn" onclick="clearLock()">解除する</button>
+      <div class="cc-head">
+        <div class="cc-label"><div class="cc-dot" style="background:#BA7517"></div>クリック／タップで固定</div>
+        <button class="unlock-btn" onclick="CLR()">解除</button>
       </div>
-      <div class="swatch" id="ksw" style="height:44px;background:var(--color-background-secondary)"></div>
+      <div class="swatch" id="ksw" style="background:var(--bg)"></div>
       <div class="rgb3">
-        <div class="rbox"><div class="rlbl">赤 R</div><div class="rnum" id="kR">—</div><div class="rtrack"><div class="rbar" id="kRb" style="background:#E24B4A"></div></div></div>
-        <div class="rbox"><div class="rlbl">緑 G</div><div class="rnum" id="kG">—</div><div class="rtrack"><div class="rbar" id="kGb" style="background:#3B6D11"></div></div></div>
-        <div class="rbox"><div class="rlbl">青 B</div><div class="rnum" id="kB">—</div><div class="rtrack"><div class="rbar" id="kBb" style="background:#378ADD"></div></div></div>
+        <div class="rgb-box"><div class="rgb-lbl">赤 R</div><div class="rgb-num" id="kR">—</div><div class="rgb-track"><div class="rgb-bar" id="kRb" style="background:#E24B4A"></div></div></div>
+        <div class="rgb-box"><div class="rgb-lbl">緑 G</div><div class="rgb-num" id="kG">—</div><div class="rgb-track"><div class="rgb-bar" id="kGb" style="background:#3B6D11"></div></div></div>
+        <div class="rgb-box"><div class="rgb-lbl">青 B</div><div class="rgb-num" id="kB">—</div><div class="rgb-track"><div class="rgb-bar" id="kBb" style="background:#378ADD"></div></div></div>
       </div>
-      <div class="hexrow"><div class="hexval" id="kHex">#——————</div><button class="cpybtn" onclick="cpy('kHex',this)">コピー</button></div>
-      <div class="hslval" id="kHsl">HSL: —</div>
-      <div class="posval" id="kPos">写真をタップ／クリックしてロック</div>
+      <div class="hex-row">
+        <div class="hex-val" id="kHex">#——————</div>
+        <button class="copy-btn" onclick="CPY('kHex',this)">コピー</button>
+      </div>
+      <div class="hsl-val" id="kHsl">HSL: —</div>
+      <div class="pos-val" id="kPos">写真をクリック／タップでロック</div>
     </div>
 
+    <!-- COLOR WHEEL -->
     <div class="sec">色相環</div>
     <div class="card">
-      <div class="wheelsub">● リアルタイム ／ <span style="color:#BA7517">★</span> ロックした色の位置。外側ほど鮮やか、中心ほど白っぽい色です。</div>
-      <div class="wheelrow">
+      <div class="wheel-note">
+        赤(0°)が右、黄(60°)が右下、緑(120°)が左下、シアン(180°)が左、青(240°)が左上、マゼンタ(300°)が右上。<br>
+        外側ほど鮮やか・中心ほど無彩色。黒・白・グレーは中心付近に表示されます。
+      </div>
+      <div class="wheel-wrap">
         <div>
-          <canvas id="wheelCanvas"></canvas>
-          <div class="wlegend">
-            <div class="wleg"><span style="font-size:13px">●</span> リアルタイム</div>
-            <div class="wleg"><span style="font-size:13px;color:#BA7517">★</span> ロック</div>
+          <canvas id="wCanvas"></canvas>
+          <div class="wheel-legend">
+            <div class="wl-item"><span style="font-size:13px;color:var(--text)">●</span> リアルタイム</div>
+            <div class="wl-item"><span style="font-size:13px;color:#BA7517">★</span> ロック</div>
           </div>
         </div>
-        <div class="wheelinfo">
-          <div class="huebox" id="huebox" style="background:var(--color-background-secondary)">
-            <div class="huelbl" id="huelbl">色相</div>
-            <div class="huename" id="huename">—</div>
-            <div class="huedeg" id="huedeg">—</div>
+        <div class="wheel-info">
+          <div class="hue-box" id="huebox" style="background:var(--bg)">
+            <div class="hue-lbl">色相</div>
+            <div class="hue-name" id="huename">—</div>
+            <div class="hue-deg"  id="huedeg">—</div>
           </div>
-          <div class="htitle">調和色（ロック時）</div>
-          <div class="hlist" id="hlist"><div style="font-size:11px;color:var(--color-text-tertiary)">色をロックすると表示されます</div></div>
+          <div class="harmony-title">調和色（ロック時）</div>
+          <div class="harmony-list" id="hlist">
+            <div style="font-size:10px;color:var(--text3)">色をロックすると表示されます</div>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="sec" id="hp1sec" style="display:none">ヒストグラム（写真 2）</div>
+    <div class="sec" id="h1s" style="display:none">ヒストグラム（写真 2）</div>
     <div class="card" id="hp1" style="display:none">
-      <div class="hwrap" id="hw1">
-        <canvas class="hc" id="hc1" height="86"></canvas>
-        <div class="hmark" id="hm1r" style="background:rgba(226,75,74,0.9)"></div>
-        <div class="hmark" id="hm1g" style="background:rgba(59,109,17,0.9)"></div>
-        <div class="hmark" id="hm1b" style="background:rgba(55,138,221,0.9)"></div>
+      <div class="h-wrap" id="hw1">
+        <canvas class="hc" id="hc1" height="80"></canvas>
+        <div class="h-mark" id="hm1r" style="background:rgba(226,75,74,.9)"></div>
+        <div class="h-mark" id="hm1g" style="background:rgba(59,109,17,.9)"></div>
+        <div class="h-mark" id="hm1b" style="background:rgba(55,138,221,.9)"></div>
       </div>
-      <div class="hleg">
-        <div class="hlegitem"><div class="hlegdot" style="background:#E24B4A"></div>赤</div>
-        <div class="hlegitem"><div class="hlegdot" style="background:#3B6D11"></div>緑</div>
-        <div class="hlegitem"><div class="hlegdot" style="background:#378ADD"></div>青</div>
-        <div class="hlegitem"><div class="hlegdot" style="background:#888780"></div>明るさ</div>
+      <div class="h-legend">
+        <div class="h-leg-item"><div class="h-leg-dot" style="background:#E24B4A"></div>赤</div>
+        <div class="h-leg-item"><div class="h-leg-dot" style="background:#3B6D11"></div>緑</div>
+        <div class="h-leg-item"><div class="h-leg-dot" style="background:#378ADD"></div>青</div>
+        <div class="h-leg-item"><div class="h-leg-dot" style="background:#888780"></div>明るさ</div>
       </div>
-      <div class="sg2">
-        <div class="sbox"><div class="slbl">幅</div><div class="sval" id="sW1">—</div></div>
-        <div class="sbox"><div class="slbl">高さ</div><div class="sval" id="sH1">—</div></div>
-        <div class="sbox"><div class="slbl">縦横比</div><div class="sval" id="sAR1">—</div></div>
-        <div class="sbox"><div class="slbl">平均明るさ</div><div class="sval" id="sBr1">—</div></div>
+      <div class="stats2">
+        <div class="stat-box"><div class="stat-lbl">幅</div><div class="stat-val" id="sW1">—</div></div>
+        <div class="stat-box"><div class="stat-lbl">高さ</div><div class="stat-val" id="sH1">—</div></div>
+        <div class="stat-box"><div class="stat-lbl">縦横比</div><div class="stat-val" id="sAR1">—</div></div>
+        <div class="stat-box"><div class="stat-lbl">平均明るさ</div><div class="stat-val" id="sBr1">—</div></div>
       </div>
     </div>
 
+    <!-- MOVIE MATCHING -->
     <div class="sec">映画ポスター参考配色</div>
     <div class="card">
-      <div class="psub">色をロックして「近い映画を探す」を押すと、その色に近い配色の有名映画ポスターを表示します。</div>
-      <div id="scarea"><div class="selempty">まず写真の色をタップしてロックしてください</div></div>
-      <div style="height:9px"></div>
-      <button class="mbtn" id="mbtn" onclick="findMovies()" disabled>近い映画を探す</button>
-      <div class="rcards" id="mresults"></div>
+      <div class="movie-sub">ロックした色に近い配色の映画ポスターを探します。</div>
+      <div id="sca"><div class="sel-empty">色をロックすると表示されます</div></div>
+      <div style="height:8px"></div>
+      <button class="match-btn" id="mb" onclick="FM()" disabled>近い映画を探す</button>
+      <div class="r-cards" id="mr"></div>
     </div>
   </div>
-</div>
-</div>
-</div>
+
+</div><!-- /.layout -->
+</div><!-- /#ws -->
+</div><!-- /.app -->
 
 <input type="file" id="fi0" accept="image/*" style="display:none">
 <input type="file" id="fi1" accept="image/*" style="display:none">
 
 <script>
-const MOVIES=[
-  {title:"マトリックス",year:1999,genre:"SF",p:["#0D2B1A","#00FF41","#1A3A1A","#FFFFFF","#003B00"],d:"濃い緑とブラックのデジタル世界"},
-  {title:"ラ・ラ・ランド",year:2016,genre:"ミュージカル",p:["#1B2A4A","#F4C842","#E8507A","#7BA7D4","#F9F0DC"],d:"夜の青と黄・ピンクのコントラスト"},
-  {title:"ブレードランナー2049",year:2017,genre:"SF",p:["#0A0A0F","#C87941","#2B4B6F","#E8C8A0","#1A1A2E"],d:"砂漠のオレンジと深夜の青"},
-  {title:"グランド・ブダペスト・ホテル",year:2014,genre:"コメディ",p:["#E8B4C8","#6B2D5E","#F5E6C8","#C84B4B","#2D4B6B"],d:"ピンクとパープルのヴィンテージ"},
-  {title:"ゴッドファーザー",year:1972,genre:"ドラマ",p:["#1A0A00","#8B4513","#D4A867","#2C1810","#F5DEB3"],d:"セピアとブラウンの重厚な権力"},
-  {title:"インセプション",year:2010,genre:"SF",p:["#0A1628","#2E5F8A","#C8A850","#4A4A4A","#DCDCDC"],d:"灰青と金の夢の建築空間"},
-  {title:"バービー",year:2023,genre:"コメディ",p:["#FF69B4","#FF1493","#FFB6C1","#FFFFFF","#C71585"],d:"ホットピンクのポップワールド"},
-  {title:"デューン",year:2021,genre:"SF",p:["#C8A050","#8B6914","#1A1000","#D4B896","#4A3000"],d:"砂漠の金と茶の壮大スケール"},
-  {title:"スパイダーバース",year:2018,genre:"アニメ",p:["#E01B1B","#0A0A2A","#FFD700","#FF6B9D","#00CFFF"],d:"コミック的な原色の躍動感"},
-  {title:"ジョーカー",year:2019,genre:"ドラマ",p:["#8B0000","#1A1A1A","#C8702A","#4A0000","#2C1A0A"],d:"深紅とブラウンの孤独"},
-  {title:"アバター",year:2009,genre:"SF",p:["#0A2030","#00A8FF","#1A4020","#7FFFB4","#003050"],d:"蛍光ブルーとグリーンの生命惑星"},
-  {title:"マッドマックス 怒りのデス・ロード",year:2015,genre:"アクション",p:["#C87820","#1A0A00","#FF4500","#8B6914","#4A2800"],d:"燃えるオレンジの終末世界"},
-  {title:"君の名は。",year:2016,genre:"アニメ",p:["#1A3050","#E87050","#87CEEB","#F5DEB3","#C05030"],d:"黄昏の橙と夜明けの青の対比"},
-  {title:"ミッドサマー",year:2019,genre:"ホラー",p:["#F5E6A0","#90B848","#FFFFFF","#D4C870","#6B8C28"],d:"明るい黄と白昼の緑の祝祭"},
-  {title:"シェイプ・オブ・ウォーター",year:2017,genre:"ファンタジー",p:["#0A3040","#00888A","#2A6050","#C8A040","#004050"],d:"深い青緑で描く愛の物語"},
-  {title:"アメリ",year:2001,genre:"コメディ",p:["#2A1A00","#C84B00","#F5A020","#1A3020","#8B4500"],d:"レッドとアンバーのパリ情緒"},
-  {title:"パラサイト",year:2019,genre:"ドラマ",p:["#1A3010","#405820","#8B9870","#C0C8A0","#D4C878"],d:"緑と灰色がかった格差表現"},
-  {title:"2001年宇宙の旅",year:1968,genre:"SF",p:["#000000","#FFFFFF","#C8140A","#1E3A5F","#A0A0A0"],d:"白黒と原色のミニマリズム"},
-  {title:"ムーンライト",year:2016,genre:"ドラマ",p:["#0A1830","#1A5070","#C87840","#2A3050","#E0B880"],d:"夜の青と暖かい肌色"},
-  {title:"ノスタルジア",year:1983,genre:"ドラマ",p:["#8B7355","#D4C4A0","#2C2418","#A89060","#4A3C28"],d:"セピアとベージュの詩的な記憶"},
-];
-const HN=[
-  {a:0,b:15,n:"赤",e:"Red"},{a:15,b:35,n:"赤橙",e:"Red-Orange"},{a:35,b:50,n:"橙",e:"Orange"},
-  {a:50,b:65,n:"黄橙",e:"Yellow-Orange"},{a:65,b:80,n:"黄",e:"Yellow"},{a:80,b:105,n:"黄緑",e:"Yellow-Green"},
-  {a:105,b:135,n:"緑",e:"Green"},{a:135,b:160,n:"青緑",e:"Teal"},{a:160,b:195,n:"シアン",e:"Cyan"},
-  {a:195,b:225,n:"青",e:"Blue"},{a:225,b:255,n:"青紫",e:"Blue-Violet"},{a:255,b:285,n:"紫",e:"Violet"},
-  {a:285,b:320,n:"赤紫",e:"Red-Violet"},{a:320,b:345,n:"マゼンタ",e:"Magenta"},{a:345,b:360,n:"赤",e:"Red"},
-];
-function getHN(h){return HN.find(x=>h>=x.a&&h<x.b)||HN[0];}
+/* ════════════════════════════════════════════════════════
+   写真カラー分析ツール  JavaScript
+   ════════════════════════════════════════════════════════ */
 
-let WSZ=160,wImgData=null,liveHsl=null,lockHsl=null,lockedRGB=null,lockedHex=null;
-const slots=[null,null],imgDatas=[null,null],origImgs=[null,null],imgDims=[{w:0,h:0},{w:0,h:0}],histData=[null,null];
+/* ── Movie palette database ── */
+const MOVIES = [
+  {t:"マトリックス",       y:1999,g:"SF",        p:["#0D2B1A","#00FF41","#1A3A1A","#FFFFFF","#003B00"],d:"濃い緑とブラックのデジタル世界"},
+  {t:"ラ・ラ・ランド",     y:2016,g:"ミュージカル",p:["#1B2A4A","#F4C842","#E8507A","#7BA7D4","#F9F0DC"],d:"夜の青と黄・ピンクのコントラスト"},
+  {t:"ブレードランナー2049",y:2017,g:"SF",        p:["#0A0A0F","#C87941","#2B4B6F","#E8C8A0","#1A1A2E"],d:"砂漠のオレンジと深夜の青"},
+  {t:"グランド・ブダペスト・ホテル",y:2014,g:"コメディ",p:["#E8B4C8","#6B2D5E","#F5E6C8","#C84B4B","#2D4B6B"],d:"ピンクとパープルのヴィンテージ"},
+  {t:"ゴッドファーザー",   y:1972,g:"ドラマ",    p:["#1A0A00","#8B4513","#D4A867","#2C1810","#F5DEB3"],d:"セピアとブラウンの重厚な権力"},
+  {t:"インセプション",     y:2010,g:"SF",        p:["#0A1628","#2E5F8A","#C8A850","#4A4A4A","#DCDCDC"],d:"灰青と金の夢の建築"},
+  {t:"バービー",           y:2023,g:"コメディ",  p:["#FF69B4","#FF1493","#FFB6C1","#FFFFFF","#C71585"],d:"ホットピンクのポップワールド"},
+  {t:"デューン",           y:2021,g:"SF",        p:["#C8A050","#8B6914","#1A1000","#D4B896","#4A3000"],d:"砂漠の金と茶の壮大スケール"},
+  {t:"スパイダーバース",   y:2018,g:"アニメ",    p:["#E01B1B","#0A0A2A","#FFD700","#FF6B9D","#00CFFF"],d:"コミック的原色の躍動感"},
+  {t:"ジョーカー",         y:2019,g:"ドラマ",    p:["#8B0000","#1A1A1A","#C8702A","#4A0000","#2C1A0A"],d:"深紅とブラウンの孤独"},
+  {t:"アバター",           y:2009,g:"SF",        p:["#0A2030","#00A8FF","#1A4020","#7FFFB4","#003050"],d:"蛍光ブルーとグリーンの惑星"},
+  {t:"マッドマックス",     y:2015,g:"アクション",p:["#C87820","#1A0A00","#FF4500","#8B6914","#4A2800"],d:"燃えるオレンジの終末世界"},
+  {t:"君の名は。",         y:2016,g:"アニメ",    p:["#1A3050","#E87050","#87CEEB","#F5DEB3","#C05030"],d:"黄昏の橙と夜明けの青"},
+  {t:"ミッドサマー",       y:2019,g:"ホラー",    p:["#F5E6A0","#90B848","#FFFFFF","#D4C870","#6B8C28"],d:"明るい黄と白昼の緑"},
+  {t:"アメリ",             y:2001,g:"コメディ",  p:["#2A1A00","#C84B00","#F5A020","#1A3020","#8B4500"],d:"レッドとアンバーのパリ情緒"},
+  {t:"パラサイト",         y:2019,g:"ドラマ",    p:["#1A3010","#405820","#8B9870","#C0C8A0","#D4C878"],d:"緑と灰色がかった格差表現"},
+  {t:"シェイプ・オブ・ウォーター",y:2017,g:"ファンタジー",p:["#0A3040","#00888A","#2A6050","#C8A040","#004050"],d:"深い青緑で描く愛"},
+  {t:"ムーンライト",       y:2016,g:"ドラマ",    p:["#0A1830","#1A5070","#C87840","#2A3050","#E0B880"],d:"夜の青と暖かい肌色"},
+];
 
-function initWheel(){
-  const mob=window.innerWidth<680;
-  WSZ=mob?Math.min(Math.floor(window.innerWidth*0.4),180):160;
-  const wc=document.getElementById('wheelCanvas');
-  wc.width=WSZ;wc.height=WSZ;
-  const ctx=wc.getContext('2d'),cx=WSZ/2,cy=WSZ/2,r=WSZ/2-2;
-  for(let d=0;d<360;d++){
-    const a0=(d-1)*Math.PI/180,a1=(d+1)*Math.PI/180;
-    const g=ctx.createRadialGradient(cx,cy,0,cx,cy,r);
-    g.addColorStop(0,`hsl(${d},0%,100%)`);
-    g.addColorStop(0.13,`hsl(${d},15%,88%)`);
-    g.addColorStop(0.5,`hsl(${d},85%,60%)`);
-    g.addColorStop(1,`hsl(${d},100%,30%)`);
-    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,a0,a1);ctx.closePath();
-    ctx.fillStyle=g;ctx.fill();
+/* ── Hue name table ── */
+const HN = [
+  {a:0,  b:15, n:"赤",   e:"Red"},
+  {a:15, b:35, n:"赤橙", e:"Red-Orange"},
+  {a:35, b:50, n:"橙",   e:"Orange"},
+  {a:50, b:65, n:"黄橙", e:"Yellow-Orange"},
+  {a:65, b:80, n:"黄",   e:"Yellow"},
+  {a:80, b:105,n:"黄緑", e:"Yellow-Green"},
+  {a:105,b:135,n:"緑",   e:"Green"},
+  {a:135,b:160,n:"青緑", e:"Teal"},
+  {a:160,b:195,n:"シアン",e:"Cyan"},
+  {a:195,b:225,n:"青",   e:"Blue"},
+  {a:225,b:255,n:"青紫", e:"Blue-Violet"},
+  {a:255,b:285,n:"紫",   e:"Violet"},
+  {a:285,b:320,n:"赤紫", e:"Red-Violet"},
+  {a:320,b:345,n:"マゼンタ",e:"Magenta"},
+  {a:345,b:360,n:"赤",   e:"Red"},
+];
+function getHN(h){ return HN.find(x => h >= x.a && h < x.b) || HN[0]; }
+
+/* ════════════════════════════════════════════
+   RGB → HSL  (IEC 61966-2-1 準拠)
+   
+   戻り値: [H(0-359), S(0-100), L(0-100)]
+   
+   H の定義 (CSS Color Level 4 / Adobe HSL と同一):
+     0°  = 赤   (Red)
+     60° = 黄   (Yellow)
+     120°= 緑   (Green)
+     180°= シアン(Cyan)
+     240°= 青   (Blue)
+     300°= マゼンタ(Magenta)
+════════════════════════════════════════════ */
+function rgb2hsl(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const delta = max - min;
+  const l = (max + min) / 2;
+  let h = 0, s = 0;
+
+  if (delta > 0.0001) {
+    s = delta / (1 - Math.abs(2 * l - 1));
+    if      (max === r) { h = 60 * (((g - b) / delta) % 6); if (h < 0) h += 360; }
+    else if (max === g) { h = 60 * (((b - r) / delta) + 2); }
+    else                { h = 60 * (((r - g) / delta) + 4); }
   }
-  const gw=ctx.createRadialGradient(cx,cy,0,cx,cy,r*0.14);
-  gw.addColorStop(0,'rgba(255,255,255,1)');gw.addColorStop(1,'rgba(255,255,255,0)');
-  ctx.beginPath();ctx.arc(cx,cy,r*0.14,0,Math.PI*2);ctx.fillStyle=gw;ctx.fill();
-  wImgData=ctx.getImageData(0,0,WSZ,WSZ);
+  return [Math.round(h), Math.round(s * 100), Math.round(l * 100)];
 }
-function drawMarkers(lh,kh){
-  const wc=document.getElementById('wheelCanvas'),ctx=wc.getContext('2d');
-  if(wImgData)ctx.putImageData(wImgData,0,0);
-  const cx=WSZ/2,cy=WSZ/2,r=WSZ/2-2;
-  function dm(hsl,oc,sym){
-    if(!hsl)return;
-    const [h,s,l]=hsl,ang=(h-90)*Math.PI/180,dist=r*0.12+r*0.85*(s/100);
-    const mx=cx+dist*Math.cos(ang),my=cy+dist*Math.sin(ang),ms=Math.max(7,WSZ*0.062);
-    ctx.beginPath();ctx.arc(mx,my,ms,0,Math.PI*2);
-    ctx.fillStyle=`hsl(${h},${s}%,${l}%)`;ctx.fill();
-    ctx.strokeStyle=oc;ctx.lineWidth=2.2;ctx.stroke();
-    ctx.fillStyle=oc;ctx.font=`500 ${Math.round(ms*0.85)}px sans-serif`;
-    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(sym,mx,my);
+
+/* ════════════════════════════════════════════
+   色相環の描画
+   
+   配置 (Adobe / CSS HSL と同じ):
+     H=0°(赤)    → 右  (canvas angle = 0)
+     H=60°(黄)   → 右下(canvas angle = π/3)
+     H=120°(緑)  → 左下(canvas angle = 2π/3)
+     H=180°(シアン)→ 左 (canvas angle = π)
+     H=240°(青)  → 左上(canvas angle = 4π/3)
+     H=300°(マゼンタ)→右上(canvas angle = 5π/3)
+   
+   変換: canvasAngle = hue * (π / 180)
+   
+   黒・白・グレーの扱い:
+     彩度(S)が非常に低い色は色相が意味を持たない。
+     このような無彩色は中心付近(satRatio=0)に表示し、
+     明度(L)に応じて中心の白〜灰〜黒のどの位置かを
+     全方位の重心 = 中心点 に配置する。
+     彩度が低いほど中心に近づく補間を行う。
+════════════════════════════════════════════ */
+let WSZ = 160, wBase = null;
+let lHsl = null, kHsl = null;
+
+function buildWheel() {
+  const wc = document.getElementById('wCanvas');
+  const avail = document.getElementById('ws').offsetWidth || window.innerWidth;
+  WSZ = Math.min(175, Math.max(120, Math.floor(avail * 0.36)));
+  wc.width = WSZ; wc.height = WSZ;
+  const ctx = wc.getContext('2d');
+  const cx = WSZ / 2, cy = WSZ / 2, R = WSZ / 2 - 1;
+
+  /* 色相を1°ずつ扇形に描く */
+  for (let hue = 0; hue < 360; hue++) {
+    const a0 = (hue - 0.8) * Math.PI / 180;
+    const a1 = (hue + 0.8) * Math.PI / 180;
+    const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, R);
+    grad.addColorStop(0,    `hsl(${hue},   0%, 100%)`);  /* 中心=白 */
+    grad.addColorStop(0.12, `hsl(${hue},  15%,  92%)`);
+    grad.addColorStop(0.45, `hsl(${hue},  80%,  65%)`);
+    grad.addColorStop(0.78, `hsl(${hue}, 100%,  50%)`);  /* 純色 */
+    grad.addColorStop(1.0,  `hsl(${hue}, 100%,  32%)`);  /* 外縁=暗め */
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, R, a0, a1);
+    ctx.closePath();
+    ctx.fillStyle = grad;
+    ctx.fill();
   }
-  dm(lh,'rgba(255,255,255,0.95)','●');
-  dm(kh,'#BA7517','★');
+
+  /* 主要色相ラベル */
+  const labs = [
+    {h:0,   t:'赤'},
+    {h:60,  t:'黄'},
+    {h:120, t:'緑'},
+    {h:180, t:'C'},
+    {h:240, t:'青'},
+    {h:300, t:'M'},
+  ];
+  const fs = Math.max(9, Math.floor(WSZ * 0.064));
+  ctx.font = `600 ${fs}px -apple-system,sans-serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  labs.forEach(({h, t}) => {
+    const ang = h * Math.PI / 180;
+    const tr  = R * 0.87;
+    const lx  = cx + tr * Math.cos(ang);
+    const ly  = cy + tr * Math.sin(ang);
+    ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    ctx.fillText(t, lx + 0.6, ly + 0.6);
+    ctx.fillStyle = 'rgba(255,255,255,0.92)';
+    ctx.fillText(t, lx, ly);
+  });
+
+  wBase = ctx.getImageData(0, 0, WSZ, WSZ);
 }
-function hslToHex(h,s,l){
-  s/=100;l/=100;
-  const c=(1-Math.abs(2*l-1))*s,x=c*(1-Math.abs((h/60)%2-1)),m=l-c/2;
-  let r=0,g=0,b=0;
-  if(h<60){r=c;g=x;}else if(h<120){r=x;g=c;}else if(h<180){g=c;b=x;}
-  else if(h<240){g=x;b=c;}else if(h<300){r=x;b=c;}else{r=c;b=x;}
-  return'#'+[r+m,g+m,b+m].map(v=>Math.round(v*255).toString(16).padStart(2,'0')).join('').toUpperCase();
+
+/* ════════════════════════════════════════════
+   Hue/Sat → Canvas (x,y)
+   
+   黒・白・グレーへの対応:
+   
+   彩度(S)が低い色は「無彩色」で色相が定まらない。
+   このとき HSL 計算で返る H は数値的には出るが意味がない。
+   
+   対策: satRatio が小さいほど中心へ強制的に引き寄せる。
+   具体的には r = R * innerMin + R * range * sat_effective
+   で、彩度0ならr=中心付近の最小値になる。
+   
+   また黒(L≈0)・白(L≈100)は中心に配置するが、
+   色相環の中心は白(L=100,S=0)として描いている。
+   暗い色(L低い)は若干外側を使って区別する。
+════════════════════════════════════════════ */
+function hslToXY(hue, sat, lig) {
+  const R  = WSZ / 2 - 1;
+  const cx = WSZ / 2, cy = WSZ / 2;
+
+  /* 彩度が低い(≤10%)場合は中心の固定位置に配置
+     明度に応じて微妙にずらして黒/白/グレーを区別 */
+  const SAT_THRESHOLD = 10;
+  let satRatio;
+  if (sat <= SAT_THRESHOLD) {
+    /* 無彩色: 明度に応じて中心付近の小さい円の中に収める
+       明度0(黒)→中心から少し離す  明度50(グレー)→中心  明度100(白)→中心 */
+    const achroRadius = R * 0.08 * (1 - Math.abs(lig - 50) / 50);
+    return { x: cx + achroRadius * Math.cos(hue * Math.PI / 180),
+             y: cy + achroRadius * Math.sin(hue * Math.PI / 180) };
+  } else {
+    /* 有彩色: 彩度に応じて外側へ */
+    satRatio = sat / 100;
+    const r = R * 0.12 + R * 0.78 * satRatio;
+    const ang = hue * Math.PI / 180;
+    return { x: cx + r * Math.cos(ang), y: cy + r * Math.sin(ang) };
+  }
 }
-function buildHarmony(r,g,b){
-  const[h,s,l]=toHsl(r,g,b);
-  return[
-    {lbl:"補色 +180°",hex:hslToHex((h+180)%360,s,l)},
-    {lbl:"類似色 +30°",hex:hslToHex((h+30)%360,s,l)},
-    {lbl:"類似色 −30°",hex:hslToHex((h-30+360)%360,s,l)},
-    {lbl:"三角 +120°",hex:hslToHex((h+120)%360,s,l)},
-    {lbl:"三角 +240°",hex:hslToHex((h+240)%360,s,l)},
+
+function drawMarker(ctx, hue, sat, lig, strokeColor, symbol) {
+  const { x, y } = hslToXY(hue, sat, lig);
+  const ms = Math.max(7, WSZ * 0.065);
+  ctx.beginPath();
+  ctx.arc(x, y, ms, 0, Math.PI * 2);
+  ctx.fillStyle = `hsl(${hue}, ${sat}%, ${lig}%)`;
+  ctx.fill();
+  ctx.strokeStyle = strokeColor;
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+  /* シンボル文字の色: 塗り色が暗い場合は白、明るい場合はstrokeColor */
+  const textLight = lig < 40 ? '#fff' : strokeColor;
+  ctx.fillStyle = textLight;
+  ctx.font = `600 ${Math.round(ms * 0.82)}px -apple-system,sans-serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(symbol, x, y);
+}
+
+function redrawWheel() {
+  const ctx = document.getElementById('wCanvas').getContext('2d');
+  if (wBase) ctx.putImageData(wBase, 0, 0);
+  if (lHsl) drawMarker(ctx, lHsl[0], lHsl[1], lHsl[2], 'rgba(255,255,255,0.95)', '●');
+  if (kHsl) drawMarker(ctx, kHsl[0], kHsl[1], kHsl[2], '#FFD700', '★');
+}
+
+/* 色相名ボックス更新 */
+function updateHueBox(hsl) {
+  const [h, s, l] = hsl;
+  const hn = getHN(h);
+  let bg, tc;
+  if (s <= 10) {
+    /* 無彩色: グレートーン */
+    bg = `hsl(0, 0%, ${Math.max(20, Math.min(l, 75))}%)`;
+    tc = l > 45 ? '#111' : '#fff';
+  } else {
+    const bgL = l > 60 ? 74 : l < 20 ? 32 : 55;
+    bg = `hsl(${h}, ${Math.min(s, 75)}%, ${bgL}%)`;
+    tc = bgL > 50 ? '#111' : '#fff';
+  }
+  const box = document.getElementById('huebox');
+  box.style.background = bg; box.style.color = tc;
+  document.getElementById('huename').textContent =
+    s <= 10 ? `無彩色 (${l < 20 ? '黒' : l > 80 ? '白' : 'グレー'})` : `${hn.n} (${hn.e})`;
+  document.getElementById('huedeg').textContent = `H ${h}°  S ${s}%  L ${l}%`;
+}
+
+/* HSL → HEX */
+function hsl2hex(h, s, l) {
+  s /= 100; l /= 100;
+  const a = s * Math.min(l, 1 - l);
+  const f = n => {
+    const k = (n + h / 30) % 12;
+    return Math.round((l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1))) * 255);
+  };
+  return '#' + [f(0), f(8), f(4)].map(v => v.toString(16).padStart(2, '0')).join('').toUpperCase();
+}
+
+function buildHarmony(h, s, l) {
+  return [
+    { lbl: '補色 (180°)',   hex: hsl2hex((h + 180) % 360, s, l) },
+    { lbl: '類似色 (+30°)', hex: hsl2hex((h + 30)  % 360, s, l) },
+    { lbl: '類似色 (−30°)', hex: hsl2hex((h + 330) % 360, s, l) },
+    { lbl: '三角 (+120°)',  hex: hsl2hex((h + 120) % 360, s, l) },
+    { lbl: '三角 (+240°)',  hex: hsl2hex((h + 240) % 360, s, l) },
   ];
 }
-function updateHueBox(r,g,b,hsl){
-  const hn=getHN(hsl[0]),l=hsl[2];
-  const bg=`hsl(${hsl[0]},${Math.min(hsl[1],70)}%,${l>55?80:l<20?28:60}%)`;
-  const tc=l>55?'#1a1a18':'#fff';
-  const box=document.getElementById('huebox');
-  box.style.background=bg;box.style.color=tc;
-  document.getElementById('huelbl').textContent='色相';
-  document.getElementById('huename').textContent=hn.n+' ('+hn.e+')';
-  document.getElementById('huedeg').textContent=`色相 ${hsl[0]}°  彩度 ${hsl[1]}%  明度 ${hsl[2]}%`;
+
+/* utils */
+function rgb2hex(r, g, b) {
+  return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('').toUpperCase();
+}
+function pct(v) { return Math.round(v / 255 * 100) + '%'; }
+function hslStr(hsl) { return `HSL: ${hsl[0]}°  ${hsl[1]}%  ${hsl[2]}%`; }
+
+/* ── state ── */
+const S=[null,null], ID=[null,null], OI=[null,null];
+const DIM=[{w:0,h:0},{w:0,h:0}], HD=[null,null];
+let lkRGB=null, lkHex=null;
+
+/* ── file input ── */
+document.getElementById('fi0').onchange = function(){ if(this.files[0]) LF(0,this.files[0]); this.value=''; };
+document.getElementById('fi1').onchange = function(){ if(this.files[0]) LF(1,this.files[0]); this.value=''; };
+function TF(i){ document.getElementById('fi'+i).click(); }
+
+function LF(i, f) {
+  const url = URL.createObjectURL(f), img = new Image();
+  img.onload = () => { URL.revokeObjectURL(url); LS(i, img); };
+  img.src = url;
+}
+function LS(i, img) {
+  OI[i]=img; DIM[i]={w:img.naturalWidth,h:img.naturalHeight}; S[i]=true;
+  document.getElementById('welcome').style.display = 'none';
+  document.getElementById('ws').style.display = 'block';
+  document.getElementById('sl'+i).style.display = 'flex';
+  const c = document.getElementById('c'+i);
+  setTimeout(() => { RC(i,c); SE(i,c); BH(i); RH(i); }, 40);
+  UAB();
+  if(S[1]){ document.getElementById('hp1').style.display='block'; document.getElementById('h1s').style.display='block'; }
+  /* 初回ロード後に色相環も更新 */
+  setTimeout(buildWheel, 50);
+}
+function RS(i) {
+  S[i]=null; OI[i]=null; ID[i]=null; DIM[i]={w:0,h:0}; HD[i]=null;
+  document.getElementById('sl'+i).style.display = 'none';
+  if(i===1){ document.getElementById('hp1').style.display='none'; document.getElementById('h1s').style.display='none'; }
+  UAB();
+  if(!S[0]&&!S[1]){ document.getElementById('ws').style.display='none'; document.getElementById('welcome').style.display='flex'; }
+}
+function UAB() {
+  document.getElementById('ab0').style.display = S[0] ? 'none' : 'flex';
+  document.getElementById('ab1').style.display = S[1] ? 'none' : 'flex';
 }
 
-document.getElementById('fi0').onchange=function(){if(this.files[0])loadFile(0,this.files[0]);this.value='';};
-document.getElementById('fi1').onchange=function(){if(this.files[0])loadFile(1,this.files[0]);this.value='';};
-function triggerFile(i){document.getElementById('fi'+i).click();}
-function loadFile(i,f){
-  const url=URL.createObjectURL(f),img=new Image();
-  img.onload=()=>{URL.revokeObjectURL(url);loadSlot(i,img);};
-  img.onerror=()=>showToast('画像の読み込みに失敗しました');
-  img.src=url;
+/* ── canvas render ── */
+function RC(i, cv) {
+  const wrap = document.getElementById('sl'+i);
+  const mW = Math.max(wrap.clientWidth - 2, 160), mH = 340;
+  const {w,h} = DIM[i], sc = Math.min(mW/w, mH/h, 1);
+  cv.width  = Math.round(w * sc);
+  cv.height = Math.round(h * sc);
+  const ctx = cv.getContext('2d');
+  ctx.drawImage(OI[i], 0, 0, cv.width, cv.height);
+  ID[i] = ctx.getImageData(0, 0, cv.width, cv.height);
 }
-function loadSlot(i,img){
-  origImgs[i]=img;imgDims[i]={w:img.naturalWidth,h:img.naturalHeight};slots[i]=true;
-  document.getElementById('welcome').style.display='none';
-  document.getElementById('workspace').style.display='block';
-  document.getElementById('slot'+i).style.display='flex';
-  const c=document.getElementById('c'+i);
-  setTimeout(()=>{renderCanvas(i,c);setupEvents(i,c);buildHist(i);redrawHist(i);},30);
-  updateAddBtns();
-  if(slots[1]){document.getElementById('hp1').style.display='block';document.getElementById('hp1sec').style.display='block';}
+function GP(cx2, cy2, cv, i) {
+  const r  = cv.getBoundingClientRect();
+  const sx = cv.width / r.width, sy = cv.height / r.height;
+  const px = Math.floor((cx2 - r.left) * sx);
+  const py = Math.floor((cy2 - r.top)  * sy);
+  return { cx:px, cy:py,
+    rx: Math.round(px * (DIM[i].w / cv.width)),
+    ry: Math.round(py * (DIM[i].h / cv.height)) };
 }
-function removeSlot(i){
-  slots[i]=null;origImgs[i]=null;imgDatas[i]=null;imgDims[i]={w:0,h:0};histData[i]=null;
-  document.getElementById('slot'+i).style.display='none';
-  if(i===1){document.getElementById('hp1').style.display='none';document.getElementById('hp1sec').style.display='none';}
-  updateAddBtns();
-  if(!slots[0]&&!slots[1]){document.getElementById('workspace').style.display='none';document.getElementById('welcome').style.display='flex';}
+function GX(i, cx, cy) {
+  if(!ID[i]||cx<0||cy<0||cx>=ID[i].width||cy>=ID[i].height) return null;
+  const idx = (cy * ID[i].width + cx) * 4, d = ID[i].data;
+  return [d[idx], d[idx+1], d[idx+2]];
 }
-function updateAddBtns(){
-  document.getElementById('ab0').style.display=slots[0]?'none':'flex';
-  document.getElementById('ab1').style.display=slots[1]?'none':'flex';
-}
-function renderCanvas(i,canvas){
-  const wrap=document.getElementById('slot'+i);
-  const maxW=Math.max(wrap.clientWidth-2,180),maxH=360;
-  const{w,h}=imgDims[i],s=Math.min(maxW/w,maxH/h,1);
-  canvas.width=Math.round(w*s);canvas.height=Math.round(h*s);
-  const ctx=canvas.getContext('2d');
-  ctx.drawImage(origImgs[i],0,0,canvas.width,canvas.height);
-  imgDatas[i]=ctx.getImageData(0,0,canvas.width,canvas.height);
-}
-function gPos(cx2,cy2,canvas,i){
-  const r=canvas.getBoundingClientRect();
-  const sx=canvas.width/r.width,sy=canvas.height/r.height;
-  const px=Math.floor((cx2-r.left)*sx),py=Math.floor((cy2-r.top)*sy);
-  return{cx:px,cy:py,rx:Math.round(px*(imgDims[i].w/canvas.width)),ry:Math.round(py*(imgDims[i].h/canvas.height))};
-}
-function gPx(i,cx,cy){
-  if(!imgDatas[i]||cx<0||cy<0||cx>=imgDatas[i].width||cy>=imgDatas[i].height)return null;
-  const idx=(cy*imgDatas[i].width+cx)*4,d=imgDatas[i].data;
-  return[d[idx],d[idx+1],d[idx+2]];
-}
-function setupEvents(i,canvas){
-  canvas.addEventListener('mousemove',e=>{
-    const{cx,cy,rx,ry}=gPos(e.clientX,e.clientY,canvas,i);
-    const px=gPx(i,cx,cy);if(!px)return;
-    updateLive(px[0],px[1],px[2],rx,ry,i+1);drawZoom(i,canvas,cx,cy,false);
+
+/* ── events ── */
+function SE(i, cv) {
+  cv.addEventListener('mousemove', e => {
+    const {cx,cy,rx,ry} = GP(e.clientX, e.clientY, cv, i);
+    const px = GX(i,cx,cy); if(!px) return;
+    UL(px[0],px[1],px[2],rx,ry,i+1); DZ(i,cv,cx,cy,false);
   });
-  canvas.addEventListener('click',e=>{
-    const{cx,cy,rx,ry}=gPos(e.clientX,e.clientY,canvas,i);
-    const px=gPx(i,cx,cy);if(!px)return;
-    doLock(px[0],px[1],px[2],rx,ry,i+1);
+  cv.addEventListener('click', e => {
+    const {cx,cy,rx,ry} = GP(e.clientX, e.clientY, cv, i);
+    const px = GX(i,cx,cy); if(!px) return;
+    LK(px[0],px[1],px[2],rx,ry,i+1);
   });
-  canvas.addEventListener('mouseleave',()=>document.getElementById('z'+i).style.display='none');
-  canvas.addEventListener('mouseenter',()=>{if(imgDatas[i])document.getElementById('z'+i).style.display='block';});
-  canvas.addEventListener('touchmove',e=>{
+  cv.addEventListener('mouseleave', () => document.getElementById('z'+i).style.display = 'none');
+  cv.addEventListener('mouseenter', () => { if(ID[i]) document.getElementById('z'+i).style.display = 'block'; });
+  cv.addEventListener('touchmove', e => {
     e.preventDefault();
-    const t=e.touches[0],{cx,cy,rx,ry}=gPos(t.clientX,t.clientY,canvas,i);
-    const px=gPx(i,cx,cy);if(!px)return;
-    updateLive(px[0],px[1],px[2],rx,ry,i+1);drawZoom(i,canvas,cx,cy,true);
-  },{passive:false});
-  canvas.addEventListener('touchend',e=>{
+    const t = e.touches[0], {cx,cy,rx,ry} = GP(t.clientX,t.clientY,cv,i);
+    const px = GX(i,cx,cy); if(!px) return;
+    UL(px[0],px[1],px[2],rx,ry,i+1); DZ(i,cv,cx,cy,true);
+  }, {passive:false});
+  cv.addEventListener('touchend', e => {
     e.preventDefault();
-    const t=e.changedTouches[0],{cx,cy,rx,ry}=gPos(t.clientX,t.clientY,canvas,i);
-    const px=gPx(i,cx,cy);if(!px)return;
-    doLock(px[0],px[1],px[2],rx,ry,i+1);
-    setTimeout(()=>document.getElementById('z'+i).style.display='none',700);
-  },{passive:false});
+    const t = e.changedTouches[0], {cx,cy,rx,ry} = GP(t.clientX,t.clientY,cv,i);
+    const px = GX(i,cx,cy); if(!px) return;
+    LK(px[0],px[1],px[2],rx,ry,i+1);
+    setTimeout(() => document.getElementById('z'+i).style.display = 'none', 700);
+  }, {passive:false});
 }
-function drawZoom(i,canvas,cx,cy,large){
-  const ze=document.getElementById('z'+i),zc=document.getElementById('zc'+i);
-  const sz=large?84:62;ze.style.width=sz+'px';ze.style.height=sz+'px';ze.style.display='block';
-  zc.width=sz;zc.height=sz;
-  const z=zc.getContext('2d');
-  z.imageSmoothingEnabled=false;z.clearRect(0,0,sz,sz);
-  z.drawImage(canvas,cx-8,cy-8,16,16,0,0,sz,sz);
-  const c2=Math.round(sz*.3),s2=Math.round(sz*.4);
-  z.strokeStyle='rgba(255,255,255,0.95)';z.lineWidth=2;z.strokeRect(c2,c2,s2,s2);
+
+function DZ(i, cv, cx, cy, big) {
+  const ze = document.getElementById('z'+i), zc = document.getElementById('zc'+i);
+  const sz = big ? 82 : 60;
+  ze.style.width = sz+'px'; ze.style.height = sz+'px'; ze.style.display = 'block';
+  zc.width = sz; zc.height = sz;
+  const z = zc.getContext('2d');
+  z.imageSmoothingEnabled = false; z.clearRect(0,0,sz,sz);
+  z.drawImage(cv, cx-8, cy-8, 16, 16, 0, 0, sz, sz);
+  const c2 = Math.round(sz*.3), s2 = Math.round(sz*.4);
+  z.strokeStyle = 'rgba(255,255,255,.95)'; z.lineWidth = 2; z.strokeRect(c2,c2,s2,s2);
 }
-function updateLive(r,g,b,x,y,sn){
-  document.getElementById('lsw').style.background=`rgb(${r},${g},${b})`;
-  document.getElementById('lR').textContent=r;document.getElementById('lG').textContent=g;document.getElementById('lB').textContent=b;
-  document.getElementById('lRb').style.width=pct(r);document.getElementById('lGb').style.width=pct(g);document.getElementById('lBb').style.width=pct(b);
-  document.getElementById('lHex').textContent=toHex(r,g,b);
-  const hsl=toHsl(r,g,b);
-  document.getElementById('lHsl').textContent='HSL: '+hsl[0]+'° '+hsl[1]+'% '+hsl[2]+'%';
-  document.getElementById('lPos').textContent=`写真${sn}  (${x}, ${y})`;
-  liveHsl=hsl;drawMarkers(liveHsl,lockHsl);
-  if(!lockedHex)updateHueBox(r,g,b,hsl);
+
+/* ── color panel updates ── */
+function UL(r, g, b, x, y, sn) {
+  const hsl = rgb2hsl(r, g, b);
+  document.getElementById('lsw').style.background = `rgb(${r},${g},${b})`;
+  document.getElementById('lR').textContent = r;
+  document.getElementById('lG').textContent = g;
+  document.getElementById('lB').textContent = b;
+  document.getElementById('lRb').style.width = pct(r);
+  document.getElementById('lGb').style.width = pct(g);
+  document.getElementById('lBb').style.width = pct(b);
+  document.getElementById('lHex').textContent = rgb2hex(r,g,b);
+  document.getElementById('lHsl').textContent = hslStr(hsl);
+  document.getElementById('lPos').textContent = `写真${sn}  (${x}, ${y})`;
+  lHsl = hsl; redrawWheel();
+  if (!lkHex) updateHueBox(hsl);
 }
-function doLock(r,g,b,x,y,sn){
-  lockedRGB={r,g,b};lockedHex=toHex(r,g,b);
-  const hsl=toHsl(r,g,b);lockHsl=hsl;
-  document.getElementById('ksw').style.background=`rgb(${r},${g},${b})`;
-  document.getElementById('kR').textContent=r;document.getElementById('kG').textContent=g;document.getElementById('kB').textContent=b;
-  document.getElementById('kRb').style.width=pct(r);document.getElementById('kGb').style.width=pct(g);document.getElementById('kBb').style.width=pct(b);
-  document.getElementById('kHex').textContent=lockedHex;
-  document.getElementById('kHsl').textContent='HSL: '+hsl[0]+'° '+hsl[1]+'% '+hsl[2]+'%';
-  document.getElementById('kPos').textContent=`写真${sn}  (${x}, ${y})`;
-  updateHueBox(r,g,b,hsl);drawMarkers(liveHsl,lockHsl);updateMarkers(r,g,b);
-  const harm=buildHarmony(r,g,b);
-  document.getElementById('hlist').innerHTML=harm.map(h=>`<div class="hitem"><div class="hdot" style="background:${h.hex}" onclick="showToast('${h.hex} をコピーしました');cp('${h.hex}')"></div><span class="hhex" onclick="showToast('${h.hex} をコピーしました');cp('${h.hex}')">${h.hex}</span><span style="font-size:10px;color:var(--color-text-tertiary)">${h.lbl}</span></div>`).join('');
-  document.getElementById('scarea').innerHTML=`<div class="selrow"><div class="selswat" style="background:${lockedHex}"></div><div><div class="selhex">${lockedHex}</div><div class="sellbl">ロックされた色</div></div></div>`;
-  document.getElementById('mbtn').disabled=false;
+
+function LK(r, g, b, x, y, sn) {
+  lkRGB = {r,g,b}; lkHex = rgb2hex(r,g,b);
+  const hsl = rgb2hsl(r, g, b); kHsl = hsl;
+  document.getElementById('ksw').style.background = `rgb(${r},${g},${b})`;
+  document.getElementById('kR').textContent = r;
+  document.getElementById('kG').textContent = g;
+  document.getElementById('kB').textContent = b;
+  document.getElementById('kRb').style.width = pct(r);
+  document.getElementById('kGb').style.width = pct(g);
+  document.getElementById('kBb').style.width = pct(b);
+  document.getElementById('kHex').textContent = lkHex;
+  document.getElementById('kHsl').textContent = hslStr(hsl);
+  document.getElementById('kPos').textContent = `写真${sn}  (${x}, ${y})`;
+  updateHueBox(hsl); redrawWheel(); UMK(r,g,b);
+
+  const harm = buildHarmony(hsl[0], hsl[1], hsl[2]);
+  document.getElementById('hlist').innerHTML = harm.map(h =>
+    `<div class="harmony-item">
+       <div class="h-dot" style="background:${h.hex}" onclick="CP('${h.hex}')"></div>
+       <span class="h-hex" onclick="CP('${h.hex}')">${h.hex}</span>
+       <span style="font-size:9px;color:var(--text3);margin-left:2px">${h.lbl}</span>
+     </div>`).join('');
+
+  document.getElementById('sca').innerHTML =
+    `<div class="sel-row">
+       <div class="sel-swatch" style="background:${lkHex}"></div>
+       <div><div class="sel-hex">${lkHex}</div><div class="sel-lbl">ロックされた色</div></div>
+     </div>`;
+  document.getElementById('mb').disabled = false;
+  showToast('ロックしました: ' + lkHex);
 }
-function clearLock(){
-  lockedRGB=null;lockedHex=null;lockHsl=null;
-  document.getElementById('ksw').style.background='var(--color-background-secondary)';
-  ['kR','kG','kB'].forEach(id=>document.getElementById(id).textContent='—');
-  ['kRb','kGb','kBb'].forEach(id=>document.getElementById(id).style.width='0%');
-  document.getElementById('kHex').textContent='#——————';document.getElementById('kHsl').textContent='HSL: —';
-  document.getElementById('kPos').textContent='写真をタップ／クリックしてロック';
-  hideMarkers();drawMarkers(liveHsl,null);
-  document.getElementById('hlist').innerHTML='<div style="font-size:11px;color:var(--color-text-tertiary)">色をロックすると表示されます</div>';
-  document.getElementById('scarea').innerHTML='<div class="selempty">まず写真の色をタップしてロックしてください</div>';
-  document.getElementById('mbtn').disabled=true;document.getElementById('mresults').innerHTML='';
+
+function CLR() {
+  lkRGB=null; lkHex=null; kHsl=null;
+  document.getElementById('ksw').style.background = 'var(--bg)';
+  ['kR','kG','kB'].forEach(id => document.getElementById(id).textContent = '—');
+  ['kRb','kGb','kBb'].forEach(id => document.getElementById(id).style.width = '0%');
+  document.getElementById('kHex').textContent = '#——————';
+  document.getElementById('kHsl').textContent = 'HSL: —';
+  document.getElementById('kPos').textContent = '写真をクリック／タップでロック';
+  HMK(); redrawWheel();
+  document.getElementById('hlist').innerHTML = '<div style="font-size:10px;color:var(--text3)">色をロックすると表示されます</div>';
+  document.getElementById('sca').innerHTML   = '<div class="sel-empty">色をロックすると表示されます</div>';
+  document.getElementById('mb').disabled = true;
+  document.getElementById('mr').innerHTML = '';
 }
-function pct(v){return Math.round(v/255*100)+'%';}
-function toHex(r,g,b){return'#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('').toUpperCase();}
-function toHsl(r,g,b){
-  r/=255;g/=255;b/=255;
-  const mx=Math.max(r,g,b),mn=Math.min(r,g,b);
-  let h,s,l=(mx+mn)/2;
-  if(mx===mn){h=s=0;}else{const d=mx-mn;s=l>0.5?d/(2-mx-mn):d/(mx+mn);switch(mx){case r:h=((g-b)/d+(g<b?6:0))/6;break;case g:h=((b-r)/d+2)/6;break;case b:h=((r-g)/d+4)/6;break;}}
-  return[Math.round(h*360),Math.round(s*100),Math.round(l*100)];
+
+function CPY(id, btn) {
+  const v = document.getElementById(id).textContent;
+  if(v && !v.includes('—')) { CP(v); btn.textContent = '✓'; setTimeout(() => btn.textContent = 'コピー', 1500); }
 }
-function cp(txt){navigator.clipboard.writeText(txt).catch(()=>{});}
-function cpy(id,btn){
-  const v=document.getElementById(id).textContent;
-  if(v&&!v.includes('—')){cp(v);btn.textContent='✓ コピー完了';setTimeout(()=>btn.textContent='コピー',1800);}
+function CP(t) { navigator.clipboard.writeText(t).catch(() => {}); }
+
+let toastTimer = null;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.style.display = 'block';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.style.display = 'none', 1800);
 }
-let toastTimer=null;
-function showToast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.style.display='block';
-  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.style.display='none',1800);
+
+/* ── histogram ── */
+function BH(i) {
+  if(!ID[i]) return;
+  const d = ID[i].data;
+  const rH=new Float32Array(256), gH=new Float32Array(256);
+  const bH=new Float32Array(256), lH=new Float32Array(256);
+  let tot=0; const px=d.length/4;
+  for(let j=0; j<d.length; j+=4) {
+    rH[d[j]]++; gH[d[j+1]]++; bH[d[j+2]]++;
+    const lv = Math.round(0.299*d[j] + 0.587*d[j+1] + 0.114*d[j+2]);
+    lH[lv]++; tot+=lv;
+  }
+  HD[i] = {rH,gH,bH,lH, bright:Math.round(tot/px)};
 }
-function buildHist(i){
-  if(!imgDatas[i])return;
-  const d=imgDatas[i].data;
-  const rH=new Float32Array(256),gH=new Float32Array(256),bH=new Float32Array(256),lH=new Float32Array(256);
-  let tot=0;const px=d.length/4;
-  for(let j=0;j<d.length;j+=4){rH[d[j]]++;gH[d[j+1]]++;bH[d[j+2]]++;const l=Math.round(0.299*d[j]+0.587*d[j+1]+0.114*d[j+2]);lH[l]++;tot+=l;}
-  histData[i]={rH,gH,bH,lH,bright:Math.round(tot/px)};
-}
-function redrawHist(i){
-  if(!histData[i])return;
-  const hc=document.getElementById('hc'+i),hx=hc.getContext('2d');
-  const w=hc.offsetWidth||260;hc.width=w;hc.height=86;hx.clearRect(0,0,w,86);
-  const{rH,gH,bH,lH,bright}=histData[i];
-  const mx=Math.max(...rH,...gH,...bH,...lH),bw=w/256;
-  [[lH,'rgba(136,135,128,0.38)'],[rH,'rgba(226,75,74,0.55)'],[gH,'rgba(59,109,17,0.55)'],[bH,'rgba(55,138,221,0.55)']].forEach(([h,c])=>{
-    hx.beginPath();hx.moveTo(0,86);
-    for(let j=0;j<256;j++)hx.lineTo(j*bw+bw/2,86-(h[j]/mx)*81);
-    hx.lineTo(w,86);hx.closePath();hx.fillStyle=c;hx.fill();
+function RH(i) {
+  if(!HD[i]) return;
+  const hc = document.getElementById('hc'+i), hx = hc.getContext('2d');
+  const w = hc.offsetWidth || 240; hc.width=w; hc.height=80; hx.clearRect(0,0,w,80);
+  const {rH,gH,bH,lH,bright} = HD[i];
+  const mx = Math.max(...rH,...gH,...bH,...lH), bw = w/256;
+  [[lH,'rgba(136,135,128,.38)'],[rH,'rgba(226,75,74,.55)'],[gH,'rgba(59,109,17,.55)'],[bH,'rgba(55,138,221,.55)']].forEach(([h,c]) => {
+    hx.beginPath(); hx.moveTo(0,80);
+    for(let j=0; j<256; j++) hx.lineTo(j*bw+bw/2, 80-(h[j]/mx)*75);
+    hx.lineTo(w,80); hx.closePath(); hx.fillStyle=c; hx.fill();
   });
-  const{w:iw,h:ih}=imgDims[i];
-  document.getElementById('sW'+i).textContent=iw+'px';document.getElementById('sH'+i).textContent=ih+'px';
-  const gcd=(a,b)=>b?gcd(b,a%b):a,d2=gcd(iw,ih);
-  document.getElementById('sAR'+i).textContent=(iw/d2)+':'+(ih/d2);
-  document.getElementById('sBr'+i).textContent=bright;
-  if(lockedRGB)updateMarkers(lockedRGB.r,lockedRGB.g,lockedRGB.b);
+  const {w:iw,h:ih} = DIM[i];
+  document.getElementById('sW'+i).textContent  = iw+'px';
+  document.getElementById('sH'+i).textContent  = ih+'px';
+  const gcd=(a,b)=>b?gcd(b,a%b):a, d2=gcd(iw,ih);
+  document.getElementById('sAR'+i).textContent = (iw/d2)+':'+(ih/d2);
+  document.getElementById('sBr'+i).textContent = bright;
+  if(lkRGB) UMK(lkRGB.r, lkRGB.g, lkRGB.b);
 }
-function updateMarkers(r,g,b){
-  for(let i=0;i<2;i++){
-    const hw=document.getElementById('hw'+i);if(!hw)continue;
-    const w=hw.offsetWidth||260,bw=w/256;
-    [['hm'+i+'r',r],['hm'+i+'g',g],['hm'+i+'b',b]].forEach(([id,val])=>{
-      const el=document.getElementById(id);if(!el)return;
-      el.style.display='block';el.style.left=(val*bw)+'px';el.style.top='0';el.style.height='86px';
+function UMK(r, g, b) {
+  for(let i=0; i<2; i++) {
+    const hw = document.getElementById('hw'+i); if(!hw) continue;
+    const w = hw.offsetWidth||240, bw=w/256;
+    [['hm'+i+'r',r],['hm'+i+'g',g],['hm'+i+'b',b]].forEach(([id,val]) => {
+      const el = document.getElementById(id); if(!el) return;
+      el.style.display='block'; el.style.left=(val*bw)+'px';
+      el.style.top='0'; el.style.height='80px';
     });
   }
 }
-function hideMarkers(){['hm0r','hm0g','hm0b','hm1r','hm1g','hm1b'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});}
-function colorDist(h1,h2){
-  const p=h=>parseInt(h.slice(1),16),a=p(h1),b=p(h2);
-  const dr=((a>>16)&255)-((b>>16)&255),dg=((a>>8)&255)-((b>>8)&255),db=(a&255)-(b&255);
+function HMK() {
+  ['hm0r','hm0g','hm0b','hm1r','hm1g','hm1b'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.style.display='none';
+  });
+}
+
+/* ── movie matching ── */
+function CD(h1, h2) {
+  const p=h=>parseInt(h.slice(1),16), a=p(h1), b=p(h2);
+  const dr=((a>>16)&255)-((b>>16)&255);
+  const dg=((a>>8)&255)-((b>>8)&255);
+  const db=(a&255)-(b&255);
   return Math.sqrt(dr*dr+dg*dg+db*db);
 }
-function findMovies(){
-  if(!lockedHex)return;
-  const sorted=[...MOVIES].map(m=>({...m,dist:Math.min(...m.p.map(c=>colorDist(lockedHex,c)))})).sort((a,b)=>a.dist-b.dist).slice(0,5);
-  const res=document.getElementById('mresults');res.innerHTML='';
-  sorted.forEach(m=>{
-    const mp=Math.round(Math.max(0,100-m.dist/4.41));
-    const pal=m.p.map(c=>`<div class="rsw" style="background:${c}"></div>`).join('');
-    const chips=m.p.map(c=>`<div class="rhex" onclick="cp('${c}');showToast('${c} をコピーしました')"><div class="rhdot" style="background:${c}"></div>${c}</div>`).join('');
-    const card=document.createElement('div');card.className='rcard';
-    card.innerHTML=`<div class="rpal">${pal}</div><div class="rbody"><div class="rgenre">${m.genre}</div><div class="rmatch">色の一致度 ${mp}%</div><div class="rtitle">${m.title}</div><div class="ryear">${m.year}年</div><div class="rdesc">${m.d}</div><div class="rhexes">${chips}</div></div>`;
+function FM() {
+  if(!lkHex) return;
+  const sorted = [...MOVIES]
+    .map(m => ({...m, dist: Math.min(...m.p.map(c => CD(lkHex,c)))}))
+    .sort((a,b) => a.dist-b.dist).slice(0,5);
+  const res = document.getElementById('mr'); res.innerHTML='';
+  sorted.forEach(m => {
+    const mp  = Math.round(Math.max(0, 100 - m.dist/4.41));
+    const pal = m.p.map(c => `<div class="r-sw" style="background:${c}"></div>`).join('');
+    const chips = m.p.map(c =>
+      `<div class="r-hex" onclick="CP('${c}')"><div class="r-hex-dot" style="background:${c}"></div>${c}</div>`
+    ).join('');
+    const card = document.createElement('div'); card.className='r-card';
+    card.innerHTML = `<div class="r-pal">${pal}</div>
+      <div class="r-body">
+        <div class="r-genre">${m.g}</div>
+        <div class="r-match">一致度 ${mp}%</div>
+        <div class="r-title">${m.t}</div>
+        <div class="r-year">${m.y}年</div>
+        <div class="r-desc">${m.d}</div>
+        <div class="r-hexes">${chips}</div>
+      </div>`;
     res.appendChild(card);
   });
 }
 
-const root=document.getElementById('root');
-root.addEventListener('dragover',e=>e.preventDefault());
-root.addEventListener('drop',e=>{
-  e.preventDefault();
-  const f=e.dataTransfer.files[0];if(!f||!f.type.startsWith('image/'))return;
-  loadFile(slots[0]?(slots[1]?0:1):0,f);
+/* ── drag & drop ── */
+const dov = document.getElementById('drop-overlay');
+document.addEventListener('dragover',  e => { e.preventDefault(); dov.classList.add('active'); });
+document.addEventListener('dragleave', e => { if(!e.relatedTarget) dov.classList.remove('active'); });
+document.addEventListener('drop', e => {
+  e.preventDefault(); dov.classList.remove('active');
+  const f = e.dataTransfer.files[0];
+  if(!f || !f.type.startsWith('image/')) return;
+  LF(S[0]?(S[1]?0:1):0, f);
 });
 
-window.addEventListener('resize',()=>{
-  initWheel();drawMarkers(liveHsl,lockHsl);
-  for(let i=0;i<2;i++){if(origImgs[i]){const c=document.getElementById('c'+i);renderCanvas(i,c);buildHist(i);setTimeout(()=>redrawHist(i),40);}}
+/* ── resize ── */
+window.addEventListener('resize', () => {
+  buildWheel(); redrawWheel();
+  for(let i=0; i<2; i++) {
+    if(OI[i]) { const c=document.getElementById('c'+i); RC(i,c); BH(i); setTimeout(()=>RH(i),40); }
+  }
 });
-updateAddBtns();
-initWheel();
+
+/* ── init ── */
+UAB();
+buildWheel();
 </script>
+</body>
+</html>
